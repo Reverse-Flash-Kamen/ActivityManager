@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="ActivityManager" Class="ActivityManagerDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.Activity" Member="Activity">
+    <Type Name="Activity">
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityName" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="activityIntro" Type="System.String" DbType="VarChar(400)" CanBeNull="true" />
+      <Column Name="activityPlaceID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="activityOrgID" Type="System.String" DbType="Char(13)" CanBeNull="true" />
+      <Column Name="availableCredit" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="maxSigned" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="signed" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="activityState" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="signStartDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="signEndDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="holdDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="holdStart" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="holdEnd" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="submitTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="failReason" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Activity_LikedActivity" Member="LikedActivity" ThisKey="activityID" OtherKey="activityID" Type="LikedActivity" />
+      <Association Name="Activity_SignedActivity" Member="SignedActivity" ThisKey="activityID" OtherKey="activityID" Type="SignedActivity" />
+      <Association Name="Organization_Activity" Member="Organization" ThisKey="activityOrgID" OtherKey="organizationID" Type="Organization" IsForeignKey="true" />
+      <Association Name="Place_Activity" Member="Place" ThisKey="activityPlaceID" OtherKey="placeID" Type="Place" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StudentIdentified" Member="StudentIdentified">
+    <Type Name="StudentIdentified">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="studentPassword" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="phone" Type="System.String" DbType="Char(11)" CanBeNull="true" />
+      <Column Name="credit" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Student_StudentIdentified" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Administration" Member="Administration">
+    <Type Name="Administration">
+      <Column Name="adminID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="adminPassword" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LikedActivity" Member="LikedActivity">
+    <Type Name="LikedActivity">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Activity_LikedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+      <Association Name="Student_LikedActivity" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Organization" Member="Organization">
+    <Type Name="Organization">
+      <Column Name="organizationID" Type="System.String" DbType="Char(13) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="organizationName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="organizationPassword" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Association Name="Organization_Activity" Member="Activity" ThisKey="organizationID" OtherKey="activityOrgID" Type="Activity" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Place" Member="Place">
+    <Type Name="Place">
+      <Column Name="placeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="placeName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="volume" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Place_Activity" Member="Activity" ThisKey="placeID" OtherKey="activityPlaceID" Type="Activity" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SignedActivity" Member="SignedActivity">
+    <Type Name="SignedActivity">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Activity_SignedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+      <Association Name="Student_SignedActivity" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Student" Member="Student">
+    <Type Name="Student">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ID" Type="System.String" DbType="Char(18)" CanBeNull="true" />
+      <Column Name="studentName" Type="System.String" DbType="VarChar(22) NOT NULL" CanBeNull="false" />
+      <Column Name="gender" Type="System.String" DbType="Char(2)" CanBeNull="true" />
+      <Column Name="major" Type="System.String" DbType="VarChar(26)" CanBeNull="true" />
+      <Column Name="class" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Association Name="Student_StudentIdentified" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" Cardinality="One" />
+      <Association Name="Student_LikedActivity" Member="LikedActivity" ThisKey="studentID" OtherKey="studentID" Type="LikedActivity" />
+      <Association Name="Student_SignedActivity" Member="SignedActivity" ThisKey="studentID" OtherKey="studentID" Type="SignedActivity" />
+    </Type>
+  </Table>
+</Database>
