@@ -120,6 +120,9 @@ namespace ActivityManager.Test
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
+        /// LinqDataSource的数据源链接
+        /// 页面更新的时候会自动调用
+        /// 所以在各种事件下应添加对应.Where进行数据筛选
         protected global::System.Web.UI.WebControls.LinqDataSource schoolConnector;
 
         /// <summary>

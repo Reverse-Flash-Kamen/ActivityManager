@@ -16,7 +16,7 @@ namespace ActivityManager.Test
             LinkButton2.ForeColor = System.Drawing.Color.Black;
 
             schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 5 ";
+            schoolConnector.Where = "activityState >= 5 ";      // 学生只能看到状态5以上的活动
         }
 
         protected void GridView1_DataBound(object sender, EventArgs e)

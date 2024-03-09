@@ -25,7 +25,9 @@ namespace ActivityManager.App_Data
 	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="ActivityManager")]
 	public partial class ActivityManagerDataContext : System.Data.Linq.DataContext
 	{
-		private static string conStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\重要文件\\学习资料\\ASP.NET\\asp.net_last\\ActivityManager\\App_Data\\ActivityManager.mdf;Integrated Security=True";
+		// 连接本地数据库
+		// 数据库的本地绝对路径
+		private static string conStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\App_Data\\ActivityManager.mdf;Integrated Security=True";
 
 
         private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();

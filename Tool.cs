@@ -9,12 +9,12 @@ namespace ActivityManager
 {
     public static class Tool
     {
-        public static int curUser = 0;     // 1表示校方，2表示社团，3表示学生
+        public static int curUser = 0;     // 0表示校方，1表示社团，2表示学生
         public static string studentID = "";
         public static int cnt = 0;
 
         private static bool flag = true;
-        private static Dictionary<string, int> map = new Dictionary<string, int>();
+        private static Dictionary<string, int> map = new Dictionary<string, int>(); // 存放列表头及对应列序号（三端列表头不同所以需根据列表头名查询列序号）
 
         public static Hashtable states = new Hashtable() { { 1, "未提交" }, { 2, "待审核" }, { 3, "未通过" },
                     { 4, "审核过期" }, { 5, "待报名" }, { 6, "报名中" }, { 7, "待开始" }, { 8, "活动中" },
@@ -26,6 +26,7 @@ namespace ActivityManager
 
         public static void FormatActivity(GridView gv)
         {
+            // 初始化列表头map，只运行一次减少工作量
             if (flag)
             {
                 for (int i = 0; i < gv.Columns.Count; i++)
@@ -40,14 +41,19 @@ namespace ActivityManager
 
             //UpdateActivityState(gv);
 
-            SetButton(gv);
+            SetButton(gv);  // 根据各端及活动状态设置功能按钮
 
+            /*
+             * Gridview通过Linq绑定数据库获取的是ID
+             * 优化用户体验需将ID格式化为名称
+             * 对于时间也需格式化为日常使用习惯
+             */
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             foreach (GridViewRow row in gv.Rows)
             {
                 // 格式化申办组织名称
-                int index = map["activityOrgID"];
-                string tmp = row.Cells[index].Text;
+                int index = map["activityOrgID"];   // 根据列表头名获取列序号
+                string tmp = row.Cells[index].Text;     // 根据列序号获取当前行对应信息
                 var res = from org in db.Organization
                           where org.organizationID.Equals(tmp)
                           select org;
