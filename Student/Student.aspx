@@ -69,6 +69,13 @@
             text-align:center;
             margin-bottom:15px;
         }
+        .auto-style14 {
+            text-align:center;
+            background-color:#ccad9f 
+        }
+        .auto-style15 {
+            padding:20px 5px 5px;
+        }
     </style>
 </head>
 <body>
@@ -82,18 +89,24 @@
                    <h1 style="padding:50px 0px; color:white; margin:0;">校生通</h1>
                </div>
                <%--导航--%>
-               <div style="padding:20px 20px; text-align:center; background-color:#ccad9f " >
-                   <asp:LinkButton ID="ActMan" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="ActMan_Click">活动总览</asp:LinkButton>
+               <div class="auto-style14" id="DivAllAct" runat="server" style="background-color:red">
+                   <asp:LinkButton ID="LbtnAllAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnAllAct_Click" Height="40px" Width="180px" CssClass="auto-style15">活动总览</asp:LinkButton>
+               </div>
+               <div class="auto-style14" id="DivMyAct" runat="server">
+                   <asp:LinkButton ID="LbtnMyAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnMyAct_Click" Height="40px" Width="180px" CssClass="auto-style15">我的活动</asp:LinkButton>
+               </div>
+               <div class="auto-style14" id="DivMyInfo" runat="server">
+                   <asp:LinkButton ID="LbtnMyInfo" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnMyInfo_Click" Height="40px" Width="180px" CssClass="auto-style15">我的信息</asp:LinkButton>
                </div>
                <%--校徽--%>
                <div>
-                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
+                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 160px; opacity:50%"/>
                </div>
            </div>
 
            <div class="auto-style3">
                <%--查询--%>
-               <div class="auto-style8">
+               <div class="auto-style8" id="DivSearch" runat="server">
                     <span class="">&nbsp;&nbsp;&nbsp;活动名称&nbsp;<asp:TextBox ID="name" runat="server"></asp:TextBox></span>
                     <span class="auto-style7">申请组织&nbsp;<asp:TextBox ID="org" runat="server"></asp:TextBox></span>
                     <span class="auto-style7"> 活动状态&nbsp; 
@@ -114,7 +127,7 @@
             </div>
 
                <%--上导航栏--%>
-               <div class="auto-style9">
+               <div class="auto-style9" id="DivTopNov" runat="server">
                    &nbsp;&nbsp;
                    <asp:LinkButton ID="LinkButton1" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton1_Click">全部活动</asp:LinkButton>
                    &nbsp;&nbsp;

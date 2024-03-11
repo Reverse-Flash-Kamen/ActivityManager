@@ -26,7 +26,12 @@ namespace ActivityManager
 
         public static void FormatActivity(GridView gv)
         {
-            // 初始化列表头map，只运行一次减少工作量
+            /*
+             * 初始化列表头map，只运行一次减少工作量
+             * map包含Act原数据表所有表头
+             * gv.row 隐藏或添加部分数据项,三端列号不同
+             * 通过原表名称获取真正列号
+             */
             if (flag)
             {
                 for (int i = 0; i < gv.Columns.Count; i++)
@@ -119,8 +124,8 @@ namespace ActivityManager
             foreach (GridViewRow row in gv.Rows)
             {
                 string id = row.Cells[0].Text;
-                MyActivity a = new MyActivity(id);
-                a.UpdateState();
+                MyActivity a = new MyActivity(id); // 用id创建活动实例
+                a.UpdateState(); // 更新活动状态
             }
         }
 
@@ -326,7 +331,7 @@ namespace ActivityManager
                     ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
                     ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                    // 判断是否收藏 
+                    // 判断是否已收藏 
                     if (state >= 5 && state <= 6)
                     {
                         var resLiked = from info in db.LikedActivity
@@ -351,7 +356,7 @@ namespace ActivityManager
 
 
 
-                    // 判断是否报名
+                    // 判断是否已报名
                     if (state == 6)
                     {
                         var resSign = from info in db.SignedActivity
