@@ -12,6 +12,7 @@ namespace ActivityManager
         public static int curUser = 0;     // 0表示校方，1表示社团，2表示学生
         public static string studentID = "";
         public static int cnt = 0;
+        
 
         private static bool flag = true;
         private static Dictionary<string, int> map = new Dictionary<string, int>(); // 存放列表头及对应列序号（三端列表头不同所以需根据列表头名查询列序号）

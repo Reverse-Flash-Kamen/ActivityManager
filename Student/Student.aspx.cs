@@ -33,8 +33,9 @@ namespace ActivityManager.Test
             /*
              * 此处初始化存在隐患!!!!
              * Where初始值为"",表示*
+             * 翻页功能会导致页面刷新加载此项
              */
-            if (schoolConnector.Where == "") schoolConnector.Where = "activityState >= 5 and activityState <= 8"; 
+            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 5 and activityState <= 8)"; 
         }
 
         protected void GridView1_DataBound(object sender, EventArgs e)
@@ -69,8 +70,15 @@ namespace ActivityManager.Test
         protected void commit_Click(object sender, EventArgs e)
         {
             /*查询功能*/
-            schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 5 and activityState <= 8";
+            /*schoolConnector.Where = null;
+            schoolConnector.Where = "activityState >= 5 and activityState <= 8";*/
+
+            if (LinkButton1.Font.Underline == true)
+                LinkButton1_Click(sender, e);
+            else if (LinkButton2.Font.Underline == true)
+                LinkButton2_Click(sender, e);
+
+            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 0)";
 
             string s1 = name.Text.Trim();
             string s2 = org.Text.Trim();
@@ -101,27 +109,30 @@ namespace ActivityManager.Test
                 if (s3 != "0")
                     schoolConnector.Where += " and activityState = " + s3;
             }
+
+
+            GvTemplate.PageIndex = 0; // 查询完回到第一页
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 
         protected void flush_Click(object sender, EventArgs e)
         {
-            /*重置页面*/
+            /*重置查询条件*/
             name.Text = null;
             org.Text = null;
             state.SelectedIndex = 0;
-
-            schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 5 and activityState <= 8";
         }
 
         protected void GvTemplate_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             /*
              * 报名活动详情确认页面???????
+             * 用于响应表内按钮事件
              * 需要传gv的数据
-             * 很重要
              */
-            if (GvTemplate.PageSize > ((GridView)sender).Rows.Count) return;
+
+            /*if (GvTemplate.PageSize > ((GridView)sender).Rows.Count) return; // 防止与分页功能冲突*/
+            if (e.CommandName == "Page") return; 
 
             int index = int.Parse(e.CommandArgument.ToString());
             string actID = ((GridView)sender).Rows[index].Cells[0].Text;
@@ -193,17 +204,25 @@ namespace ActivityManager.Test
         }
         protected void LbtnAllAct_Click(object sender, EventArgs e)
         {
-            /*全部活动页面*/
+            /*活动总览页面*/
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "block";
 
             LinkButton1.Text = "全部活动"; // 要在按钮点击事件之前
             LinkButton2.Text = "可报名";
 
-            LinkButton1_Click(sender, e);
             DivAllAct.Style["background-color"] = "red";
             DivMyAct.Style["background-color"] = "#ccad9f";
             DivMyInfo.Style["background-color"] = "#ccad9f";
+
+            // 重置选中页数,初始页为0
+            GvTemplate.PageIndex = 0;
+
+            // 重置查询条件
+            flush_Click(sender, e);
+
+            // 默认选中全部活动
+            LinkButton1_Click(sender, e);
         }
 
         protected void LbtnMyAct_Click(object sender, EventArgs e)
@@ -223,6 +242,12 @@ namespace ActivityManager.Test
 
             LinkButton1.Text = "已报名";
             LinkButton2.Text = "已收藏";
+
+            // 重置选中页数,初始页为0
+            GvTemplate.PageIndex = 0;
+
+            // 重置查询条件
+            flush_Click(sender, e);
 
             // 默认选中已报名
             LinkButton1_Click(sender, e);
@@ -244,6 +269,9 @@ namespace ActivityManager.Test
         protected void LinkButton1_Click(object sender, EventArgs e)
         {
             /*更新按钮1*/
+            if (LinkButton1.Font.Underline == false)
+                GvTemplate.PageIndex = 0; // 第一次选中时重置数据页数
+
             LinkButton1.ForeColor = System.Drawing.Color.Brown;
             LinkButton1.Font.Underline = true;
 
@@ -257,7 +285,7 @@ namespace ActivityManager.Test
             {
                 case "全部活动":
                     // 活动总览-全部活动
-                    schoolConnector.Where = "activityState >= 5"; // 未调试
+                    schoolConnector.Where = "(activityState >= 5)"; // 未调试
                     break;
 
                 case "已报名":                  
@@ -274,27 +302,32 @@ namespace ActivityManager.Test
 
                     if (res.Count() <= 0)
                     {
-                        schoolConnector.Where = "activityState < 0"; // 没有结果
+                        schoolConnector.Where = "(activityState < 0)"; // 没有结果
                         break;
                     }
 
                     string[] actIDs = res.ToArray();
-                    schoolConnector.Where = "activityID = \"" + res.First() + "\"";
+                    schoolConnector.Where = "(activityID = \"" + res.First() + "\"";
                     foreach (string actID in actIDs)
                     {
                         Console.WriteLine(actID);
                         schoolConnector.Where += "or activityID = \"" + actID + "\" ";
                     }
+                    schoolConnector.Where += ")";
                     break;
 
                 default:
                     break;
             }
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 
         protected void LinkButton2_Click(object sender, EventArgs e)
         {
             /*更新按钮2*/
+            if (LinkButton2.Font.Underline == false)
+                GvTemplate.PageIndex = 0; // 第一次选中时重置数据页数
+
             LinkButton2.ForeColor = System.Drawing.Color.Brown;
             LinkButton2.Font.Underline = true;
 
@@ -307,7 +340,7 @@ namespace ActivityManager.Test
             switch (LbtnText2)
             {
                 case "可报名":
-                    schoolConnector.Where = "activityState = 6 ";
+                    schoolConnector.Where = "";
                     break;
 
                 case "已收藏":
@@ -324,22 +357,39 @@ namespace ActivityManager.Test
 
                     if (res.Count() <= 0)
                     {
-                        schoolConnector.Where = "activityState < 0"; // 没有结果
+                        schoolConnector.Where = "(activityState < 0)"; // 没有结果
                         break;
                     }
 
                     string[] actIDs = res.ToArray();
-                    schoolConnector.Where = "activityID = \"" + res.First() + "\"";
+                    schoolConnector.Where = "(activityID = \"" + res.First() + "\"";
                     foreach (string actID in actIDs)
                     {
                         Console.WriteLine(actID);
                         schoolConnector.Where += "or activityID = \"" + actID + "\" ";
                     }
+                    schoolConnector.Where += ")";
                     break;
 
                 default :
                     break;
             }
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
+        }
+
+        protected void GvTemplate_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GvTemplate.PageIndex = e.NewPageIndex;
+            
+            /*根据按钮是否存在下划线判断选中按钮,绑定不同数据源*//*
+
+            if (LinkButton1.Font.Underline == true)
+                LinkButton1_Click(sender, e);
+            else if (LinkButton2.Font.Underline == true)
+                LinkButton2_Click(sender, e);*/
+
+            // 根据不同需求获取提前存储的查询条件
+            schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
         }
     }
 }
