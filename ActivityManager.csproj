@@ -74,7 +74,9 @@
       <DependentUpon>ActivityManager.mdf</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="Ndky.png" />
+    <Content Include="image\Ndky.png" />
+    <Content Include="image\users\7020820312.jpg" />
+    <Content Include="image\users\7020820000.jpg" />
     <Content Include="Login.aspx" />
     <Content Include="Org\Org.aspx" />
     <Content Include="Student\Student.aspx" />

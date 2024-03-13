@@ -1,6 +1,5 @@
 ﻿using ActivityManager.App_Data;
 using System;
-using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -8,34 +7,69 @@ namespace ActivityManager.Test
 {
     public partial class StudentWebForm : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e)
+        protected void BtnCheck_Click(object sender, EventArgs e)
         {
-            ////// 点击按钮会触发,不能在这初始化
+            /*活动报名详情页返回*/
+            CheckActDiv.Style["display"] = "none";
+        }
 
-            /*上导航栏初始效果,选中第一项*//*
-            LinkButton1.Text = "初始_全部活动";
-            LinkButton1.ForeColor = System.Drawing.Color.Brown;
-            LinkButton1.Font.Underline = true;
+        protected void commit_Click(object sender, EventArgs e)
+        {
+            /*查询功能*/
+            /*schoolConnector.Where = null;
+            schoolConnector.Where = "activityState >= 5 and activityState <= 8";*/
 
-            LinkButton2.Text = "初始_可报名";
-            LinkButton2.Font.Underline = false;
-            LinkButton2.ForeColor = System.Drawing.Color.Black;
+            if (LinkButton1.Font.Underline == true)
+                LinkButton1_Click(sender, e);
+            else if (LinkButton2.Font.Underline == true)
+                LinkButton2_Click(sender, e);
 
-            *//*左导航栏初始效果,选中活动总览*//*
-            DivAllAct.Style["background-color"] = "red";
-            DivMyAct.Style["background-color"] = "#ccad9f";
-            DivMyInfo.Style["background-color"] = "#ccad9f";
+            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 0)";
 
-            *//*数据表初始数据*//*
-            schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 5 and activityState <= 8";      // 学生只能看到状态5-8的活动,待报名,报名中,待开始,活动中*/
+            string s1 = name.Text.Trim();
+            string s2 = org.Text.Trim();
+            string s3 = state.SelectedValue.Trim();
 
-            /*
-             * 此处初始化存在隐患!!!!
-             * Where初始值为"",表示*
-             * 翻页功能会导致页面刷新加载此项
-             */
-            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 5 and activityState <= 8)"; 
+            if (s1 != "")
+            {
+                // 根据活动名称查询
+                schoolConnector.Where += " and activityName = \"" + s1 + "\"";
+            }
+
+            if (s2 != "")
+            {
+                // 根据组织名称查询,需转ID
+                ActivityManagerDataContext db = new ActivityManagerDataContext();
+                var res = from org in db.Organization
+                          where org.organizationName == s2
+                          select org;
+
+                if (res.Any())
+                    schoolConnector.Where += " and activityOrgID = \"" + res.First().organizationID.ToString() + "\"";
+            }
+
+            if (s3 != "")
+            {
+                // 根据活动状态查询
+                if (s3 != "0")
+                    schoolConnector.Where += " and activityState = " + s3;
+            }
+
+            GvTemplate.PageIndex = 0; // 查询完回到第一页
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
+        }
+
+        protected void flush_Click(object sender, EventArgs e)
+        {
+            /*重置查询条件*/
+            name.Text = null;
+            org.Text = null;
+            state.SelectedIndex = 0;
+
+            if (LinkButton1.Font.Underline == true)
+                LinkButton1_Click(sender, e);
+            else if (LinkButton2.Font.Underline == true)
+                LinkButton2_Click(sender, e);
         }
 
         protected void GridView1_DataBound(object sender, EventArgs e)
@@ -67,72 +101,37 @@ namespace ActivityManager.Test
             //}
         }
 
-        protected void commit_Click(object sender, EventArgs e)
+        protected void GvTemplate_DataBinding(object sender, EventArgs e)
         {
-            /*查询功能*/
-            /*schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 5 and activityState <= 8";*/
+            /*数据更新,主要是活动状态和报名人数等*/
+            Tool.UpdateActivityState((GridView)sender);
+        }
+
+        protected void GvTemplate_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GvTemplate.PageIndex = e.NewPageIndex;
+
+            /*根据按钮是否存在下划线判断选中按钮,绑定不同数据源*//*
 
             if (LinkButton1.Font.Underline == true)
                 LinkButton1_Click(sender, e);
             else if (LinkButton2.Font.Underline == true)
-                LinkButton2_Click(sender, e);
+                LinkButton2_Click(sender, e);*/
 
-            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 0)";
-
-            string s1 = name.Text.Trim();
-            string s2 = org.Text.Trim();
-            string s3 = state.SelectedValue.Trim();
-
-            if (s1 != "")
-            {
-                // 根据活动名称查询
-                schoolConnector.Where += " and activityName = \"" + s1 + "\"";
-            }
-
-
-            if (s2 != "")
-            {
-                // 根据组织名称查询,需转ID
-                ActivityManagerDataContext db = new ActivityManagerDataContext();
-                var res = from org in db.Organization
-                          where org.organizationName == s2
-                          select org;
-
-                if (res.Any())
-                    schoolConnector.Where += " and activityOrgID = \"" + res.First().organizationID.ToString() + "\"";
-            }
-
-            if (s3 != "")
-            {
-                // 根据活动状态查询
-                if (s3 != "0")
-                    schoolConnector.Where += " and activityState = " + s3;
-            }
-
-
-            GvTemplate.PageIndex = 0; // 查询完回到第一页
-            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
-        }
-
-        protected void flush_Click(object sender, EventArgs e)
-        {
-            /*重置查询条件*/
-            name.Text = null;
-            org.Text = null;
-            state.SelectedIndex = 0;
+            // 根据不同需求获取提前存储的查询条件
+            schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
         }
 
         protected void GvTemplate_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             /*
-             * 报名活动详情确认页面???????
+             * 报名活动详情确认页面
              * 用于响应表内按钮事件
              * 需要传gv的数据
              */
 
             /*if (GvTemplate.PageSize > ((GridView)sender).Rows.Count) return; // 防止与分页功能冲突*/
-            if (e.CommandName == "Page") return; 
+            if (e.CommandName == "Page") return;
 
             int index = int.Parse(e.CommandArgument.ToString());
             string actID = ((GridView)sender).Rows[index].Cells[0].Text;
@@ -140,7 +139,7 @@ namespace ActivityManager.Test
             if (e.CommandName == "check")
             {
                 // 查看操作
-                CheckActDiv.Visible = true;
+                CheckActDiv.Style["display"] = "block";
 
                 LblState.Text = "当前状态：";
                 LblState.Height = 40;
@@ -191,22 +190,12 @@ namespace ActivityManager.Test
             }
         }
 
-        protected void BtnCheck_Click(object sender, EventArgs e)
-        {
-            /*活动报名详情页返回*/
-            CheckActDiv.Visible = false;
-        }
-
-        protected void GvTemplate_DataBinding(object sender, EventArgs e)
-        {
-            /*数据更新,主要是活动状态和报名人数等*/
-            Tool.UpdateActivityState((GridView)sender);
-        }
         protected void LbtnAllAct_Click(object sender, EventArgs e)
         {
             /*活动总览页面*/
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "block";
+            DivMyInfoR.Style["display"] = "none";
 
             LinkButton1.Text = "全部活动"; // 要在按钮点击事件之前
             LinkButton2.Text = "可报名";
@@ -234,6 +223,7 @@ namespace ActivityManager.Test
 
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "block";
+            DivMyInfoR.Style["display"] = "none";
 
             // 更新导航条
             DivAllAct.Style["background-color"] = "#ccad9f";
@@ -259,6 +249,8 @@ namespace ActivityManager.Test
             DivAllAct.Style["background-color"] = "#ccad9f";
             DivMyAct.Style["background-color"] = "#ccad9f";
             DivMyInfo.Style["background-color"] = "red";
+            DivMyInfoR.Style["display"] = "block";
+            MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg"; // 需要正则表达式png,jpeg
 
             // 隐藏不需要的模块
             DivSearch.Style["display"] = "none";
@@ -288,7 +280,7 @@ namespace ActivityManager.Test
                     schoolConnector.Where = "(activityState >= 5)"; // 未调试
                     break;
 
-                case "已报名":                  
+                case "已报名":
                     /*
                      * 查询test1
                      * 先用学生ID把所有收藏的活动ID存在数组里
@@ -371,25 +363,45 @@ namespace ActivityManager.Test
                     schoolConnector.Where += ")";
                     break;
 
-                default :
+                default:
                     break;
             }
             ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 
-        protected void GvTemplate_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            GvTemplate.PageIndex = e.NewPageIndex;
-            
-            /*根据按钮是否存在下划线判断选中按钮,绑定不同数据源*//*
+            ////// 点击按钮会触发,不能在这初始化
 
-            if (LinkButton1.Font.Underline == true)
-                LinkButton1_Click(sender, e);
-            else if (LinkButton2.Font.Underline == true)
-                LinkButton2_Click(sender, e);*/
+            /*上导航栏初始效果,选中第一项*//*
+            LinkButton1.Text = "初始_全部活动";
+            LinkButton1.ForeColor = System.Drawing.Color.Brown;
+            LinkButton1.Font.Underline = true;
 
-            // 根据不同需求获取提前存储的查询条件
-            schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
+            LinkButton2.Text = "初始_可报名";
+            LinkButton2.Font.Underline = false;
+            LinkButton2.ForeColor = System.Drawing.Color.Black;
+
+            *//*左导航栏初始效果,选中活动总览*//*
+            DivAllAct.Style["background-color"] = "red";
+            DivMyAct.Style["background-color"] = "#ccad9f";
+            DivMyInfo.Style["background-color"] = "#ccad9f";
+
+            *//*数据表初始数据*//*
+            schoolConnector.Where = null;
+            schoolConnector.Where = "activityState >= 5 and activityState <= 8";      // 学生只能看到状态5-8的活动,待报名,报名中,待开始,活动中*/
+
+            /*
+             * 此处初始化存在隐患!!!!
+             * Where初始值为"",表示*
+             * 翻页功能会导致页面刷新加载此项
+             */
+            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
+        }
+
+        protected void MyImage_Click(object sender, System.Web.UI.ImageClickEventArgs e)
+        {
+            //ImageUpload_Click(sender, e);
         }
     }
 }

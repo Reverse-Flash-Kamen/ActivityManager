@@ -58,7 +58,7 @@ namespace ActivityManager
             }
             else if (commandName == "likeCancel")
             {
-                // 取消收藏操作 
+                // 取消收藏操作
                 operation.ActLikeCancel(actID, studentID);
             }
             else if (commandName == "sign")
@@ -76,7 +76,6 @@ namespace ActivityManager
                 // 审核操作
                 MessageBox.Show("审核操作！");
             }
-
             else if (commandName == "exprotFinal")
             {
                 // 导出完成名单操作
@@ -189,7 +188,6 @@ namespace ActivityManager
                       select info;
             db.LikedActivity.DeleteOnSubmit(res.First());
             db.SubmitChanges();
-
         }
 
         public void ActSign(string actID, string studentID)
@@ -220,7 +218,6 @@ namespace ActivityManager
                 MessageBox.Show("抱歉！此活动人数已满！", "提示");
                 return;
             }
-
 
             // 确认报名
             var resPlaceName = from info in dbSign.Place

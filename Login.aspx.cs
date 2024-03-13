@@ -8,7 +8,6 @@ namespace ActivityManager
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
 
         public void LoginMessageBox(string dbPsw, string loginPsw, string ID, int loginType)
@@ -36,12 +35,14 @@ namespace ActivityManager
                         Tool.studentID = ID;
                         Response.Redirect("School/Admin.aspx");
                         break;
+
                     case 1:
                         // 组织页面
                         Tool.curUser = 1;
                         Tool.studentID = ID;
                         Response.Redirect("Org/Org.aspx");
                         break;
+
                     case 2:
                         // 学生页面
                         Tool.curUser = 2;

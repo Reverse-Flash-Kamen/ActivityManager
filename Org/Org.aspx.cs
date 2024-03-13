@@ -9,6 +9,7 @@ namespace ActivityManager.Test
     public partial class OrgWebForm : System.Web.UI.Page
     {
         private static int mode = 1;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             schoolConnector.Where = null;
@@ -57,7 +58,6 @@ namespace ActivityManager.Test
             {
                 schoolConnector.Where += " and activityName = \"" + s1 + "\"";
             }
-
 
             if (s2 != "")
             {
@@ -365,7 +365,6 @@ namespace ActivityManager.Test
             aHoldEnd.Enabled = false;
         }
 
-
         protected void submit_Click(object sender, EventArgs e)
         {
             save_Click(sender, e);
@@ -431,7 +430,6 @@ namespace ActivityManager.Test
                       where a.activityID == activityID
                       select a;
             var act = res.First();
-
 
             aName.Text = act.activityName;
             aIntro.Text = act.activityIntro;

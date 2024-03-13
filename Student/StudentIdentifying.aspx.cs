@@ -8,7 +8,6 @@ namespace ActivityManager.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
 
         protected void BtnIdentifying_Click(object sender, EventArgs e)
@@ -33,14 +32,15 @@ namespace ActivityManager.Student
                 case -1:
                     Response.Write("<script>alert('请选择性别！')</script>");
                     return;
+
                 case 0:
                     gender = "男";
                     break;
+
                 case 1:
                     gender = "女";
                     break;
             }
-
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
 

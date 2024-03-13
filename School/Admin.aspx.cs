@@ -64,7 +64,6 @@ namespace ActivityManager.Test
                 schoolConnector.Where += " and activityName = \"" + s1 + "\"";
             }
 
-
             if (s2 != "")
             {
                 ActivityManagerDataContext db = new ActivityManagerDataContext();

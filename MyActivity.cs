@@ -23,7 +23,8 @@ namespace ActivityManager
         private string submitTime = "1900-01-01 00:00:00";
         private string failReason;
 
-        public MyActivity() { }
+        public MyActivity()
+        { }
 
         public MyActivity(String id)
         {
@@ -264,7 +265,6 @@ namespace ActivityManager
 
             return lesser;
         }
-
 
         public string ActivityID { get => activityID; set => activityID = value; }
         public string ActivityName { get => activityName; set => activityName = value; }

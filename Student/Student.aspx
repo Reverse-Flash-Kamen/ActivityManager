@@ -55,9 +55,20 @@
             height:600px;
             background-color:#F7F6F3;
             padding:26px 50px 0px 50px;
-            border: solid 1px
-         
+            border:solid 1px;
+            display:none;
         }
+        .divInfo{
+            position:absolute;
+            top:11%;
+            left:26%;
+            width:1020px;
+            height:720px;
+            background-color:#F7F6F3;
+            /*background-color: lightblue;*/
+            padding:26px 50px 0px 50px;
+            display:none;
+            }
         .auto-style11 {
             margin-left: 229px;
         }
@@ -82,7 +93,7 @@
     
     <form id="form1" runat="server">
         <div class="auto-style1" runat="server">
-           <%--左导航栏--%>
+            <%--左导航栏--%>
            <div class="auto-style2">
                <%--标题--%>
                <div style="background-color:#758b9e; text-align:center;">
@@ -100,10 +111,11 @@
                </div>
                <%--校徽--%>
                <div>
-                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 160px; opacity:50%"/>
+                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/image/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 160px; opacity:50%"/>
                </div>
            </div>
 
+             <%--上导航栏--%>
            <div class="auto-style3">
                <%--查询--%>
                <div class="auto-style8" id="DivSearch" runat="server">
@@ -126,7 +138,6 @@
                 <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" />
             </div>
 
-               <%--上导航栏--%>
                <div class="auto-style9" id="DivTopNov" runat="server">
                    &nbsp;&nbsp;
                    <asp:LinkButton ID="LinkButton1" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton1_Click">全部活动</asp:LinkButton>
@@ -239,7 +250,7 @@
         </div>
         
          <%--活动详情--%>
-        <div runat="server" class="divCheck" id="CheckActDiv" visible="False">
+        <div runat="server" class="divCheck" id="CheckActDiv">
             <div class="auto-style13"><asp:Label runat="server" Text="活动申请详情" Font-Bold="True" Font-Size="Large"></asp:Label></div>
 
             <table class="auto-style12" style="vertical-align:middle">
@@ -266,6 +277,10 @@
             </table>
         </div>
 
+         <%--信息面板--%>
+        <div class="divInfo" runat="server" id="DivMyInfoR">
+            <asp:ImageButton ID="MyImage" runat="server" Height="100px" ImageUrl="~/image/users/7020820000.jpg" Width="100px" style="border-radius:50%; " OnClick="MyImage_Click"/>
+        </div>
     </form>
 </body>
 </html>

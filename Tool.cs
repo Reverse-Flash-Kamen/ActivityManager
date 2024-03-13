@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -67,7 +68,6 @@ namespace ActivityManager
                 if (res.Any())
                     row.Cells[index].Text = res.First().organizationName.ToString();
 
-
                 // 格式化场地名称
                 index = map["activityPlaceID"];
                 tmp = row.Cells[index].Text;
@@ -84,7 +84,7 @@ namespace ActivityManager
 
                 row.Cells[index].Text = start + " 12:00 至<br />" + end + " 12:00";
 
-                // 举办时间 
+                // 举办时间
                 index = map["holdDate"];
                 tmp = Convert.ToDateTime(row.Cells[index].Text).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 start = row.Cells[map["holdStart"]].Text;
@@ -116,8 +116,6 @@ namespace ActivityManager
                 string maxSigned = row.Cells[map["maxSigned"]].Text;
                 row.Cells[index].Text = signed + "/" + maxSigned;
             }
-
-
         }
 
         public static void UpdateActivityState(GridView gv)
@@ -325,14 +323,13 @@ namespace ActivityManager
 
                     int state = Convert.ToInt32(res.First().activityState);
 
-
                     string actID = row.Cells[0].Text; // 活动ID
                     int n = gv.Columns.Count;
 
                     ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
                     ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                    // 判断是否已收藏 
+                    // 判断是否已收藏
                     if (state >= 5 && state <= 6)
                     {
                         var resLiked = from info in db.LikedActivity
@@ -354,8 +351,6 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "";
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "null";
                     }
-
-
 
                     // 判断是否已报名
                     if (state == 6)
