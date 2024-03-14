@@ -67,7 +67,7 @@
             background-color:#F7F6F3;
             /*background-color: lightblue;*/
             padding:26px 50px 0px 50px;
-            display:none;
+            /*display:none;*/
             }
         .auto-style11 {
             margin-left: 229px;
@@ -87,6 +87,11 @@
         .auto-style15 {
             padding:20px 5px 5px;
         }
+        .li-style {
+            list-style-type:none;
+            padding:10px;
+             Font-Size:larger;
+        }
     </style>
 </head>
 <body>
@@ -101,13 +106,13 @@
                </div>
                <%--导航--%>
                <div class="auto-style14" id="DivAllAct" runat="server" style="background-color:red">
-                   <asp:LinkButton ID="LbtnAllAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnAllAct_Click" Height="40px" Width="180px" CssClass="auto-style15">活动总览</asp:LinkButton>
+                   <asp:LinkButton ID="LbtnAllAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnAllAct_Click" Height="40px" Width="180px" CssClass="auto-style15" CausesValidation="False">活动总览</asp:LinkButton>
                </div>
                <div class="auto-style14" id="DivMyAct" runat="server">
-                   <asp:LinkButton ID="LbtnMyAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnMyAct_Click" Height="40px" Width="180px" CssClass="auto-style15">我的活动</asp:LinkButton>
+                   <asp:LinkButton ID="LbtnMyAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnMyAct_Click" Height="40px" Width="180px" CssClass="auto-style15" CausesValidation="False">我的活动</asp:LinkButton>
                </div>
                <div class="auto-style14" id="DivMyInfo" runat="server">
-                   <asp:LinkButton ID="LbtnMyInfo" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnMyInfo_Click" Height="40px" Width="180px" CssClass="auto-style15">我的信息</asp:LinkButton>
+                   <asp:LinkButton ID="LbtnMyInfo" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnMyInfo_Click" Height="40px" Width="180px" CssClass="auto-style15" CausesValidation="False">我的信息</asp:LinkButton>
                </div>
                <%--校徽--%>
                <div>
@@ -279,7 +284,53 @@
 
          <%--信息面板--%>
         <div class="divInfo" runat="server" id="DivMyInfoR">
-            <asp:ImageButton ID="MyImage" runat="server" Height="100px" ImageUrl="~/image/users/7020820000.jpg" Width="100px" style="border-radius:50%; " OnClick="MyImage_Click"/>
+            <div style="width:120px; height:250px; padding:5px; float:left;">
+                <asp:ImageButton ID="MyImage" runat="server" Height="100px" ImageUrl="~/image/users/7020820000.jpg" Width="100px" style="border-radius:50%; " OnClick="MyImage_Click" CausesValidation="False"/>
+                <div id="DivUploadImage" style="display:none" runat="server">
+                    <asp:FileUpload ID="ImageUpload" runat="server" Width="70px" style="margin:10px;" accept="image/*"/>
+                    <asp:Button ID="BtnImage" runat="server" Text="更换头像" style="margin:10px;" OnClick="BtnImage_Click"/>
+                </div>
+            </div>
+            <div style="width:600px; height:280px; padding-left:10px;">
+                <ul>
+                    <li class="li-style">姓名：<asp:Label ID="LblStuName" runat="server" Text="张三"></asp:Label></li>
+                    <li class="li-style">学号：<asp:Label ID="LblStuID" runat="server" Text="7020820000"></asp:Label></li>
+                    <li class="li-style">专业班级：<asp:Label ID="LblMajor" runat="server" Text="计算机科学与技术206班"></asp:Label></li>
+                    <li class="li-style">性别：<asp:Label ID="LblGender" runat="server" Text="男"></asp:Label></li>
+                    <li class="li-style">学分：<asp:Label ID="LblCredit" runat="server" Text="0"></asp:Label></li>
+                    <li class="li-style">
+                        <asp:Button ID="BtnChangePsw" runat="server" Text="修改密码" style="padding:5px; margin:5px 5px 5px 0px;" OnClick="BtnChangePsw_Click" CausesValidation="False"/><asp:Button ID="BtnCredit" runat="server" Text="学分详情" style="padding:5px; margin:5px 5px 5px 15px;" CausesValidation="False"/>
+                    </li>
+                </ul>
+            </div>
+
+            <%--修改密码--%>
+            <div style="width:600px; height:200px; margin-left:90px; display:none" id="DivChangePsw" runat="server">
+                <ul style="list-style-type:none">
+                    <li>
+                        <asp:Label ID="LblPsw" runat="server" Text="密&#12288&#12288码："></asp:Label>
+                        <asp:TextBox ID="TxtPsw" runat="server" TextMode="Password"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="RfvPsw" runat="server" ErrorMessage="请输入原密码！" ControlToValidate="TxtPsw" ForeColor="#CC0000">*</asp:RequiredFieldValidator>
+                    </li>
+                    <li>
+                        <asp:Label ID="LblNewPsw" runat="server" Text="新&#8194密&#8194码："></asp:Label>
+                        <asp:TextBox ID="TxtNewPsw" runat="server" TextMode="Password" ></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="RfvNewPsw" runat="server" ErrorMessage="请输入新密码！" ControlToValidate="TxtNewPsw" ForeColor="#CC0000">*</asp:RequiredFieldValidator>
+                        <asp:CompareValidator ID="CvNewPsw" runat="server" ErrorMessage="新密码不能与原密码相同！" ControlToValidate="TxtNewPsw" ControlToCompare="TxtPsw" Display="Dynamic" Operator="NotEqual" ForeColor="#CC0000"></asp:CompareValidator>
+                    </li>
+                     <li>
+                        <asp:Label ID="LblRePsw" runat="server" Text="确认密码："></asp:Label>
+                        <asp:TextBox ID="TxtRePsw" runat="server" TextMode="Password"></asp:TextBox>
+                         <asp:RequiredFieldValidator ID="RfvRePsw" runat="server" ErrorMessage="请再次输入新密码！" ControlToValidate="TxtRePsw" ForeColor="#CC0000">*</asp:RequiredFieldValidator>
+                         <asp:CompareValidator ID="CvRePsw" runat="server" ErrorMessage="新密码两次输入不一致！" ControlToValidate="TxtRePsw" ControlToCompare="TxtNewPsw" Display="Dynamic" ForeColor="#CC0000"></asp:CompareValidator>
+                    </li>
+                    <li>
+                        <asp:Button ID="BtnSubmit" runat="server" Text="确认" />
+                        <asp:Button ID="BtnCanel" runat="server" Text="取消" CausesValidation="False" />
+                    </li>
+                </ul>
+                
+            </div>
         </div>
     </form>
 </body>

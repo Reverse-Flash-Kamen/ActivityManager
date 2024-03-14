@@ -1,7 +1,10 @@
 ﻿using ActivityManager.App_Data;
 using System;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
+using System.Windows;
 
 namespace ActivityManager.Test
 {
@@ -250,12 +253,34 @@ namespace ActivityManager.Test
             DivMyAct.Style["background-color"] = "#ccad9f";
             DivMyInfo.Style["background-color"] = "red";
             DivMyInfoR.Style["display"] = "block";
-            MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg"; // 需要正则表达式png,jpeg
 
             // 隐藏不需要的模块
             DivSearch.Style["display"] = "none";
             DivTopNov.Style["display"] = "none";
             schoolConnector.Where = "activityState < 0"; // 如果把GV隐藏再显示,大小会出问题
+
+            MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg";
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res1 = from info in db.Student
+                       where info.studentID == Tool.studentID
+                       select info;
+
+            if (res1.Any())
+            {
+                var my = res1.First();
+                LblStuName.Text = my.studentName.ToString();
+                LblStuID.Text = my.studentID.ToString();
+                LblMajor.Text = my.major.ToString() + my.@class.ToString();
+                LblGender.Text = my.gender.ToString();
+            }
+
+            var res2 = from info in db.StudentIdentified
+                       where info.studentID == Tool.studentID
+                       select info.credit;
+
+            if (res2.Any())
+                LblCredit.Text = res2.First().ToString();
         }
 
         protected void LinkButton1_Click(object sender, EventArgs e)
@@ -401,7 +426,65 @@ namespace ActivityManager.Test
 
         protected void MyImage_Click(object sender, System.Web.UI.ImageClickEventArgs e)
         {
-            //ImageUpload_Click(sender, e);
+            if (DivUploadImage.Style["display"] == "none")
+                DivUploadImage.Style["display"] = "block";
+            else
+                DivUploadImage.Style["display"] = "none";
+        }
+
+        protected void BtnImage_Click(object sender, EventArgs e)
+        {
+            if (ImageUpload.HasFile)
+            {
+                string extension = Path.GetExtension(ImageUpload.FileName);
+
+                if (extension.Equals(".jpg") || extension.Equals(".png"))
+                {
+                    string savePath = Server.MapPath("~/image/users/");//指定上传文件在服务器上的保存路径
+
+                    //检查服务器上是否存在这个物理路径，如果不存在则创建
+                    if (!System.IO.Directory.Exists(savePath))
+                    {
+                        System.IO.Directory.CreateDirectory(savePath);
+                    }
+                    savePath = savePath + "\\" + Tool.studentID + ".jpg";
+                    ImageUpload.SaveAs(savePath);
+                    MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg";
+                }
+                else
+                {
+                    MessageBox.Show("请上传 .jpg | .png 文件！");
+                }
+            }
+            else
+            {
+                MessageBox.Show("你还没有选择上传文件！");
+            }
+        }
+
+        protected void BtnChangePsw_Click(object sender, EventArgs e)
+        {
+            DivChangePsw.Style["display"] = "block ";
+        }
+
+        protected void BtnSubmit_Click(object sender, EventArgs e)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.StudentIdentified
+                      where info.studentPassword == TxtPsw.Text
+                      select info;
+
+            if (!res.Any())
+            {
+                res.First().studentPassword = TxtRePsw.Text;
+                MessageBox.Show("修改成功！");
+                db.SubmitChanges();
+                DivChangePsw.Style["display"] = "none";
+            }
+            else
+            {
+                MessageBox.Show("原密码错误！");
+            }
         }
     }
 }
