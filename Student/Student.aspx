@@ -140,15 +140,15 @@
                     </asp:DropDownList>
                     </span>
 
-                <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" />
-                <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" />
+                <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
+                <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
             </div>
 
                <div class="auto-style9" id="DivTopNov" runat="server">
                    &nbsp;&nbsp;
-                   <asp:LinkButton ID="LinkButton1" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton1_Click">全部活动</asp:LinkButton>
+                   <asp:LinkButton ID="LinkButton1" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="true" ForeColor="Black" OnClick="LinkButton1_Click" CausesValidation="False">全部活动</asp:LinkButton>
                    &nbsp;&nbsp;
-                   <asp:LinkButton ID="LinkButton2" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton2_Click">可报名</asp:LinkButton>
+                   <asp:LinkButton ID="LinkButton2" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton2_Click" CausesValidation="False">可报名</asp:LinkButton>
                </div>
            </div>
 
@@ -279,7 +279,7 @@
                 <tr><td >
                     <asp:Label ID="LblScore" runat="server"></asp:Label></td></tr>
                 <tr><td>
-                    <asp:Button ID="BtnCheck" runat="server" Text="返回" CssClass="auto-style11" OnClick="BtnCheck_Click" Width="60px" /></td></tr>
+                    <asp:Button ID="BtnCheck" runat="server" Text="返回" CssClass="auto-style11" OnClick="BtnCheck_Click" Width="60px" CausesValidation="False" /></td></tr>
             </table>
         </div>
 

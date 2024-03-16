@@ -304,7 +304,7 @@ namespace ActivityManager.Test
             {
                 case "全部活动":
                     // 活动总览-全部活动
-                    schoolConnector.Where = "(activityState >= 5)"; // 未调试
+                    schoolConnector.Where = "(activityState >= 5 and activityState <= 8)"; // 未调试
                     break;
 
                 case "已报名":
@@ -359,7 +359,7 @@ namespace ActivityManager.Test
             switch (LbtnText2)
             {
                 case "可报名":
-                    schoolConnector.Where = "";
+                    schoolConnector.Where = "activityState = 6";
                     break;
 
                 case "已收藏":
