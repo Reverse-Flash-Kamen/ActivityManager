@@ -196,9 +196,10 @@ namespace ActivityManager.Test
         protected void LbtnAllAct_Click(object sender, EventArgs e)
         {
             /*活动总览页面*/
+            DivChangePsw.Style["dispaly"] = "none";
+            DivMyInfoR.Style["display"] = "none";
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "block";
-            DivMyInfoR.Style["display"] = "none";
 
             LinkButton1.Text = "全部活动"; // 要在按钮点击事件之前
             LinkButton2.Text = "可报名";
@@ -223,10 +224,10 @@ namespace ActivityManager.Test
              * 我的活动页面
              * 如何将Liked,Signed和Activity表进行联合查询
              */
-
+            DivChangePsw.Style["dispaly"] = "none";
+            DivMyInfoR.Style["display"] = "none";
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "block";
-            DivMyInfoR.Style["display"] = "none";
 
             // 更新导航条
             DivAllAct.Style["background-color"] = "#ccad9f";
@@ -257,6 +258,7 @@ namespace ActivityManager.Test
             // 隐藏不需要的模块
             DivSearch.Style["display"] = "none";
             DivTopNov.Style["display"] = "none";
+            DivChangePsw.Style["display"] = "none";
             schoolConnector.Where = "activityState < 0"; // 如果把GV隐藏再显示,大小会出问题
 
             MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg";
@@ -469,22 +471,40 @@ namespace ActivityManager.Test
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
-            ActivityManagerDataContext db = new ActivityManagerDataContext();
-            var res = from info in db.StudentIdentified
-                      where info.studentPassword == TxtPsw.Text
-                      select info;
-
-            if (!res.Any())
+            string pattern = @"^[a-zA-Z]\w{5,17}$";
+            if (Regex.IsMatch(TxtNewPsw.Text.ToString(), pattern))
             {
-                res.First().studentPassword = TxtRePsw.Text;
-                MessageBox.Show("修改成功！");
-                db.SubmitChanges();
-                DivChangePsw.Style["display"] = "none";
+                ActivityManagerDataContext db = new ActivityManagerDataContext();
+                var res = from info in db.StudentIdentified
+                          where info.studentPassword == TxtPsw.Text
+                          select info;
+
+                if (res.Any())
+                {
+                    try
+                    {
+                        res.First().studentPassword = TxtRePsw.Text;
+                        db.SubmitChanges();
+                        DivChangePsw.Style["display"] = "none";
+                        Response.Write("<script>alert('密码修改成功');location.href='..//Login.aspx';</script>");
+                    }
+                    catch
+                    {
+                        Response.Write("<script>alert('未知错误，请重试！');</script>");
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('原密码输入错误！');</script>");
+                }
             }
             else
-            {
-                MessageBox.Show("原密码错误！");
-            }
+                LblMessage.Text = "密码必须以字母开头，长度在6~18之间，只能包含字符、数字和下划线";
+        }
+
+        protected void BtnCanel_Click(object sender, EventArgs e)
+        {
+            DivChangePsw.Style["display"] = "none";
         }
     }
 }
