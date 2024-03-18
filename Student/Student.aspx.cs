@@ -32,11 +32,12 @@ namespace ActivityManager.Test
             string s1 = name.Text.Trim();
             string s2 = org.Text.Trim();
             string s3 = state.SelectedValue.Trim();
+            string s4 = type.SelectedValue.Trim();
 
             if (s1 != "")
             {
                 // 根据活动名称查询
-                schoolConnector.Where += " and activityName = \"" + s1 + "\"";
+                schoolConnector.Where += " and (activityName = \"" + s1 + "\")";
             }
 
             if (s2 != "")
@@ -48,14 +49,21 @@ namespace ActivityManager.Test
                           select org;
 
                 if (res.Any())
-                    schoolConnector.Where += " and activityOrgID = \"" + res.First().organizationID.ToString() + "\"";
+                    schoolConnector.Where += " and (activityOrgID = \"" + res.First().organizationID.ToString() + "\")";
             }
 
             if (s3 != "")
             {
                 // 根据活动状态查询
                 if (s3 != "0")
-                    schoolConnector.Where += " and activityState = " + s3;
+                    schoolConnector.Where += " and (activityState = " + s3 + ")";
+            }
+
+            if (s4 != "")
+            {
+                // 根据活动类别查询
+                if (s4 != "0")
+                    schoolConnector.Where += "and (activityType = " + s4 + ")";
             }
 
             GvTemplate.PageIndex = 0; // 查询完回到第一页
@@ -68,6 +76,7 @@ namespace ActivityManager.Test
             name.Text = null;
             org.Text = null;
             state.SelectedIndex = 0;
+            type.SelectedIndex = 0;
 
             if (LinkButton1.Font.Underline == true)
                 LinkButton1_Click(sender, e);
@@ -279,10 +288,10 @@ namespace ActivityManager.Test
 
             var res2 = from info in db.StudentIdentified
                        where info.studentID == Tool.studentID
-                       select info.credit;
+                       select info;
 
             if (res2.Any())
-                LblCredit.Text = res2.First().ToString();
+                LblCredit.Text = (res2.First().credit_1 + res2.First().credit_2 + res2.First().credit_3).ToString();
         }
 
         protected void LinkButton1_Click(object sender, EventArgs e)
@@ -466,7 +475,10 @@ namespace ActivityManager.Test
 
         protected void BtnChangePsw_Click(object sender, EventArgs e)
         {
-            DivChangePsw.Style["display"] = "block ";
+            if (DivChangePsw.Style["display"] == "none")
+                DivChangePsw.Style["display"] = "block ";
+            else
+                DivChangePsw.Style["display"] = "none";
         }
 
         protected void BtnSubmit_Click(object sender, EventArgs e)
@@ -506,5 +518,17 @@ namespace ActivityManager.Test
         {
             DivChangePsw.Style["display"] = "none";
         }
+
+        /// 学分详情
+        /// 查学生已报名的所有活动，分为已发放/未发放
+        /// 在上述活动条件下查询活动状态为：已完成（11）->已发放，其余->未发放
+        /// 根据活动类别将活动显示分为三大类
+        ///
+        /// 活动类别1
+        /// 活动名称1 活动开始日期1 获得学分1
+        /// 活动名称2 活动开始日期2 获得学分2
+        ///
+        /// 活动类别2
+        /// ……
     }
 }

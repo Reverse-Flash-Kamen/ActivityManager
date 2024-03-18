@@ -2,16 +2,10 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="ActivityManager">
   <DataContextMoniker Name="/ActivityManagerDataContext" />
   <nestedChildShapes>
-    <classShape Id="4fcb99dc-1221-4c00-a9be-c777e63b2f94" absoluteBounds="3.5, 1.5, 2, 3.754834391276042">
+    <classShape Id="4fcb99dc-1221-4c00-a9be-c777e63b2f94" absoluteBounds="3.5, 1.5, 2, 3.9396284993489576">
       <DataClassMoniker Name="/ActivityManagerDataContext/Activity" />
       <nestedChildShapes>
-        <elementListCompartment Id="840282c2-1bb8-47e7-8dfc-ff8f854db8b2" absoluteBounds="3.515, 1.96, 1.9700000000000002, 3.1948343912760415" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="35cad7f1-089c-489b-8093-a3c889e4abbc" absoluteBounds="6.25, 6.125, 2, 1.5373050944010416">
-      <DataClassMoniker Name="/ActivityManagerDataContext/StudentIdentified" />
-      <nestedChildShapes>
-        <elementListCompartment Id="0965d925-34e2-4288-b5ab-60e85ea00084" absoluteBounds="6.265, 6.585, 1.9700000000000002, 0.97730509440104174" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="840282c2-1bb8-47e7-8dfc-ff8f854db8b2" absoluteBounds="3.515, 1.96, 1.9700000000000002, 3.379628499348958" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="6025d7c6-aaaa-4e47-ac5d-2be5944c10e9" absoluteBounds="8.75, 1.25, 2, 1.1677168782552085">
@@ -50,53 +44,59 @@
         <elementListCompartment Id="77e1654b-a049-4ec7-b667-77196d27f442" absoluteBounds="3.515, 6.46, 1.9700000000000002, 1.346893310546875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(5.5 : 3.3338584391276); (5.79166666666667 : 3.3338584391276 : JumpStart); (5.95833333333333 : 3.3338584391276 : JumpEnd); (6.25 : 3.3338584391276)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.5 : 3.3338584391276); (5.79166666666667 : 3.3338584391276 : JumpStart); (5.95833333333333 : 3.3338584391276 : JumpEnd); (6.25 : 3.3338584391276)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/ActivityManagerDataContext/Activity/Activity_LikedActivity" />
       <nodes>
         <classShapeMoniker Id="4fcb99dc-1221-4c00-a9be-c777e63b2f94" />
         <classShapeMoniker Id="5faee6b1-984c-4dc3-bb0e-86b441c4960d" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 3.30125549316406); (3.5 : 3.30125549316406)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 3.30125549316406); (3.5 : 3.30125549316406)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/ActivityManagerDataContext/Organization/Organization_Activity" />
       <nodes>
         <classShapeMoniker Id="655653ff-9974-4dc5-8a6a-aec3184a5d8c" />
         <classShapeMoniker Id="4fcb99dc-1221-4c00-a9be-c777e63b2f94" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 6.625); (3.125 : 6.25); (3.125 : 4.30929694222005); (3.5 : 4.30929694222005)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 6.625); (3.125 : 6.25); (3.125 : 4.40169399625651); (3.5 : 4.40169399625651)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/ActivityManagerDataContext/Place/Place_Activity" />
       <nodes>
         <classShapeMoniker Id="d262c36f-98ba-4336-8eb6-fb77aba71ab5" />
         <classShapeMoniker Id="4fcb99dc-1221-4c00-a9be-c777e63b2f94" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 1.7088584391276); (5.79166666666667 : 1.7088584391276 : JumpStart); (5.95833333333333 : 1.7088584391276 : JumpEnd); (6.25 : 1.7088584391276)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.5 : 1.7088584391276); (5.79166666666667 : 1.7088584391276 : JumpStart); (5.95833333333333 : 1.7088584391276 : JumpEnd); (6.25 : 1.7088584391276)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/ActivityManagerDataContext/Activity/Activity_SignedActivity" />
       <nodes>
         <classShapeMoniker Id="4fcb99dc-1221-4c00-a9be-c777e63b2f94" />
         <classShapeMoniker Id="29acf428-2d20-491a-8ce2-8062480d44f6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 6.89365254720052); (6.25 : 6.89365254720052)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/ActivityManagerDataContext/Student/Student_StudentIdentified" />
-      <nodes>
-        <classShapeMoniker Id="f55b8287-54c6-4514-b3c0-f91196418031" />
-        <classShapeMoniker Id="35cad7f1-089c-489b-8093-a3c889e4abbc" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 6.09387682451923); (6.0625 : 5.53137682451923); (6.0625 : 3.65703965869141); (6.25 : 3.65703965869141)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.5 : 6.09387682451923); (6.0625 : 5.53137682451923); (6.0625 : 3.3338584391276); (6.25 : 3.3338584391276)]" fixedFrom="NotFixed" fixedTo="Algorithm">
       <AssociationMoniker Name="/ActivityManagerDataContext/Student/Student_LikedActivity" />
       <nodes>
         <classShapeMoniker Id="f55b8287-54c6-4514-b3c0-f91196418031" />
         <classShapeMoniker Id="5faee6b1-984c-4dc3-bb0e-86b441c4960d" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.46919633882963 : 6); (5.875 : 5.59419633882963); (5.875 : 1.1981772195638); (6.25 : 1.1981772195638)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.46919633882963 : 6); (5.875 : 5.59419633882963); (5.875 : 1.3338584391276); (6.25 : 1.3338584391276)]" fixedFrom="NotFixed" fixedTo="Algorithm">
       <AssociationMoniker Name="/ActivityManagerDataContext/Student/Student_SignedActivity" />
       <nodes>
         <classShapeMoniker Id="f55b8287-54c6-4514-b3c0-f91196418031" />
         <classShapeMoniker Id="29acf428-2d20-491a-8ce2-8062480d44f6" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="6db2cab8-ee3b-4405-ab6c-2c612f9f7743" absoluteBounds="6.625, 6, 2, 1.9068933105468751">
+      <DataClassMoniker Name="/ActivityManagerDataContext/StudentIdentified" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5d46304b-e339-4b8c-bfab-de3d2cce20ac" absoluteBounds="6.64, 6.46, 1.9700000000000002, 1.346893310546875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(5.5 : 7.03163756753305); (6.625 : 7.03163756753305)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/ActivityManagerDataContext/Student/Student_StudentIdentified" />
+      <nodes>
+        <classShapeMoniker Id="f55b8287-54c6-4514-b3c0-f91196418031" />
+        <classShapeMoniker Id="6db2cab8-ee3b-4405-ab6c-2c612f9f7743" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>

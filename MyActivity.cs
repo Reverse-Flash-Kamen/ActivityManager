@@ -22,6 +22,7 @@ namespace ActivityManager
         private string holdEnd;
         private string submitTime = "1900-01-01 00:00:00";
         private string failReason;
+        private string activityType;
 
         public MyActivity()
         { }
@@ -50,6 +51,7 @@ namespace ActivityManager
             holdEnd = a.holdEnd.ToString().Trim();
             submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             failReason = a.failReason.ToString().Trim();
+            activityType = a.activityType.ToString().Trim();
         }
 
         public void Create()
@@ -77,6 +79,7 @@ namespace ActivityManager
             int intMaxSigned = int.Parse(maxSigned);
             int intSigned = int.Parse(signed);
             int intActivityState = int.Parse(activityState);
+            int intActivityType = int.Parse(activityType);
 
             /*DateTimeFormatInfo dtFormat = new System.Globalization.DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
@@ -105,7 +108,8 @@ namespace ActivityManager
                 holdStart = intHoldStart,
                 holdEnd = intHoldEnd,
                 submitTime = DateTime.Now,
-                failReason = ""
+                failReason = "",
+                activityType = intActivityType,
             };
 
             db.Activity.InsertOnSubmit(A);
@@ -135,6 +139,7 @@ namespace ActivityManager
             a.submitTime = DateTime.Now;
             a.failReason = failReason;
             a.activityState = Convert.ToInt32(activityState);
+            a.activityType = Convert.ToInt32(activityType);
 
             db.SubmitChanges();
         }
@@ -282,5 +287,6 @@ namespace ActivityManager
         public string HoldEnd { get => holdEnd; set => holdEnd = value; }
         public string SubmitTime { get => submitTime; set => submitTime = value; }
         public string FailReason { get => failReason; set => failReason = value; }
+        public string ActivityType { get => activityType; set => activityType = value; }
     }
 }

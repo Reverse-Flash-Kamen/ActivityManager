@@ -55,7 +55,9 @@ namespace ActivityManager.Student
                 studentIdentified.studentID = studentID;
                 studentIdentified.studentPassword = "123456";
                 studentIdentified.phone = phone;
-                studentIdentified.credit = 0;
+                studentIdentified.credit_1 = 0;
+                studentIdentified.credit_2 = 0;
+                studentIdentified.credit_3 = 0;
 
                 // 插入操作
                 try
