@@ -31,6 +31,7 @@ namespace ActivityManager.App_Data
 
         // 存储不同需求的查询条件
         public static string connectorWhere = "";
+		public static string connectorCredit = "";
 
         private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
 		

@@ -314,7 +314,8 @@
                     <li class="li-style">性别：<asp:Label ID="LblGender" runat="server" Text="男"></asp:Label></li>
                     <li class="li-style">学分：<asp:Label ID="LblCredit" runat="server" Text="0"></asp:Label></li>
                     <li class="li-style">
-                        <asp:Button ID="BtnChangePsw" runat="server" Text="修改密码" style="padding:5px; margin:5px 5px 5px 0px;" OnClick="BtnChangePsw_Click" CausesValidation="False"/><asp:Button ID="BtnCredit" runat="server" Text="学分详情" style="padding:5px; margin:5px 5px 5px 15px;" CausesValidation="False"/>
+                        <asp:Button ID="BtnChangePsw" runat="server" Text="修改密码" style="padding:5px; margin:5px 5px 5px 0px;" OnClick="BtnChangePsw_Click" CausesValidation="False"/>
+                        <asp:Button ID="BtnCredit" runat="server" Text="学分详情" style="padding:5px; margin:5px 5px 5px 15px;" CausesValidation="False" OnClick="BtnCredit_Click"/>
                     </li>
                 </ul>
             </div>
@@ -345,7 +346,55 @@
                     </li>
                     <li class="li-style"><asp:Label ID="LblMessage" runat="server" ForeColor="#CC0000"></asp:Label></li>
                 </ul>
-                
+            </div>
+
+            <%--学分详情--%>
+            <div id="DivCredit" style="width:620px; height:400px; margin-left:130px; display:none;" runat="server">
+
+                <asp:DropDownList ID="DropDownList1" runat="server">
+                    <asp:ListItem Selected="True" Value="0">全活动</asp:ListItem>
+                    <asp:ListItem Value="1">已发放</asp:ListItem>
+                    <asp:ListItem Value="2">未发放</asp:ListItem>
+                </asp:DropDownList>
+                <asp:DropDownList ID="DropDownList2" runat="server">
+                    <asp:ListItem Value="0">全类别</asp:ListItem>
+                    <asp:ListItem Value="1">创新创业与就业见习</asp:ListItem>
+                    <asp:ListItem Value="2">社会实践与志愿公益</asp:ListItem>
+                    <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
+                </asp:DropDownList>
+                <asp:Button ID="Button1" runat="server" Text="查询" CausesValidation="False" OnClick="Button1_Click" />
+                <asp:Label ID="LblTotal" runat="server" Text=""></asp:Label>
+
+                <div style="width:620px; height:200px; overflow:auto">
+                   <asp:GridView ID="GvCredit" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="LinqDataSourceCredit" ForeColor="#333333" GridLines="None" Height="357px" PageSize="1" Width="599px" style="margin-top:10px" OnPageIndexChanging="GvCredit_PageIndexChanging">
+                   <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                   <Columns>
+                       <asp:BoundField DataField="activityID" ReadOnly="True" SortExpression="activityID" HeaderText="activityID" >    
+                           <ControlStyle CssClass="hidden" />
+                           <FooterStyle CssClass="hidden" />
+                           <HeaderStyle CssClass="hidden" />
+                           <ItemStyle CssClass="hidden" />
+                       </asp:BoundField>
+                       <asp:BoundField DataField="activityType" HeaderText="类别" ReadOnly="True" SortExpression="activityType" >
+                       </asp:BoundField>
+                       <asp:BoundField DataField="activityName" HeaderText="活动名称" ReadOnly="True" SortExpression="activityName" />
+                       <asp:BoundField DataField="availableCredit" HeaderText="获得学分" ReadOnly="True" SortExpression="availableCredit" />
+                       <asp:BoundField DataField="holdDate" HeaderText="发放时间" ReadOnly="True" SortExpression="holdDate" />
+                   </Columns>
+                   <EditRowStyle BackColor="#999999" />
+                   <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                   <HeaderStyle BackColor="#8d9ba5" Font-Bold="True" ForeColor="White" CssClass="head" />
+                   <PagerStyle BackColor="#8d9ba5" ForeColor="White" HorizontalAlign="Center" />
+                   <RowStyle BackColor="#F7F6F3" ForeColor="#333333" HorizontalAlign="Center" />
+                   <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                   <SortedAscendingCellStyle BackColor="#E9E7E2" />
+                   <SortedAscendingHeaderStyle BackColor="#506C8C" />
+                   <SortedDescendingCellStyle BackColor="#FFFDF8" />
+                   <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+               </asp:GridView>
+                </div>
+                <asp:LinqDataSource ID="LinqDataSourceCredit" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="Activity" OrderBy="holdDate, holdStart" Select="new (activityID, activityName, availableCredit, holdDate, activityType)">
+                </asp:LinqDataSource>
             </div>
         </div>
     </form>

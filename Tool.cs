@@ -376,5 +376,46 @@ namespace ActivityManager
                 }
             }
         }
+
+        public static string LinqDataSourceCreditChange(int index1, int index2, string connectWhere)
+        {
+            switch (index1)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    connectWhere += "and (activityState = 11)";
+                    break;
+
+                case 2:
+                    connectWhere += "and (activityState != 11)";
+                    break;
+
+                default: break;
+            }
+
+            switch (index2)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    connectWhere += "and (activityType = 1)";
+                    break;
+
+                case 2:
+                    connectWhere += "and (activityType = 2)";
+                    break;
+
+                case 3:
+                    connectWhere += "and (activityType = 3)";
+                    break;
+
+                default: break;
+            }
+
+            return connectWhere;
+        }
     }
 }

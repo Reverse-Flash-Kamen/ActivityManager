@@ -475,6 +475,8 @@ namespace ActivityManager.Test
 
         protected void BtnChangePsw_Click(object sender, EventArgs e)
         {
+            DivCredit.Style["display"] = "none";
+
             if (DivChangePsw.Style["display"] == "none")
                 DivChangePsw.Style["display"] = "block ";
             else
@@ -519,6 +521,54 @@ namespace ActivityManager.Test
             DivChangePsw.Style["display"] = "none";
         }
 
+        protected void BtnCredit_Click(object sender, EventArgs e)
+        {
+            DivChangePsw.Style["display"] = "none";
+
+            if (DivCredit.Style["display"] == "none")
+                DivCredit.Style["display"] = "block";
+            else
+                DivCredit.Style["display"] = "none";
+
+            GvCredit.PageIndex = 0;
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.SignedActivity
+                      where info.studentID == Tool.studentID
+                      select info.activityID;
+
+            if (res.Count() <= 0)
+            {
+                LinqDataSourceCredit.Where = "(activityState < 0)"; // 没有结果
+                return;
+            }
+
+            string[] actIDs = res.ToArray();
+            LinqDataSourceCredit.Where = "(activityID = \"" + res.First() + "\"";
+            foreach (string actID in actIDs)
+            {
+                Console.WriteLine(actID);
+                LinqDataSourceCredit.Where += "or activityID = \"" + actID + "\" ";
+            }
+            LinqDataSourceCredit.Where += ")";
+
+            ActivityManagerDataContext.connectorCredit = LinqDataSourceCredit.Where.ToString(); // 存储默认查询条件
+            ActivityManagerDataContext.connectorWhere = LinqDataSourceCredit.Where.ToString();
+
+            int credit = 0;
+            foreach (GridViewRow row in GvCredit.Rows)
+            {
+                credit += int.Parse(row.Cells[3].Text);
+            }
+            LblTotal.Text = "需得：40";
+        }
+
+        protected void GvCredit_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GvCredit.PageIndex = e.NewPageIndex;
+            LinqDataSourceCredit.Where = ActivityManagerDataContext.connectorWhere.ToString();
+        }
+
         /// 学分详情
         /// 查学生已报名的所有活动，分为已发放/未发放
         /// 在上述活动条件下查询活动状态为：已完成（11）->已发放，其余->未发放
@@ -530,5 +580,45 @@ namespace ActivityManager.Test
         ///
         /// 活动类别2
         /// ……
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            int index1 = DropDownList1.SelectedIndex;
+            int index2 = DropDownList2.SelectedIndex;
+
+            LinqDataSourceCredit.Where = Tool.LinqDataSourceCreditChange(index1, index2, ActivityManagerDataContext.connectorCredit);
+            ActivityManagerDataContext.connectorWhere = LinqDataSourceCredit.Where;
+
+            // 要第一次加载出gv再才能统计
+            /* int credit = 0;
+             foreach (GridViewRow row in GvCredit.Rows)
+             {
+                 credit += int.Parse(row.Cells[3].Text);
+             }*/
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.StudentIdentified
+                      where info.studentID == Tool.studentID
+                      select info;
+
+            switch (index2)
+            {
+                case 0:
+                    LblTotal.Text = "已得：" + res.First().credit_1 + res.First().credit_2 + res.First().credit_3 + "   需得：40";
+                    break;
+
+                case 1:
+                    LblTotal.Text = "已得：" + res.First().credit_1 + "   需得：10";
+                    break;
+
+                case 2:
+                    LblTotal.Text = "已得：" + res.First().credit_2 + "   需得：10";
+                    break;
+
+                case 3:
+                    LblTotal.Text = "已得：" + res.First().credit_3 + "   需得：20";
+                    break;
+            }
+        }
     }
 }
