@@ -19,7 +19,7 @@ namespace ActivityManager
 
             if (dbPsw == "" || dbPsw == null)
                 // 账户错误
-                Response.Write("<script>alert('请确认账户ID！')</script>");
+                Response.Write("<script>alert('请确认账户ID|端口！')</script>");
             else if (dbPsw.Equals(loginPsw))
             {
                 // 验证通过，创建会话信息
@@ -32,21 +32,21 @@ namespace ActivityManager
                     case 0:
                         // 校方页面
                         Tool.curUser = 0;
-                        Tool.studentID = ID;
+                        // Tool.studentID = ID;
                         Response.Redirect("School/Admin.aspx");
                         break;
 
                     case 1:
                         // 组织页面
                         Tool.curUser = 1;
-                        Tool.studentID = ID;
+                        // Tool.studentID = ID;
                         Response.Redirect("Org/Org.aspx");
                         break;
 
                     case 2:
                         // 学生页面
                         Tool.curUser = 2;
-                        Tool.studentID = ID;
+                        // Tool.studentID = ID;
                         Response.Redirect("Student/Student.aspx");
                         break;
                 }

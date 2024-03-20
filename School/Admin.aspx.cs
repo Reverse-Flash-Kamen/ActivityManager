@@ -10,6 +10,9 @@ namespace ActivityManager.Test
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // 调试用
+            Session["ID"] = "ndky000001";
+
             LinkButton1.ForeColor = System.Drawing.Color.Brown;
             LinkButton1.Font.Underline = true;
 
@@ -23,7 +26,7 @@ namespace ActivityManager.Test
 
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
-            Tool.FormatActivity((GridView)sender);
+            Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
 
             /*空白行*/
             //if (GvTemplate.Rows.Count != 0 && GvTemplate.Rows.Count != GvTemplate.PageSize)
@@ -194,7 +197,8 @@ namespace ActivityManager.Test
             }
             else
             {
-                Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
+                // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
+                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
             }
         }
 

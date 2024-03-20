@@ -82,7 +82,7 @@ namespace ActivityManager
                 MessageBox.Show("导出名单成功！");
             }
 
-            Tool.SetButton(gv);
+            Tool.SetButton(gv, studentID);
         }
 
         public void ActDelete(string actID)

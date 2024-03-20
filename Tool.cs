@@ -11,7 +11,7 @@ namespace ActivityManager
     public static class Tool
     {
         public static int curUser = 0;     // 0表示校方，1表示社团，2表示学生
-        public static string studentID = "";
+        public static string ID = "";
         public static int cnt = 0;
 
         private static bool flag = true;
@@ -25,7 +25,7 @@ namespace ActivityManager
                     { "审核过期", 4 }, { "待报名", 5 }, { "报名中", 6 }, { "待开始", 7 }, { "活动中", 8 },
                     { "已结束", 9 }, { "已上报", 10 }, { "已完成", 11 }};
 
-        public static void FormatActivity(GridView gv)
+        public static void FormatActivity(GridView gv, string ID)
         {
             /*
              * 初始化列表头map，只运行一次减少工作量
@@ -47,7 +47,7 @@ namespace ActivityManager
 
             //UpdateActivityState(gv);
 
-            SetButton(gv);  // 根据各端及活动状态设置功能按钮
+            SetButton(gv, ID);  // 根据各端及活动状态设置功能按钮
 
             /*
              * Gridview通过Linq绑定数据库获取的是ID
@@ -156,7 +156,7 @@ namespace ActivityManager
             }
         }
 
-        public static void SetButton(GridView gv)
+        public static void SetButton(GridView gv, string ID)
         {
             // 根据用户码绑定事件
             if (curUser == 0)
@@ -338,7 +338,7 @@ namespace ActivityManager
             else if (curUser == 2)
             {
                 // 学生端口
-                string studentID = Tool.studentID; // 测试用ID，Session这里调用不了，要传参
+                // string studentID = Tool.studentID; // 测试用ID，Session这里调用不了，要传参
                 ActivityManagerDataContext db = new ActivityManagerDataContext();
 
                 foreach (GridViewRow row in gv.Rows)
@@ -361,7 +361,7 @@ namespace ActivityManager
                     if (state >= 5 && state <= 6)
                     {
                         var resLiked = from info in db.LikedActivity
-                                       where info.studentID == studentID && info.activityID == actID
+                                       where info.studentID == ID && info.activityID == actID
                                        select info;
                         if (resLiked.Count() > 0)
                         {
@@ -384,7 +384,7 @@ namespace ActivityManager
                     if (state == 6)
                     {
                         var resSign = from info in db.SignedActivity
-                                      where info.studentID == studentID && (info.activityID == actID)
+                                      where info.studentID == ID && (info.activityID == actID)
                                       select info;
 
                         if (resSign.Count() > 0)

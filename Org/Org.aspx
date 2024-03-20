@@ -165,7 +165,7 @@
                </div>
                <%--校徽--%>
                <div>
-                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
+                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/image/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
                </div>
            </div>
 

@@ -12,37 +12,20 @@ namespace ActivityManager.Test
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // 调试用
+            Session["ID"] = "org2022121201";
+            Tool.curUser = 1;
+
+            Tool.FormatGridView(GvTemplate, 9);
+
             schoolConnector.Where = null;
             schoolConnector.Where = "activityOrgID = \"" + Session["ID"].ToString() + "\"";
         }
 
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
-            Tool.FormatActivity((GridView)sender);
-
-            /*空白行*/
-            //if (GvTemplate.Rows.Count != 0 && GvTemplate.Rows.Count != GvTemplate.PageSize)
-            //{
-            //    // 如果分页有数据但不等于pagesize
-            //    Control table = GvTemplate.Controls[0];
-            //    if (table != null)
-            //    {
-            //        for (int i = 0; i < GvTemplate.PageSize - GvTemplate.Rows.Count; i++)
-            //        {
-            //            int rowIndex = GvTemplate.Rows.Count + i + 1;
-            //            GridViewRow row = new GridViewRow(rowIndex, -1, DataControlRowType.Separator,DataControlRowState.Normal);
-
-            //            row.BackColor = (rowIndex % 2 == 0) ? System.Drawing.Color.White : System.Drawing.Color.WhiteSmoke;
-            //            for (int j = 0; j < GvTemplate.Columns.Count; j++)
-            //            {
-            //                TableCell cell = new TableCell();
-            //                cell.Text = "&nbsp";
-            //                row.Controls.Add(cell);
-            //            }
-            //            table.Controls.AddAt(rowIndex, row);
-            //        }
-            //    }
-            //}
+            Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
+            Tool.FormatGridView((GridView)sender, 9);
         }
 
         protected void commit_Click(object sender, EventArgs e)
@@ -89,7 +72,8 @@ namespace ActivityManager.Test
 
         protected void GvTemplate_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (GvTemplate.PageSize > ((GridView)sender).Rows.Count) return;
+            // if (GvTemplate.PageSize > ((GridView)sender).Rows.Count) return;
+            if (e.CommandName == "Page") return;
 
             int index = int.Parse(e.CommandArgument.ToString());
             string actID = ((GridView)sender).Rows[index].Cells[0].Text;
@@ -148,7 +132,8 @@ namespace ActivityManager.Test
             }
             else
             {
-                Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
+                // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
+                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
             }
         }
 
@@ -415,7 +400,7 @@ namespace ActivityManager.Test
             aHoldEnd.Items.Clear();
             aHoldStart.Enabled = false;
             aHoldEnd.Enabled = false;
-            Tool.SetButton(GvTemplate);
+            Tool.SetButton(GvTemplate, Session["ID"].ToString());
         }
 
         public void editAct(string activityID)

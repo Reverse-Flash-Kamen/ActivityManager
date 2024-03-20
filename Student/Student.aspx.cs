@@ -88,7 +88,7 @@ namespace ActivityManager.Test
 
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
-            Tool.FormatActivity((GridView)sender);
+            Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
             Tool.FormatGridView((GridView)sender, 8);
         }
 
@@ -177,7 +177,8 @@ namespace ActivityManager.Test
             }
             else
             {
-                Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
+                // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
+                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
             }
         }
 
@@ -249,11 +250,13 @@ namespace ActivityManager.Test
             DivChangePsw.Style["display"] = "none";
             schoolConnector.Where = "activityState < 0"; // 如果把GV隐藏再显示,大小会出问题
 
-            MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg";
+            // MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg";
+            MyImage.ImageUrl = "~/image/users/" + Session["ID"] + ".jpg";
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             var res1 = from info in db.Student
-                       where info.studentID == Tool.studentID
+                           // where info.studentID == Tool.studentID
+                       where info.studentID == Session["ID"].ToString()
                        select info;
 
             if (res1.Any())
@@ -266,7 +269,8 @@ namespace ActivityManager.Test
             }
 
             var res2 = from info in db.StudentIdentified
-                       where info.studentID == Tool.studentID
+                           // where info.studentID == Tool.studentID
+                       where info.studentID == Session["ID"].ToString()
                        select info;
 
             if (res2.Any())
@@ -303,24 +307,31 @@ namespace ActivityManager.Test
                      */
 
                     ActivityManagerDataContext db = new ActivityManagerDataContext();
-                    var res = from info in db.SignedActivity
-                              where info.studentID == Tool.studentID
-                              select info.activityID;
-
-                    if (res.Count() <= 0)
+                    try
                     {
-                        schoolConnector.Where = "(activityState < 0)"; // 没有结果
-                        break;
-                    }
+                        var res = from info in db.SignedActivity
+                                      // where info.studentID == Tool.studentID
+                                  where info.studentID == Session["ID"].ToString()
+                                  select info.activityID;
+                        if (res.Count() <= 0)
+                        {
+                            schoolConnector.Where = "(activityState < 0)"; // 没有结果
+                            break;
+                        }
 
-                    string[] actIDs = res.ToArray();
-                    schoolConnector.Where = "(activityID = \"" + res.First() + "\"";
-                    foreach (string actID in actIDs)
-                    {
-                        Console.WriteLine(actID);
-                        schoolConnector.Where += "or activityID = \"" + actID + "\" ";
+                        string[] actIDs = res.ToArray();
+                        schoolConnector.Where = "(activityID = \"" + res.First() + "\"";
+                        foreach (string actID in actIDs)
+                        {
+                            Console.WriteLine(actID);
+                            schoolConnector.Where += "or activityID = \"" + actID + "\" ";
+                        }
+                        schoolConnector.Where += ")";
                     }
-                    schoolConnector.Where += ")";
+                    catch
+                    {
+                        Response.Write("<script>alert('请登录后再访问！');location.href='..//Login.aspx';</script>");
+                    }
                     break;
 
                 default:
@@ -359,7 +370,8 @@ namespace ActivityManager.Test
 
                     ActivityManagerDataContext db = new ActivityManagerDataContext();
                     var res = from info in db.LikedActivity
-                              where info.studentID == Tool.studentID
+                                  // where info.studentID == Tool.studentID
+                              where info.studentID == Session["ID"].ToString()
                               select info.activityID;
 
                     if (res.Count() <= 0)
@@ -411,6 +423,11 @@ namespace ActivityManager.Test
              * Where初始值为"",表示*
              * 翻页功能会导致页面刷新加载此项
              */
+
+            // 调试用
+            Session["ID"] = 7020820312;
+            Tool.curUser = 2;
+
             if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
             ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
 
@@ -440,9 +457,11 @@ namespace ActivityManager.Test
                     {
                         System.IO.Directory.CreateDirectory(savePath);
                     }
-                    savePath = savePath + "\\" + Tool.studentID + ".jpg";
+                    // savePath = savePath + "\\" + Tool.studentID + ".jpg";
+                    savePath = savePath + "\\" + Session["ID"].ToString() + ".jpg";
                     ImageUpload.SaveAs(savePath);
-                    MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg";
+                    // MyImage.ImageUrl = "~/image/users/" + Tool.studentID + ".jpg";
+                    MyImage.ImageUrl = "~/image/users/" + Session["ID"].ToString() + ".jpg";
                 }
                 else
                 {
@@ -516,7 +535,8 @@ namespace ActivityManager.Test
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             var res = from info in db.SignedActivity
-                      where info.studentID == Tool.studentID
+                          // where info.studentID == Tool.studentID
+                      where info.studentID == Session["ID"].ToString()
                       select info.activityID;
 
             if (res.Count() <= 0)
@@ -577,7 +597,8 @@ namespace ActivityManager.Test
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             var res = from info in db.StudentIdentified
-                      where info.studentID == Tool.studentID
+                          // where info.studentID == Tool.studentID
+                      where info.studentID == Session["ID"].ToString()
                       select info;
 
             switch (index2)
