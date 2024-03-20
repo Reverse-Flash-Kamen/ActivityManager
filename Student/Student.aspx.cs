@@ -2,7 +2,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Windows;
 
@@ -87,30 +89,7 @@ namespace ActivityManager.Test
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
             Tool.FormatActivity((GridView)sender);
-
-            /*空白行*/
-            //if (GvTemplate.Rows.Count != 0 && GvTemplate.Rows.Count != GvTemplate.PageSize)
-            //{
-            //    // 如果分页有数据但不等于pagesize
-            //    Control table = GvTemplate.Controls[0];
-            //    if (table != null)
-            //    {
-            //        for (int i = 0; i < GvTemplate.PageSize - GvTemplate.Rows.Count; i++)
-            //        {
-            //            int rowIndex = GvTemplate.Rows.Count + i + 1;
-            //            GridViewRow row = new GridViewRow(rowIndex, -1, DataControlRowType.Separator,DataControlRowState.Normal);
-
-            //            row.BackColor = (rowIndex % 2 == 0) ? System.Drawing.Color.White : System.Drawing.Color.WhiteSmoke;
-            //            for (int j = 0; j < GvTemplate.Columns.Count; j++)
-            //            {
-            //                TableCell cell = new TableCell();
-            //                cell.Text = "&nbsp";
-            //                row.Controls.Add(cell);
-            //            }
-            //            table.Controls.AddAt(rowIndex, row);
-            //        }
-            //    }
-            //}
+            Tool.FormatGridView((GridView)sender, 8);
         }
 
         protected void GvTemplate_DataBinding(object sender, EventArgs e)
@@ -433,6 +412,9 @@ namespace ActivityManager.Test
              * 翻页功能会导致页面刷新加载此项
              */
             if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
+
+            Tool.FormatGridView(GvTemplate, 8);
         }
 
         protected void MyImage_Click(object sender, System.Web.UI.ImageClickEventArgs e)
@@ -464,12 +446,12 @@ namespace ActivityManager.Test
                 }
                 else
                 {
-                    MessageBox.Show("请上传 .jpg | .png 文件！");
+                    Response.Write("<script>alert('请上传 .jpg | .png 文件！');</script>");
                 }
             }
             else
             {
-                MessageBox.Show("你还没有选择上传文件！");
+                Response.Write("<script>alert('你还没有选择上传文件！');</script>");
             }
         }
 
@@ -561,12 +543,9 @@ namespace ActivityManager.Test
                 credit += int.Parse(row.Cells[3].Text);
             }
             LblTotal.Text = "需得：40";
-        }
 
-        protected void GvCredit_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            GvCredit.PageIndex = e.NewPageIndex;
-            LinqDataSourceCredit.Where = ActivityManagerDataContext.connectorWhere.ToString();
+            foreach (GridViewRow row in GvCredit.Rows)
+                row.Cells[4].Text = Convert.ToDateTime(row.Cells[4].Text).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         /// 学分详情
@@ -589,7 +568,7 @@ namespace ActivityManager.Test
             LinqDataSourceCredit.Where = Tool.LinqDataSourceCreditChange(index1, index2, ActivityManagerDataContext.connectorCredit);
             ActivityManagerDataContext.connectorWhere = LinqDataSourceCredit.Where;
 
-            // 要第一次加载出gv再才能统计
+            // 要第一次加载出gv再才能统计,要databound
             /* int credit = 0;
              foreach (GridViewRow row in GvCredit.Rows)
              {
@@ -604,7 +583,7 @@ namespace ActivityManager.Test
             switch (index2)
             {
                 case 0:
-                    LblTotal.Text = "已得：" + res.First().credit_1 + res.First().credit_2 + res.First().credit_3 + "   需得：40";
+                    LblTotal.Text = "已得：" + (res.First().credit_1 + res.First().credit_2 + res.First().credit_3) + "   需得：40";
                     break;
 
                 case 1:
@@ -619,6 +598,12 @@ namespace ActivityManager.Test
                     LblTotal.Text = "已得：" + res.First().credit_3 + "   需得：20";
                     break;
             }
+        }
+
+        protected void GvCredit_DataBound(object sender, EventArgs e)
+        {
+            foreach (GridViewRow row in GvCredit.Rows)
+                row.Cells[4].Text = Convert.ToDateTime(row.Cells[4].Text).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
     }
 }

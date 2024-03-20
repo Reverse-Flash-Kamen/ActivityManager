@@ -303,7 +303,7 @@
                 <asp:ImageButton ID="MyImage" runat="server" Height="100px" ImageUrl="~/image/users/7020820000.jpg" Width="100px" style="border-radius:50%; " OnClick="MyImage_Click" CausesValidation="False" ToolTip="更换头像"/>
                 <div id="DivUploadImage" style="display:none" runat="server">
                     <asp:FileUpload ID="ImageUpload" runat="server" Width="70px" style="margin:10px;" accept="image/*"/>
-                    <asp:Button ID="BtnImage" runat="server" Text="更换头像" style="margin:10px;" OnClick="BtnImage_Click"/>
+                    <asp:Button ID="BtnImage" runat="server" Text="更换头像" style="margin:10px;" OnClick="BtnImage_Click" CausesValidation="False"/>
                 </div>
             </div>
             <div style="width:600px; height:280px; padding-left:10px;">
@@ -364,22 +364,35 @@
                 </asp:DropDownList>
                 <asp:Button ID="Button1" runat="server" Text="查询" CausesValidation="False" OnClick="Button1_Click" />
                 <asp:Label ID="LblTotal" runat="server" Text=""></asp:Label>
+                
+                <div id="DivTitle" style="margin-top:5px">
+                    <asp:Table ID="Table1" runat="server" CellPadding="5" CellSpacing="0">
+                        <asp:TableHeaderRow Height="40px">
+                            <asp:TableHeaderCell BackColor="#8D9BA5" ForeColor="White" Width="40px" >类别</asp:TableHeaderCell>
+                            <asp:TableHeaderCell BackColor="#8D9BA5" ForeColor="White" Width="214px" >活动名称</asp:TableHeaderCell>
+                            <asp:TableHeaderCell BackColor="#8D9BA5" ForeColor="White" Width="144px" >获得学分</asp:TableHeaderCell>
+                            <asp:TableHeaderCell BackColor="#8D9BA5" ForeColor="White" Width="176px" >发放时间</asp:TableHeaderCell>
+                        </asp:TableHeaderRow>
+                    </asp:Table>
+                </div>
 
-                <div style="width:620px; height:200px; overflow:auto">
-                   <asp:GridView ID="GvCredit" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="LinqDataSourceCredit" ForeColor="#333333" GridLines="None" Height="357px" PageSize="1" Width="599px" style="margin-top:10px" OnPageIndexChanging="GvCredit_PageIndexChanging">
+                <div style="width:630px; height:300px; overflow:auto">
+                   <asp:GridView ID="GvCredit" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="LinqDataSourceCredit" ForeColor="#333333" GridLines="None"  PageSize="1" Width="614px" style="margin-top:10px" OnDataBound="GvCredit_DataBound" ShowHeader="False">
                    <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                    <Columns>
                        <asp:BoundField DataField="activityID" ReadOnly="True" SortExpression="activityID" HeaderText="activityID" >    
                            <ControlStyle CssClass="hidden" />
                            <FooterStyle CssClass="hidden" />
-                           <HeaderStyle CssClass="hidden" />
                            <ItemStyle CssClass="hidden" />
                        </asp:BoundField>
-                       <asp:BoundField DataField="activityType" HeaderText="类别" ReadOnly="True" SortExpression="activityType" >
+                       <asp:BoundField DataField="activityType" HeaderText="类别" ReadOnly="True" SortExpression="activityType" ItemStyle-Width="40px" ItemStyle-Height="25px">
                        </asp:BoundField>
-                       <asp:BoundField DataField="activityName" HeaderText="活动名称" ReadOnly="True" SortExpression="activityName" />
-                       <asp:BoundField DataField="availableCredit" HeaderText="获得学分" ReadOnly="True" SortExpression="availableCredit" />
-                       <asp:BoundField DataField="holdDate" HeaderText="发放时间" ReadOnly="True" SortExpression="holdDate" />
+                       <asp:BoundField DataField="activityName" HeaderText="活动名称" ReadOnly="True" SortExpression="activityName" ItemStyle-Width="310px" ItemStyle-Height="25px">
+                       </asp:BoundField>
+                       <asp:BoundField DataField="availableCredit" HeaderText="获得学分" ReadOnly="True" SortExpression="availableCredit" ItemStyle-Width="210px" ItemStyle-Height="25px">
+                       </asp:BoundField>
+                       <asp:BoundField DataField="holdDate" HeaderText="发放时间" ReadOnly="True" SortExpression="holdDate" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="220px" ItemStyle-Height="25px">
+                       </asp:BoundField>
                    </Columns>
                    <EditRowStyle BackColor="#999999" />
                    <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />

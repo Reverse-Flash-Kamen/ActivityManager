@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace ActivityManager
@@ -113,6 +114,35 @@ namespace ActivityManager
                 string signed = row.Cells[index].Text;
                 string maxSigned = row.Cells[map["maxSigned"]].Text;
                 row.Cells[index].Text = signed + "/" + maxSigned;
+            }
+        }
+
+        public static void FormatGridView(GridView gridView, int n)
+        {
+            /*当行数不够时，插入空白行保证美观*/
+            if (gridView.Rows.Count != 0 && gridView.Rows.Count != gridView.PageSize)
+            {
+                // 如果分页有数据但不等于pagesize
+                Control table = gridView.Controls[0];
+                if (table != null)
+                {
+                    for (int i = 0; i < gridView.PageSize - gridView.Rows.Count; i++)
+                    {
+                        int rowIndex = gridView.Rows.Count + i + 1;
+                        GridViewRow row = new GridViewRow(rowIndex, -1, DataControlRowType.Separator, DataControlRowState.Normal);
+
+                        row.BackColor = (rowIndex % 2 == 0) ? System.Drawing.Color.White : System.Drawing.Color.WhiteSmoke;
+                        for (int j = 0; j < gridView.Columns.Count - n; j++)
+                        {
+                            // 根据Gv隐藏了多少列，需要改动
+                            TableCell cell = new TableCell();
+                            cell.Text = "&nbsp";
+                            cell.Height = 84;
+                            row.Controls.Add(cell);
+                        }
+                        table.Controls.AddAt(rowIndex, row);
+                    }
+                }
             }
         }
 
