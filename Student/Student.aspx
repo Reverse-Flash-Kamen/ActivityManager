@@ -87,7 +87,7 @@
             background-color:#ccad9f 
         }
         .auto-style15 {
-            padding:20px 5px 5px;
+            padding:22px 5px 5px;
         }
         .li-style {
             list-style-type:none;
@@ -108,7 +108,7 @@
                </div>
                <%--导航--%>
                <div class="auto-style14" id="DivAllAct" runat="server" style="background-color:red">
-                   <asp:LinkButton ID="LbtnAllAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnAllAct_Click" Height="40px" Width="180px" CssClass="auto-style15" CausesValidation="False">活动总览</asp:LinkButton>
+                   <asp:LinkButton ID="LbtnAllAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnAllAct_Click" Height="39px" Width="180px" CssClass="auto-style15" CausesValidation="False">活动总览</asp:LinkButton>
                </div>
                <div class="auto-style14" id="DivMyAct" runat="server">
                    <asp:LinkButton ID="LbtnMyAct" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="LbtnMyAct_Click" Height="40px" Width="180px" CssClass="auto-style15" CausesValidation="False">我的活动</asp:LinkButton>

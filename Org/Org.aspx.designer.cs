@@ -87,6 +87,15 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.RequiredFieldValidator introRequiredFieldValidator;
 
         /// <summary>
+        /// DropDownListType 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DropDownListType;
+
+        /// <summary>
         /// aPlace 控件。
         /// </summary>
         /// <remarks>
@@ -186,6 +195,15 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.TextBox aVolume;
 
         /// <summary>
+        /// RequiredFieldValidator2 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
+
+        /// <summary>
         /// volumeRangeValidator 控件。
         /// </summary>
         /// <remarks>
@@ -220,6 +238,15 @@ namespace ActivityManager.Test
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button creditDown;
+
+        /// <summary>
+        /// RequiredFieldValidator1 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
 
         /// <summary>
         /// creditRangeValidator 控件。
@@ -303,22 +330,31 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.DropDownList state;
 
         /// <summary>
-        /// commit 控件。
+        /// type 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button commit;
+        protected global::System.Web.UI.WebControls.DropDownList type;
 
         /// <summary>
-        /// flush 控件。
+        /// Button1 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button flush;
+        protected global::System.Web.UI.WebControls.Button Button1;
+
+        /// <summary>
+        /// Button2 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button2;
 
         /// <summary>
         /// BtnApply 控件。

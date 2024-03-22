@@ -36,6 +36,7 @@ namespace ActivityManager.Test
             string s1 = name.Text.Trim();
             string s2 = org.Text.Trim();
             string s3 = state.SelectedValue.Trim();
+            string s4 = type.SelectedValue.Trim();
 
             if (s1 != "")
             {
@@ -57,6 +58,12 @@ namespace ActivityManager.Test
             {
                 if (s3 != "0")
                     schoolConnector.Where += " and activityState = " + s3;
+            }
+
+            if (s4 != "")
+            {
+                if (s4 != "0")
+                    schoolConnector.Where += " and activityState = " + s4;
             }
         }
 
@@ -149,36 +156,48 @@ namespace ActivityManager.Test
 
         protected void setHoldDate_Click(object sender, EventArgs e)
         {
+            /*点击显示日历*/
             aHoldDate.Visible = true;
         }
 
         protected void aHoldDate_SelectionChanged(object sender, EventArgs e)
         {
-            aHoldDate.Visible = false;
+            /*选择day*/
+            aHoldDate.Visible = false; // 选择后日历隐藏
 
             string s = aHoldDate.SelectedDate.ToShortDateString();
             s = Convert.ToDateTime(s).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            setHoldDate.Text = s;
+            setHoldDate.Text = s; // linkbutton
 
+            /*允许选择hour*/
             aHoldStart.Enabled = true;
-            aHoldEnd.Enabled = true;
-            setStartTime();
+            // aHoldEnd.Enabled = true;
+            setStartTime(); // 判断day能不能选
         }
 
         protected void aHoldStart_SelectedIndexChanged(object sender, EventArgs e)
         {
-            aHoldEnd.Enabled = true;
+            // aHoldEnd.Enabled = true;
             setEndTime();
         }
 
         private void setStartTime()
         {
-            aHoldStart.Items.Clear();
+            /*
+             * 根据场地需求、已申请活动等因数确定开始hour可选择的范围
+             * 即一个场地不可能同时段举办两个活动
+             */
 
-            List<int> hours = new List<int>();
+            aHoldStart.Items.Clear(); // 清除下拉列表项目
+
+            List<int> hours = new List<int>(); // 设定10 - 21点为活动可举办时间
             for (int i = 0; i <= 11; ++i)
                 hours.Add(i + 10);
 
+            /*
+             * 查询选择day是否已有活动申请
+             * 在10-21中排除以被占用的时间段
+             */
             int placeID = Convert.ToInt32(aPlace.SelectedValue);
             DateTime date = Convert.ToDateTime(aHoldDate.SelectedDate.ToString());
 
@@ -204,6 +223,7 @@ namespace ActivityManager.Test
                 }
             }
 
+            // 剩余时间段已用完
             if (hours.Count == 0)
             {
                 // 弹出提示 该场地该日已被占满
@@ -212,6 +232,7 @@ namespace ActivityManager.Test
             }
             else
             {
+                // 将可用时间段添加至开始hour下拉列表
                 foreach (int hour in hours)
                 {
                     aHoldStart.Items.Add(hour + ":00");
@@ -221,6 +242,7 @@ namespace ActivityManager.Test
 
         private void setEndTime()
         {
+            /*同setStartTime*/
             aHoldEnd.Items.Clear();
 
             List<int> hours = new List<int>();
@@ -269,10 +291,16 @@ namespace ActivityManager.Test
                 }
             }
 
+            List<string> strings = new List<string>();
+
             foreach (int hour in hours)
             {
-                aHoldEnd.Items.Add(hour + ":00");
+                // aHoldEnd.Items.Add(hour + ":00"); // 数据绑定？
+                strings.Add(hour.ToString() + ":00");
             }
+
+            aHoldEnd.DataSource = strings;
+            aHoldEnd.DataBind();
         }
 
         protected void setSignStartDate_Click(object sender, EventArgs e)
@@ -350,8 +378,29 @@ namespace ActivityManager.Test
             aHoldEnd.Enabled = false;
         }
 
+        /// <summary>
+        /// 报名时间|举办时间不能早于系统时间
+        /// 报名开始时间不能晚于结束时间|举办时间
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
         protected void submit_Click(object sender, EventArgs e)
         {
+            // 验证必须选择日期
+            if (setSignStartDate.Text == "选择报名开始日期" || setSignEndDate.Text == "选择报名结束日期" || setHoldDate.Text == "选择举办日期")
+            {
+                Response.Write("<script>alert('申请活动需选择日期！');</script>");
+                return;
+            }
+
+            /*int signStartInt = int.Parse(setSignStartDate.Text);
+            int signEndInt = int.Parse(setSignEndDate.Text);
+            int holdDateInt = int.Parse(setHoldDate.Text);
+
+            if (signStartInt > signEndInt)
+                Response.Write("<script>alert('报名开始日期不得‘晚于’报名结束日期！');</script>");*/
+
             save_Click(sender, e);
             MyActivity a = new MyActivity(Session["activityID"].ToString());
             //MessageBox.Show(a.ActivityName);
@@ -378,6 +427,7 @@ namespace ActivityManager.Test
             a.HoldDate = setHoldDate.Text.ToString();
             a.HoldStart = aHoldStart.SelectedItem.ToString().Substring(0, 2);
             a.HoldEnd = aHoldEnd.SelectedItem.ToString().Substring(0, 2);
+            a.ActivityType = DropDownListType.SelectedValue;
 
             if (mode == 1)
                 a.Create();
@@ -429,6 +479,11 @@ namespace ActivityManager.Test
             aHoldEnd.Enabled = true;
             aHoldStart.Items.Add(act.holdStart + ":00");
             aHoldEnd.Items.Add(act.holdEnd + ":00");
+        }
+
+        protected void aHoldEnd_DataBound(object sender, EventArgs e)
+        {
+            aHoldEnd.Enabled = true;
         }
 
         //protected void Button1_Click(object sender, EventArgs e)

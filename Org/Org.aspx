@@ -72,7 +72,7 @@
             margin-bottom:15px;
         }
         .auto-style14 {
-            margin-left: 30px;
+            margin-left: 16px;
         }
 
         #display {
@@ -98,14 +98,23 @@
                 活动名称
                 <asp:TextBox ID="aName" runat="server"></asp:TextBox>
                 <asp:Label ID="nameCnt" runat="server"></asp:Label>
-                <asp:RequiredFieldValidator ID="nameRequiredFieldValidator" ControlToValidate="aName" runat="server" ErrorMessage="活动名称不得为空!"></asp:RequiredFieldValidator>
+                <asp:RequiredFieldValidator ID="nameRequiredFieldValidator" ControlToValidate="aName" runat="server" ErrorMessage="活动名称不得为空!" ForeColor="#CC0000">*</asp:RequiredFieldValidator>
             </div>
 
             <div>
                 活动介绍
                 <asp:TextBox ID="aIntro" runat="server" TextMode="MultiLine"></asp:TextBox>
                 <asp:Label ID="introCnt" runat="server"></asp:Label>
-                <asp:RequiredFieldValidator ID="introRequiredFieldValidator" ControlToValidate="aIntro" runat="server" ErrorMessage="活动介绍不得为空!"></asp:RequiredFieldValidator>
+                <asp:RequiredFieldValidator ID="introRequiredFieldValidator" ControlToValidate="aIntro" runat="server" ErrorMessage="活动介绍不得为空!" ForeColor="#CC0000">*</asp:RequiredFieldValidator>
+            </div>
+
+            <div>
+                活动类别
+                <asp:DropDownList ID="DropDownListType" runat="server">
+                    <asp:ListItem Value="1">创新创业与就业见习</asp:ListItem>
+                    <asp:ListItem Value="2">社会实践与志愿公益</asp:ListItem>
+                    <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
+                </asp:DropDownList>
             </div>
 
             <div>
@@ -125,16 +134,18 @@
             <div>
                 举办时间
                 <asp:LinkButton ID="setHoldDate" runat="server" OnClick="setHoldDate_Click" CausesValidation="False">选择举办日期</asp:LinkButton>
-                <asp:DropDownList ID="aHoldStart" runat="server" Enabled="False" Width="66px" OnSelectedIndexChanged="aHoldStart_SelectedIndexChanged"></asp:DropDownList>
-                <asp:DropDownList ID="aHoldEnd" runat="server" Enabled="False" Width="66px"></asp:DropDownList>
+                <asp:DropDownList ID="aHoldStart" runat="server" Enabled="False" Width="66px" OnSelectedIndexChanged="aHoldStart_SelectedIndexChanged" AutoPostBack="True"></asp:DropDownList>
+                <asp:DropDownList ID="aHoldEnd" runat="server" Enabled="False" Width="66px" AutoPostBack="True" OnDataBound="aHoldEnd_DataBound"></asp:DropDownList>
                 <asp:Calendar ID="aHoldDate" runat="server" ShowGridLines="True" Visible="false" OnSelectionChanged="aHoldDate_SelectionChanged"></asp:Calendar>
             </div>
 
             <div>
                 人数上限
                 <asp:TextBox ID="aVolume" runat="server" Columns="1"></asp:TextBox>
-                <asp:RangeValidator ID="volumeRangeValidator" runat="server" ErrorMessage="请输入50~800的数字!" MaximumValue="800" MinimumValue="50" ControlToValidate="aVolume" Type="Integer"></asp:RangeValidator>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ControlToValidate="aVolume" runat="server" ErrorMessage="请输入活动人数！" ForeColor="#CC0000">*</asp:RequiredFieldValidator>
+                <asp:RangeValidator ID="volumeRangeValidator" runat="server" ErrorMessage="请输入50~800的数字！" MaximumValue="800" MinimumValue="50" ControlToValidate="aVolume" Type="Integer" ForeColor="#CC0000"></asp:RangeValidator>        
             </div>
+            
             
 
             <div>
@@ -142,7 +153,8 @@
                  <asp:TextBox ID="aCredit" runat="server" Columns="1" OnTextChanged="aCredit_TextChanged"></asp:TextBox>
                 <asp:Button ID="creditUp" runat="server" Text="▲ " Width="26px" OnClick="creditUp_Click" CausesValidation="False" />
                 <asp:Button ID="creditDown" runat="server" Text="▼ " Width="26px" OnClick="creditDown_Click" CausesValidation="False" />
-                <asp:RangeValidator ID="creditRangeValidator" runat="server" ErrorMessage="请输入1~8的数字!" MaximumValue="8" MinimumValue="1" ControlToValidate="aCredit" Type="Integer"></asp:RangeValidator>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ControlToValidate="aCredit" runat="server" ErrorMessage="请输入活动学分！" ForeColor="#CC0000">*</asp:RequiredFieldValidator>
+                <asp:RangeValidator ID="creditRangeValidator" runat="server" ErrorMessage="请输入1~8的数字！" MaximumValue="8" MinimumValue="1" ControlToValidate="aCredit" Type="Integer" ForeColor="#CC0000"></asp:RangeValidator>
             </div>
 
             <div>
@@ -190,8 +202,19 @@
                     </asp:DropDownList>
                     </span>
 
-                <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" />
-                <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" />
+                    <span class="auto-style7"> 活动类别&nbsp; 
+                        <asp:DropDownList ID="type" runat="server">
+                        <asp:ListItem Value="0">活动类别</asp:ListItem> 
+                        <asp:ListItem Value="1">创新创业与就业见习</asp:ListItem>
+                        <asp:ListItem Value="2">社会实践与志愿公益</asp:ListItem>
+                        <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
+                        </asp:DropDownList>
+                    </span>
+
+                    <div style="width:320px; position:absolute; top: 242px; left: 1242px;">
+                        <asp:Button ID="Button1" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
+                        <asp:Button ID="Button2" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
+                    </div>   
             </div>
 
                <%--上导航栏--%>
@@ -327,7 +350,7 @@
                 <tr><td >
                     <asp:Label ID="LblScore" runat="server"></asp:Label></td></tr>
                 <tr><td>
-                    <asp:Button ID="BtnCheck" runat="server" Text="返回" CssClass="auto-style11" OnClick="BtnCheck_Click" Width="60px" /></td></tr>
+                    <asp:Button ID="BtnCheck" runat="server" Text="返回" CssClass="auto-style11" OnClick="BtnCheck_Click" Width="60px" CausesValidation="False" /></td></tr>
             </table>
         </div>
 
