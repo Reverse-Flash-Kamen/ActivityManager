@@ -82,8 +82,7 @@
         }
     </style>
 </head>
-<body>
-    
+<body>  
     <form id="form1" runat="server">
         <div id="display" runat="server" visible="false">
             <h3 style="text-align: center; margin: 0 0 6px 0;">

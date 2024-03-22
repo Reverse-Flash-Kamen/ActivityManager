@@ -56,22 +56,30 @@ namespace ActivityManager
 
         public void Create()
         {
-            // 根据保存时间与顺序计算activityID
+            // 根据保存时间与顺序计算activityID,如果不按序删除,会导致插入主键重复
             //submitTime = DateTime.Now.ToString("yyyy-MM-dd"); // 时间格式
-            string submitTimePro = DateTime.Now.ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            string[] strTime = submitTimePro.Split('-');
+            string submitTimePro = DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
+            /*string[] strTime = submitTimePro.Split('-');
             submitTimePro = "";
-            foreach (var str in strTime) submitTimePro += str;
+            foreach (var str in strTime) submitTimePro += str;*/
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             var res = from a in db.Activity
                       where a.activityID.StartsWith(submitTimePro)
                       select a;
 
-            int index = res.Count();
+            // 这里有问题
+            /*int index = res.Count();
             if (index < 9)
                 activityID = "0";
-            activityID = submitTimePro + activityID + (index + 1).ToString();
+            activityID = submitTimePro + activityID + (index + 1).ToString();*/
+
+            // 每天创建(创建后删除也算)超过99,会溢出
+            if (res.Count() > 0)
+                activityID = (int.Parse(res.ToList().Last().activityID) + 1).ToString(); // 如果不是今日第一次创建,取最后一个创建的活动ID+1
+            else
+                activityID = submitTimePro + "01"; // 如果是第一次创建,生成01
 
             // 处理数据格式
             int intActivityPlaceID = int.Parse(activityPlaceID);
@@ -113,7 +121,7 @@ namespace ActivityManager
             };
 
             db.Activity.InsertOnSubmit(A);
-            db.SubmitChanges();
+            db.SubmitChanges();   // ?
         }
 
         public void Update()

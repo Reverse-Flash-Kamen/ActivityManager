@@ -1,5 +1,8 @@
 ﻿using ActivityManager.App_Data;
 using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Windows;
 
@@ -7,6 +10,8 @@ namespace ActivityManager
 {
     public class Operation
     {
+        // private static bool flag;
+
         public static void SetOperation(string commandName, string actID, string studentID, GridView gv, LinqDataSource data)
         {
             Operation operation = new Operation();
@@ -23,7 +28,6 @@ namespace ActivityManager
             }
             else if (commandName == "deleteA")
             {
-                // 删除操作
                 operation.ActDelete(actID);
             }
             else if (commandName == "withdraw")
@@ -82,6 +86,8 @@ namespace ActivityManager
                 MessageBox.Show("导出名单成功！");
             }
 
+            gv.DataBind(); // 重现绑定数据，刷新添加|删除|退回的数据行
+
             Tool.SetButton(gv, studentID);
         }
 
@@ -90,24 +96,20 @@ namespace ActivityManager
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
 
-            if (MessageBox.Show("确定要删除这条活动记录吗？", "DELETE CONFIRM", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            try
             {
-                try
-                {
-                    var res = from info in db.Activity
-                              where info.activityID == actID
-                              select info;
-                    db.Activity.DeleteOnSubmit(res.First());
-                    db.SubmitChanges();
-                }
-                catch
-                {
-                    MessageBox.Show("未知错误，删除失败！");
-                    return;
-                }
-
-                MessageBox.Show("删除成功！", "DELETE", MessageBoxButton.OK, MessageBoxImage.Information);
+                var res = from info in db.Activity
+                          where info.activityID == actID
+                          select info;
+                db.Activity.DeleteOnSubmit(res.First());
+                db.SubmitChanges();
             }
+            catch
+            {
+                HttpContext.Current.Response.Write("<script>alert('未知错误，删除失败！')</script>");
+                return;
+            }
+            // HttpContext.Current.Response.Write("<script>alert('删除成功！')</script>");
         }
 
         public void ActWithdraw(string actID)
@@ -115,7 +117,7 @@ namespace ActivityManager
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
 
-            if (MessageBox.Show("确定要撤回这条活动申请吗？", "WITHDRAW CONFIRM", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            /*if (MessageBox.Show("确定要撤回这条活动申请吗？", "WITHDRAW CONFIRM", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 try
                 {
@@ -130,6 +132,20 @@ namespace ActivityManager
                     MessageBox.Show("未知错误，撤回失败！");
                     return;
                 }
+            }*/
+
+            try
+            {
+                var res = from info in db.Activity
+                          where info.activityID == actID
+                          select info;
+                res.First().activityState = 1; // 更新状态为：未提交
+                db.SubmitChanges();
+            }
+            catch
+            {
+                HttpContext.Current.Response.Write("<script>alert('未知错误，撤回失败！')</script>");
+                return;
             }
         }
 
@@ -235,7 +251,8 @@ namespace ActivityManager
 
             if (signed >= maxSigned)
             {
-                MessageBox.Show("抱歉！此活动人数已满！", "提示");
+                // MessageBox.Show("抱歉！此活动人数已满！", "提示");
+                HttpContext.Current.Response.Write("<script>alert('抱歉！此活动人数已满！')</script>");
                 return;
             }
 
@@ -252,7 +269,8 @@ namespace ActivityManager
                 "报名者学号：" + studentID + "\n" +
                 "报名者联系方式：" + phone;
 
-            if (MessageBox.Show(Text, "活动报名确认", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+            // 需要更改
+            /*if (MessageBox.Show(Text, "活动报名确认", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
             {
                 // 点击确认，插入报名信息
                 SignedActivity signedActivity = new SignedActivity();
@@ -265,7 +283,9 @@ namespace ActivityManager
 
                 dbSign.SignedActivity.InsertOnSubmit(signedActivity);
                 dbSign.SubmitChanges();
-            }
+            }*/
+
+            HttpContext.Current.Response.Write("<script>alert(" + Text + ")</script>");
         }
 
         public void ActSignCancel(string actID, string studentID)

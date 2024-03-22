@@ -3,8 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+using System.Web.Services.Description;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Windows;
 
 namespace ActivityManager
 {
@@ -242,6 +245,7 @@ namespace ActivityManager
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "删除";
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "deleteA";
+                        // ((LinkButton)row.Cells[n - 1].Controls[0]).Attributes.Add("onclick", "return ActConfirm()");
                     }
                     else if (state == 2)
                     {
@@ -405,6 +409,8 @@ namespace ActivityManager
                     }
                 }
             }
+
+            // gv.DataBind();
         }
 
         public static string LinqDataSourceCreditChange(int index1, int index2, string connectWhere)
@@ -446,6 +452,11 @@ namespace ActivityManager
             }
 
             return connectWhere;
+        }
+
+        public static void test()
+        {
+            MessageBox.Show("导出名单成功！");
         }
     }
 }

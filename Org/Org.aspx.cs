@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace ActivityManager.Test
@@ -178,6 +181,8 @@ namespace ActivityManager.Test
         protected void aHoldStart_SelectedIndexChanged(object sender, EventArgs e)
         {
             // aHoldEnd.Enabled = true;
+            if (aHoldStart.SelectedValue == "") return; // 空串不触发联动
+
             setEndTime();
         }
 
@@ -232,6 +237,7 @@ namespace ActivityManager.Test
             }
             else
             {
+                aHoldStart.Items.Add("");
                 // 将可用时间段添加至开始hour下拉列表
                 foreach (int hour in hours)
                 {
@@ -380,7 +386,7 @@ namespace ActivityManager.Test
 
         /// <summary>
         /// 报名时间|举办时间不能早于系统时间
-        /// 报名开始时间不能晚于结束时间|举办时间
+        /// 报名开始时间|结束时间不能晚于结束时间|举办时间
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -394,22 +400,49 @@ namespace ActivityManager.Test
                 return;
             }
 
-            /*int signStartInt = int.Parse(setSignStartDate.Text);
-            int signEndInt = int.Parse(setSignEndDate.Text);
-            int holdDateInt = int.Parse(setHoldDate.Text);
+            int signStartInt = int.Parse(Regex.Replace(setSignStartDate.Text, "[-]", ""));
+            int signEndInt = int.Parse(Regex.Replace(setSignEndDate.Text, "[-]", ""));
+            int holdDateInt = int.Parse(Regex.Replace(setHoldDate.Text, "[-]", ""));
 
             if (signStartInt > signEndInt)
-                Response.Write("<script>alert('报名开始日期不得‘晚于’报名结束日期！');</script>");*/
+            {
+                Response.Write("<script>alert('报名开始日期不得晚于报名结束日期！');</script>");
+                return;
+            }
+
+            if (signStartInt > holdDateInt)
+            {
+                Response.Write("<script>alert('报名日期不得晚于活动开始日期！');</script>");
+                return;
+            }
+
+            int nowTimeInt = int.Parse(DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo));
+
+            if (signStartInt < nowTimeInt || signEndInt < nowTimeInt || holdDateInt < nowTimeInt)
+            {
+                Response.Write("<script>alert('活动日期不得早于当前日期！');</script>");
+                return;
+            }
+
+            if (aHoldStart.SelectedValue == "")
+            {
+                Response.Write("<script>alert('请选择活动举办具体时间！');</script>");
+                return;
+            }
 
             save_Click(sender, e);
             MyActivity a = new MyActivity(Session["activityID"].ToString());
             //MessageBox.Show(a.ActivityName);
             a.ActivityState = "2";
             a.Update();
+
+            GvTemplate.DataBind();
         }
 
         protected void save_Click(object sender, EventArgs e)
         {
+            Response.Write("<script language='javascript'>if(confirm('确定删除?'))</script>");
+
             MyActivity a;
             if (mode == 1)
                 a = new MyActivity();
@@ -453,6 +486,12 @@ namespace ActivityManager.Test
             Tool.SetButton(GvTemplate, Session["ID"].ToString());
         }
 
+        /// <summary>
+        /// 点击GridView的RowCommand编辑活动
+        /// 显示报名活动页面进行修改
+        /// 向数据库提交修改
+        /// </summary>
+        /// <param name="activityID"></param>
         public void editAct(string activityID)
         {
             Session["activityID"] = activityID;

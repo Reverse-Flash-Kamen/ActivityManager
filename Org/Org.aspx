@@ -4,6 +4,17 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+
+    <script language="javascript">
+        function ActConfirm() {
+            if (confirm('删除后不可恢复，确认要删除吗？')) {
+                document.getElementById('LblFlag').innerHTML = "true";
+                
+            }
+        }
+    </script>
+
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
     <style type="text/css">
@@ -90,7 +101,6 @@
     </style>
 </head>
 <body>
-    
     <form id="form1" runat="server">
         <div id="display" runat="server" visible="False">
             <h2 style="width: 100px; margin: 17px auto;">活动申请</h2>
@@ -134,8 +144,10 @@
             <div>
                 举办时间
                 <asp:LinkButton ID="setHoldDate" runat="server" OnClick="setHoldDate_Click" CausesValidation="False">选择举办日期</asp:LinkButton>
-                <asp:DropDownList ID="aHoldStart" runat="server" Enabled="False" Width="66px" OnSelectedIndexChanged="aHoldStart_SelectedIndexChanged" AutoPostBack="True"></asp:DropDownList>
-                <asp:DropDownList ID="aHoldEnd" runat="server" Enabled="False" Width="66px" AutoPostBack="True" OnDataBound="aHoldEnd_DataBound"></asp:DropDownList>
+                <asp:DropDownList ID="aHoldStart" runat="server" Enabled="False" Width="66px" OnSelectedIndexChanged="aHoldStart_SelectedIndexChanged" AutoPostBack="True">
+                </asp:DropDownList>
+                <asp:DropDownList ID="aHoldEnd" runat="server" Enabled="False" Width="66px" AutoPostBack="True" OnDataBound="aHoldEnd_DataBound">
+                </asp:DropDownList>
                 <asp:Calendar ID="aHoldDate" runat="server" ShowGridLines="True" Visible="false" OnSelectionChanged="aHoldDate_SelectionChanged"></asp:Calendar>
             </div>
 
@@ -357,3 +369,5 @@
     </form>
 </body>
 </html>
+
+

@@ -97,7 +97,6 @@
     </style>
 </head>
 <body>
-    
     <form id="form1" runat="server">
         <div class="auto-style1" runat="server">
             <%--左导航栏--%>

@@ -116,7 +116,6 @@ namespace ActivityManager.Test
         protected void GvTemplate_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             /*
-             * 报名活动详情确认页面
              * 用于响应表内按钮事件
              * 需要传gv的数据
              */
