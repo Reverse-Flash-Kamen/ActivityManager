@@ -29,7 +29,7 @@ namespace ActivityManager.Student
                       where info.studentID == studentID
                       select info;
 
-            if (res.Any())
+            if (res.Any() && Session["Info"].ToString() == "0")
             {
                 Response.Write("<script>alert('无需二次认证，请返回登录界面！');</script>");
                 return;

@@ -1,10 +1,11 @@
 ﻿using ActivityManager.App_Data;
 using System.Linq;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Windows;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System.IO;
 
 namespace ActivityManager
 {
@@ -43,7 +44,7 @@ namespace ActivityManager
             else if (commandName == "export")
             {
                 // 导出报名名单操作
-                MessageBox.Show("Export");
+                operation.ActExport(actID);
             }
             else if (commandName == "report")
             {
@@ -84,6 +85,11 @@ namespace ActivityManager
             {
                 // 导出完成名单操作
                 MessageBox.Show("导出名单成功！");
+            }
+            else if (commandName == "appraise")
+            {
+                // 评价功能
+                // MessageBox.Show("评价功能！");
             }
 
             //  gv.DataBind(); // 重现绑定数据，刷新添加|删除|退回的数据行
@@ -331,6 +337,112 @@ namespace ActivityManager
                          select info;
             db.SignedActivity.DeleteOnSubmit(resDel.First());
             db.SubmitChanges();
+        }
+
+        public void ActExport(string actID)
+        {
+            // 创建一个工作薄
+            IWorkbook workbook = new XSSFWorkbook();
+
+            // 创建一个工作表
+            ISheet sheet = workbook.CreateSheet("Sheet1");
+
+            // 添加表头
+            IRow headerRow = sheet.CreateRow(0);
+
+            // 给表头创建列
+            headerRow.CreateCell(0).SetCellValue(""); // 序号
+            headerRow.CreateCell(1).SetCellValue("学科部");
+            headerRow.CreateCell(2).SetCellValue("学号");
+            headerRow.CreateCell(3).SetCellValue("姓名");
+            headerRow.CreateCell(4).SetCellValue("性别");
+            headerRow.CreateCell(5).SetCellValue("专业班级");
+            headerRow.CreateCell(6).SetCellValue("联系电话");
+
+            // 设置列宽
+            for (int n = 0; n <= 6; n++)
+            {
+                sheet.SetColumnWidth(n, 20 * 256);
+            }
+
+            // 根据活动ID获取报名学生ID
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.SignedActivity
+                      where info.activityID == actID
+                      select info.studentID;
+
+            var studentIDs = res.ToList();
+
+            int i = 1;
+            // 根据学生ID获取学生信息
+            foreach (var studentID in studentIDs)
+            {
+                var resInfo = from info in db.StudentIdentified
+                              where info.studentID == studentID
+                              select info;
+
+                StudentIdentified studentIdentified = resInfo.First();
+
+                // 创建新行
+                IRow dataRow = sheet.CreateRow(i);
+
+                // 创建列写入数据
+                dataRow.CreateCell(0).SetCellValue(i);
+                dataRow.CreateCell(1).SetCellValue(studentIdentified.faculty);
+                dataRow.CreateCell(2).SetCellValue(studentIdentified.studentID);
+                dataRow.CreateCell(3).SetCellValue(studentIdentified.studentName);
+                dataRow.CreateCell(4).SetCellValue(studentIdentified.gender);
+                dataRow.CreateCell(5).SetCellValue(studentIdentified.major + studentIdentified.@class);
+                dataRow.CreateCell(6).SetCellValue(studentIdentified.phone);
+
+                i++;
+            }
+
+            // 存储路径不能是桌面，虚拟机没权限访问
+            // string path = Path.Combine(Directory.GetCurrentDirectory(), "File", "Excel");
+            // string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
+            string path = "C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\File";
+            try
+            {
+                // 查看是否存在,不存在创建
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                // 查活动名称
+                var resAct = from info in db.Activity
+                             where info.activityID == actID
+                             select info;
+                string actName = resAct.First().activityName;
+                string signed = resAct.First().signed.ToString();
+
+                // 保存工作薄
+                var fileName = $"{actName}_{actID}_{signed}.xlsx";
+                var filePath = Path.Combine(path, fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    workbook.Write(fileStream, true);
+                    fileStream.Close();
+                }
+
+                // 关闭文件
+                sheet = null;
+                headerRow = null;
+                workbook = null;
+            }
+            catch (System.IO.IOException)
+            {
+                HttpContext.Current.Response.Write("<script>alert('操作无法完成，因为文件已在Excel中打开！')</script>");
+                return;
+            }
+            catch
+            {
+                HttpContext.Current.Response.Write("<script>alert('导出失败，请稍后重试！')</script>");
+                return;
+            }
+
+            HttpContext.Current.Response.Write("<script>alert('导出成功，请在C:/Code/Reverse-Flash-Kamen/ActivityManager/File中查看！')</script>");
         }
     }
 }

@@ -88,16 +88,18 @@ namespace ActivityManager.Test
 
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
-            Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
-            Tool.FormatGridView((GridView)sender, 8);
+            // 数据绑定完后
 
+            Tool.FormatGridView((GridView)sender, 8);
             Tool.UpdateActivityState((GridView)sender);
+            Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
         }
 
         protected void GvTemplate_DataBinding(object sender, EventArgs e)
         {
-            /*数据更新,主要是根据系统时间更新活动状态和报名人数等*/
-            Tool.UpdateActivityState((GridView)sender);
+            /*数据绑定时,主要是根据系统时间更新活动状态和报名人数等*/
+            // Tool.UpdateActivityState((GridView)sender);
+            // Tool.FormatGridView((GridView)sender, 8);
         }
 
         protected void GvTemplate_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -182,7 +184,34 @@ namespace ActivityManager.Test
                 Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
             }
 
+            if (e.CommandName == "appraise")
+            {
+                ActAppraise(actID);
+            }
+
             GvTemplate.DataBind();
+        }
+
+        protected void ActAppraise(string actID)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+
+            /*            var res = from info in db.ActivityAppraise
+                                  where info.activityID == actID and info.studentID == Session["ID"].ToString()
+                                  select info;
+
+                        if (res.Any())
+                        {
+                            Response.Write("<script>alert('您已对该活动评分，再次提交将会修改')</script>")
+                        }
+
+                        var actName = from info in db.Activity
+                                      where info.activityID == actID
+                                      select info.activityName;*/
+
+            // 查表
+
+            DivAppraise.Style["display"] = "block";
         }
 
         protected void LbtnAllAct_Click(object sender, EventArgs e)
@@ -431,12 +460,21 @@ namespace ActivityManager.Test
             Session["ID"] = 7020820312;
             Tool.curUser = 2;
 
-            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
-            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
+            Session["Info"] = "1"; // 允许二次认证
+            if (!IsPostBack)
+            {
+                // 第一次加载时
+                schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
+                ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
+                Tool.UpdataAllActivityState(); // 更新所有活动状态，数据量太大，所以之后只在数据绑定时更新Gv当前页
+            }
+            else
+            {
+                schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
+                Tool.FormatGridView(GvTemplate, 8);
+            }
 
-            // Tool.FormatGridView(GvTemplate, 8);
-
-            Tool.UpdateActivityState(GvTemplate);
+            // Tool.UpdateActivityState(GvTemplate);
         }
 
         protected void MyImage_Click(object sender, System.Web.UI.ImageClickEventArgs e)
@@ -463,9 +501,9 @@ namespace ActivityManager.Test
                     string savePath = Server.MapPath("~/image/users/");//指定上传文件在服务器上的保存路径
 
                     //检查服务器上是否存在这个物理路径，如果不存在则创建
-                    if (!System.IO.Directory.Exists(savePath))
+                    if (!Directory.Exists(savePath))
                     {
-                        System.IO.Directory.CreateDirectory(savePath);
+                        Directory.CreateDirectory(savePath);
                     }
                     // savePath = savePath + "\\" + Tool.studentID + ".jpg";
                     savePath = savePath + "\\" + Session["ID"].ToString() + ".jpg";
@@ -633,8 +671,23 @@ namespace ActivityManager.Test
 
         protected void GvCredit_DataBound(object sender, EventArgs e)
         {
+            // 格式化时间显示
             foreach (GridViewRow row in GvCredit.Rows)
                 row.Cells[4].Text = Convert.ToDateTime(row.Cells[4].Text).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+        }
+
+        protected void ImageButtonInfo_Click(object sender, ImageClickEventArgs e)
+        {
+            Response.Write("<script>if(confirm('是否信息有误需要二次认证？'))location.href = 'StudentIdentifying.aspx'</script>;");
+        }
+
+        protected void BtnAppraiseCommit_Click(object sender, EventArgs e)
+        {
+        }
+
+        protected void BtnAppraiseCancel_Click(object sender, EventArgs e)
+        {
+            DivAppraise.Style["display"] = "none";
         }
     }
 }

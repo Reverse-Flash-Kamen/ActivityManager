@@ -1,6 +1,9 @@
 ﻿using ActivityManager.App_Data;
 using System;
 using System.Linq;
+using System.Web;
+using System.Web.UI.WebControls;
+using System.Windows;
 
 namespace ActivityManager
 {
@@ -35,6 +38,27 @@ namespace ActivityManager
                       select activity;
             var a = res.First();
 
+            activityID = a.activityID.ToString().Trim();
+            activityName = a.activityName.ToString().Trim();
+            activityIntro = a.activityIntro.ToString().Trim();
+            activityPlaceID = a.activityPlaceID.ToString().Trim();
+            activityOrgID = a.activityOrgID.ToString().Trim();
+            availableCredit = a.availableCredit.ToString().Trim();
+            maxSigned = a.maxSigned.ToString().Trim();
+            signed = a.signed.ToString().Trim();
+            activityState = a.activityState.ToString().Trim();
+            signStartDate = Convert.ToDateTime(a.signStartDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            signEndDate = Convert.ToDateTime(a.signEndDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            holdDate = Convert.ToDateTime(a.holdDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            holdStart = a.holdStart.ToString().Trim();
+            holdEnd = a.holdEnd.ToString().Trim();
+            submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            failReason = a.failReason.ToString().Trim();
+            activityType = a.activityType.ToString().Trim();
+        }
+
+        public MyActivity(Activity a)
+        {
             activityID = a.activityID.ToString().Trim();
             activityName = a.activityName.ToString().Trim();
             activityIntro = a.activityIntro.ToString().Trim();
@@ -176,9 +200,12 @@ namespace ActivityManager
             /*            Console.WriteLine(nowTime);
                         Console.WriteLine(nowHour);*/
 
+            // HttpContext.Current.Response.Write(activityName + " now:" + nowTime + " signStart:" + signStartDate + " signEnd:" + signEndDate + "\\");
+
             int state = int.Parse(activityState);
             if (int.Parse(activityState) == 2)
             {
+                // 对于审核中（2）的活动，如果当前时间超过报名截止时间，则更新为审核过期（4）
                 if (!Lesser(nowTime, SignEndDate))
                 {
                     state = 4;
@@ -199,27 +226,28 @@ namespace ActivityManager
 
             if (int.Parse(activityState) >= 5 && int.Parse(activityState) <= 9)
             {
-                //审核通过
+                // 对于审核通过的活动进行状态更新
                 if (Lesser(nowTime, SignStartDate))
                 {
                     // 待报名5
-                    // Console.WriteLine(signStartDate);
+                    // 当前时间早于报名开始时间
                     state = 5;
                 }
                 else if (Lesser(nowTime, SignEndDate))
                 {
                     // 报名中6
-                    //Console.WriteLine(signEndDate);
+                    // 当前时间早于报名截止时间且不早于报名开始时间
                     state = 6;
                 }
                 else if (Lesser(nowTime, HoldDate))
                 {
                     // 待开始7
-                    //Console.WriteLine(HoldDate);
+                    // 当前时间晚于报名时段且早于举办时间
                     state = 7;
                 }
                 else if (Equals(nowTime, HoldDate))
                 {
+                    // 举办活动当天
                     if (nowHour < int.Parse(holdStart))
                     {
                         // 待开始7

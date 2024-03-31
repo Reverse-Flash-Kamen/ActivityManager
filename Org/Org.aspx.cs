@@ -19,9 +19,10 @@ namespace ActivityManager.Test
             Session["ID"] = "org2022121201";
             Tool.curUser = 1;
 
-            // Tool.FormatGridView(GvTemplate, 9);
-
-            Tool.UpdateActivityState(GvTemplate);
+            if (!IsPostBack)
+                Tool.UpdataAllActivityState();
+            else
+                Tool.FormatGridView(GvTemplate, 9);
 
             schoolConnector.Where = null;
             schoolConnector.Where = "activityOrgID = \"" + Session["ID"].ToString() + "\"";

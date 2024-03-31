@@ -159,6 +159,18 @@ namespace ActivityManager
             }
         }
 
+        public static void UpdataAllActivityState()
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.Activity
+                      select info;
+            foreach (var item in res)
+            {
+                MyActivity a = new MyActivity(item);
+                a.UpdateState();
+            }
+        }
+
         public static void SetButton(GridView gv, string ID)
         {
             // 根据用户码绑定事件
@@ -362,7 +374,7 @@ namespace ActivityManager
                     ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
                     // 判断是否已收藏
-                    if (state >= 5 && state <= 6)
+                    if (state >= 5)
                     {
                         var resLiked = from info in db.LikedActivity
                                        where info.studentID == ID && info.activityID == actID
@@ -406,6 +418,24 @@ namespace ActivityManager
                     {
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
+                    }
+
+                    // 对于报名且结束的活动可评价
+                    if (state >= 9)
+                    {
+                        var resSign = from info in db.SignedActivity
+                                      where info.studentID == ID && (info.activityID == actID)
+                                      select info;
+
+                        var resLiked = from info in db.LikedActivity
+                                       where info.studentID == ID && info.activityID == actID
+                                       select info;
+
+                        if (resSign.Any())
+                        {
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "评分";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "appraise";
+                        }
                     }
                 }
             }

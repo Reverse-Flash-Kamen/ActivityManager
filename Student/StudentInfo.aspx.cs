@@ -31,28 +31,57 @@ namespace ActivityManager.Student
                 ActivityManagerDataContext db = new ActivityManagerDataContext();
 
                 StudentIdentified studentIdentified = new StudentIdentified();
+
                 studentIdentified.studentID = Session["ID"].ToString();
                 studentIdentified.phone = TxtPhone.Text.Trim();
                 studentIdentified.studentName = Session["name"].ToString();
                 studentIdentified.gender = RadioButtonListGender.SelectedItem.ToString();
-                studentIdentified.faculty = DropDownListFaculty.SelectedValue.ToString();
-                studentIdentified.major = DropDownListMajor.SelectedValue.ToString();
-                studentIdentified.@class = DropDownListClass.SelectedValue.ToString();
+                studentIdentified.faculty = DropDownListFaculty.SelectedItem.ToString();
+                studentIdentified.major = DropDownListMajor.SelectedItem.ToString();
+                studentIdentified.@class = DropDownListGrade.SelectedItem.ToString() + DropDownListClass.SelectedItem.ToString();
                 studentIdentified.studentPassword = TxtRePsw.Text.Trim();
                 studentIdentified.credit_1 = 0;
                 studentIdentified.credit_2 = 0;
                 studentIdentified.credit_3 = 0;
 
-                /*try
-                {*/
-                db.StudentIdentified.InsertOnSubmit(studentIdentified);
-                db.SubmitChanges();
-                /*}
-                catch
+                if (Session["Info"].ToString() == "0")
                 {
-                    Response.Write("<script>alert('信息录入错误，请稍后重试！');</script>");
-                    return;
-                }*/
+                    // 第一次认证，插入信息
+                    try
+                    {
+                        db.StudentIdentified.InsertOnSubmit(studentIdentified);
+                        db.SubmitChanges();
+                    }
+                    catch
+                    {
+                        Response.Write("<script>alert('信息录入错误，请稍后重试！');</script>");
+                        return;
+                    }
+                }
+                else if (Session["Info"].ToString() == "1")
+                {
+                    // 二次认证，修改信息
+                    try
+                    {
+                        var res = from info in db.StudentIdentified
+                                  where info.studentID == studentIdentified.studentID
+                                  select info;
+
+                        res.First().phone = studentIdentified.phone;
+                        res.First().gender = studentIdentified.gender;
+                        res.First().faculty = studentIdentified.faculty;
+                        res.First().major = studentIdentified.major;
+                        res.First().@class = studentIdentified.@class;
+                        res.First().studentPassword = studentIdentified.studentPassword;
+
+                        db.SubmitChanges();
+                    }
+                    catch
+                    {
+                        Response.Write("<script>alert('信息更新错误，请稍后重试！');</script>");
+                        return;
+                    }
+                }
 
                 Response.Write("<script>alert('信息录入成功，请重新登录！');location.href='..//Login.aspx';</script>");
             }

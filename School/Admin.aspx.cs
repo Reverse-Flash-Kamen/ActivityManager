@@ -12,8 +12,7 @@ namespace ActivityManager.Test
         {
             // 调试用
             Session["ID"] = "ndky000001";
-
-            // Tool.FormatGridView(GvTemplate, 9);
+            Tool.curUser = 0;
 
             LinkButton1.ForeColor = System.Drawing.Color.Brown;
             LinkButton1.Font.Underline = true;
@@ -25,7 +24,10 @@ namespace ActivityManager.Test
             schoolConnector.Where = null;
             schoolConnector.Where = "activityState >= 2 ";
 
-            Tool.UpdateActivityState(GvTemplate);
+            if (!IsPostBack)
+                Tool.UpdataAllActivityState();
+            else
+                Tool.FormatGridView(GvTemplate, 9);
         }
 
         protected void Esc_Click(object sender, System.Web.UI.ImageClickEventArgs e)

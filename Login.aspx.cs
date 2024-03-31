@@ -9,6 +9,7 @@ namespace ActivityManager
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            Session["Info"] = "0"; // 不允许二次认证
         }
 
         public void LoginMessageBox(string dbPsw, string loginPsw, string ID, int loginType)

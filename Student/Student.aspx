@@ -98,8 +98,24 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        
-        <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False"/>
+        <div runat="server" id="DivAppraise" style="position:absolute; width:300px; height:200px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
+            <asp:Label ID="LblAppraise" runat="server" Text="Label" style="margin:10px;">测试活动</asp:Label>
+            <br />
+            <asp:RadioButtonList ID="RblAppraise" runat="server" RepeatDirection="Horizontal">
+                <asp:ListItem Text="1"></asp:ListItem>
+                <asp:ListItem Text="2"></asp:ListItem>
+                <asp:ListItem Text="3"></asp:ListItem>
+                <asp:ListItem Text="4"></asp:ListItem>
+                <asp:ListItem Text="5"></asp:ListItem>
+            </asp:RadioButtonList>
+            <asp:TextBox ID="TxtAppraise" runat="server" Columns="30" Rows="5" TextMode="MultiLine" style="resize:none;"></asp:TextBox>
+            <br />
+            <asp:Button ID="BtnAppraiseCommit" runat="server" Text="确定" OnClick="BtnAppraiseCommit_Click" />
+            <asp:Button ID="BtnAppraiseCancel" runat="server" Text="取消" OnClick="BtnAppraiseCancel_Click" />
+        </div>
+
+
+        <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False" ToolTip="返回登陆"/>
 
         <div class="auto-style1" runat="server">
             <%--左导航栏--%>
@@ -311,7 +327,7 @@
             </div>
             <div style="width:600px; height:280px; padding-left:10px;">
                 <ul>
-                    <li class="li-style">姓名：<asp:Label ID="LblStuName" runat="server" Text="张三"></asp:Label></li>
+                    <li class="li-style">姓名：<asp:Label ID="LblStuName" runat="server" Text="张三"></asp:Label> <asp:ImageButton ID="ImageButtonInfo" runat="server" OnClick="ImageButtonInfo_Click" ImageUrl="~/image/info.png" Width="15px" style="margin-left:5px" ToolTip="信息修改" CausesValidation="False"/></li>
                     <li class="li-style">学号：<asp:Label ID="LblStuID" runat="server" Text="7020820000"></asp:Label></li>
                     <li class="li-style">专业班级：<asp:Label ID="LblMajor" runat="server" Text="计算机科学与技术206班"></asp:Label></li>
                     <li class="li-style">性别：<asp:Label ID="LblGender" runat="server" Text="男"></asp:Label></li>
