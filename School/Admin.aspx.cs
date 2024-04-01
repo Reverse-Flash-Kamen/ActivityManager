@@ -13,6 +13,8 @@ namespace ActivityManager.Test
             // 调试用
             Session["ID"] = "ndky000001";
 
+            Tool.FormatGridView(GvTemplate, 9);
+
             LinkButton1.ForeColor = System.Drawing.Color.Brown;
             LinkButton1.Font.Underline = true;
 
@@ -27,30 +29,7 @@ namespace ActivityManager.Test
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
             Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
-
-            /*空白行*/
-            //if (GvTemplate.Rows.Count != 0 && GvTemplate.Rows.Count != GvTemplate.PageSize)
-            //{
-            //    // 如果分页有数据但不等于pagesize
-            //    Control table = GvTemplate.Controls[0];
-            //    if (table != null)
-            //    {
-            //        for (int i = 0; i < GvTemplate.PageSize - GvTemplate.Rows.Count; i++)
-            //        {
-            //            int rowIndex = GvTemplate.Rows.Count + i + 1;
-            //            GridViewRow row = new GridViewRow(rowIndex, -1, DataControlRowType.Separator,DataControlRowState.Normal);
-
-            //            row.BackColor = (rowIndex % 2 == 0) ? System.Drawing.Color.White : System.Drawing.Color.WhiteSmoke;
-            //            for (int j = 0; j < GvTemplate.Columns.Count; j++)
-            //            {
-            //                TableCell cell = new TableCell();
-            //                cell.Text = "&nbsp";
-            //                row.Controls.Add(cell);
-            //            }
-            //            table.Controls.AddAt(rowIndex, row);
-            //        }
-            //    }
-            //}
+            Tool.FormatGridView((GridView)sender, 9);
         }
 
         protected void commit_Click(object sender, EventArgs e)
@@ -61,6 +40,7 @@ namespace ActivityManager.Test
             string s1 = name.Text.Trim();
             string s2 = org.Text.Trim();
             string s3 = state.SelectedValue.Trim();
+            string s4 = type.SelectedValue.Trim();
 
             if (s1 != "")
             {
@@ -83,6 +63,12 @@ namespace ActivityManager.Test
                 if (s3 != "0")
                     schoolConnector.Where += " and activityState = " + s3;
             }
+
+            if (s4 != "")
+            {
+                if (s4 != "0")
+                    schoolConnector.Where += " and activityType = " + s4;
+            }
         }
 
         protected void flush_Click(object sender, EventArgs e)
@@ -90,6 +76,7 @@ namespace ActivityManager.Test
             name.Text = null;
             org.Text = null;
             state.SelectedIndex = 0;
+            type.SelectedIndex = 0;
             schoolConnector.Where = null;
             schoolConnector.Where = "activityState >= 2 ";
         }
@@ -200,6 +187,8 @@ namespace ActivityManager.Test
                 // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
                 Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
             }
+
+            GvTemplate.DataBind();
         }
 
         protected void checkAct(string actID)
@@ -240,7 +229,8 @@ namespace ActivityManager.Test
 
             if (state == 0)
             {
-                MessageBox.Show("请选择是否通过审核！");
+                // MessageBox.Show("请选择是否通过审核！");
+                Response.Write("<script>alert('请选择是否通过审核！')</script>");
             }
             else if (state == 1)
             {
@@ -252,7 +242,8 @@ namespace ActivityManager.Test
             {
                 if (failReason.Text.Trim() == "" || failReason.Text == null)
                 {
-                    MessageBox.Show("请填写审核不通过理由！");
+                    // MessageBox.Show("请填写审核不通过理由！");
+                    Response.Write("<script>alert('请填写审核不通过理由！')</script>");
                     return;
                 }
                 else
@@ -265,6 +256,8 @@ namespace ActivityManager.Test
             }
 
             btnCancel_Click(sender, e);
+
+            GvTemplate.DataBind();
         }
     }
 }

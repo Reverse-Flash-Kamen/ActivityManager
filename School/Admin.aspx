@@ -120,7 +120,7 @@
                </div>
                <%--校徽--%>
                <div>
-                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
+                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/image/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
                </div>
            </div>
 
@@ -144,9 +144,18 @@
                         <asp:ListItem Value="11">已完成</asp:ListItem>
                     </asp:DropDownList>
                     </span>
-
-                <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" />
-                <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" />
+                   <span class="auto-style7"> 活动类别&nbsp; 
+                       <asp:DropDownList ID="type" runat="server">
+                           <asp:ListItem Value="0">活动类别</asp:ListItem> 
+                       <asp:ListItem Value="1">创新创业与就业见习</asp:ListItem>
+                       <asp:ListItem Value="2">社会实践与志愿公益</asp:ListItem>
+                       <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
+                   </asp:DropDownList>
+                   </span>
+               <div style="width:320px; position:absolute; top: 242px; left: 1244px;">
+                   <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
+                   <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
+               </div>  
             </div>
 
                <%--上导航栏--%>

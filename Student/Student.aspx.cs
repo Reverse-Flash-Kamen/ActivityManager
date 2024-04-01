@@ -179,6 +179,8 @@ namespace ActivityManager.Test
                 // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
                 Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
             }
+
+            GvTemplate.DataBind();
         }
 
         protected void LbtnAllAct_Click(object sender, EventArgs e)

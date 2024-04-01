@@ -75,6 +75,7 @@ namespace ActivityManager.Test
             name.Text = null;
             org.Text = null;
             state.SelectedIndex = 0;
+            type.SelectedIndex = 0;
 
             schoolConnector.Where = null;
             schoolConnector.Where = "activityOrgID = \"" + Session["ID"].ToString() + "\"";
@@ -145,6 +146,8 @@ namespace ActivityManager.Test
                 // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
                 Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
             }
+
+            GvTemplate.DataBind();
         }
 
         protected void BtnCheck_Click(object sender, EventArgs e)

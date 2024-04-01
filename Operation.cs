@@ -86,7 +86,7 @@ namespace ActivityManager
                 MessageBox.Show("导出名单成功！");
             }
 
-            gv.DataBind(); // 重现绑定数据，刷新添加|删除|退回的数据行
+            //  gv.DataBind(); // 重现绑定数据，刷新添加|删除|退回的数据行
 
             Tool.SetButton(gv, studentID);
         }
@@ -106,7 +106,7 @@ namespace ActivityManager
             }
             catch
             {
-                HttpContext.Current.Response.Write("<script>alert('未知错误，删除失败！')</script>");
+                HttpContext.Current.Response.Write("<script>alert('删除失败,请稍后重试！')</script>");
                 return;
             }
             // HttpContext.Current.Response.Write("<script>alert('删除成功！')</script>");
@@ -144,7 +144,7 @@ namespace ActivityManager
             }
             catch
             {
-                HttpContext.Current.Response.Write("<script>alert('未知错误，撤回失败！')</script>");
+                HttpContext.Current.Response.Write("<script>alert('撤回失败,请稍后重试！')</script>");
                 return;
             }
         }
@@ -262,11 +262,11 @@ namespace ActivityManager
                                select info.placeName;
             string placeName = resPlaceName.First();
             string Text =
-                "活动名称：" + aSign.ActivityName + "\n" +
-                "举办地点：" + placeName + "\n" +
-                "举办时间：" + aSign.HoldDate + " " + aSign.HoldStart + ":00 至 " + aSign.HoldDate + " " + aSign.HoldEnd + ":00\n" +
-                "报名者姓名：" + studentName + "\n" +
-                "报名者学号：" + studentID + "\n" +
+                "活动名称：" + aSign.ActivityName + "\\r" +
+                "举办地点：" + placeName + "\\r" +
+                "举办时间：" + aSign.HoldDate + " " + aSign.HoldStart + ":00 至 " + aSign.HoldDate + " " + aSign.HoldEnd + ":00\\r" +
+                "报名者姓名：" + studentName + "\\r" +
+                "报名者学号：" + studentID + "\\r" +
                 "报名者联系方式：" + phone;
 
             // 需要更改
@@ -285,7 +285,26 @@ namespace ActivityManager
                 dbSign.SubmitChanges();
             }*/
 
-            HttpContext.Current.Response.Write("<script>alert(" + Text + ")</script>");
+            try
+            {
+                SignedActivity signedActivity = new SignedActivity();
+                signedActivity.activityID = actID;
+                signedActivity.studentID = studentID;
+
+                ++signed;
+                aSign.Signed = signed.ToString();
+                aSign.Update();
+
+                dbSign.SignedActivity.InsertOnSubmit(signedActivity);
+                dbSign.SubmitChanges();
+            }
+            catch
+            {
+                HttpContext.Current.Response.Write("<script>alert('报名失败，请稍后重试！')</script>");
+                return;
+            }
+
+            HttpContext.Current.Response.Write("<script>alert('" + Text + "')</script>");
         }
 
         public void ActSignCancel(string actID, string studentID)
