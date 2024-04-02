@@ -153,7 +153,7 @@ namespace ActivityManager
         {
             foreach (GridViewRow row in gv.Rows)
             {
-                string id = row.Cells[0].Text;
+                string id = row.Cells[0].Text; // 必须确保第一列是actID
                 MyActivity a = new MyActivity(id); // 用id创建活动实例
                 a.UpdateState(); // 更新活动状态
             }
@@ -452,11 +452,6 @@ namespace ActivityManager
             }
 
             return connectWhere;
-        }
-
-        public static void test()
-        {
-            MessageBox.Show("导出名单成功！");
         }
     }
 }

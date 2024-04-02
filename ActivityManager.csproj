@@ -74,6 +74,7 @@
       <DependentUpon>ActivityManager.mdf</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
+    <Content Include="image\esc.png" />
     <Content Include="image\Ndky.png" />
     <Content Include="image\users\7020820312.jpg" />
     <Content Include="image\users\7020820000.jpg" />
@@ -82,6 +83,7 @@
     <Content Include="Student\Student.aspx" />
     <Content Include="School\Admin.aspx" />
     <Content Include="Student\StudentIdentifying.aspx" />
+    <Content Include="Student\StudentInfo.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +128,13 @@
     </Compile>
     <Compile Include="Student\StudentIdentifying.aspx.designer.cs">
       <DependentUpon>StudentIdentifying.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\StudentInfo.aspx.cs">
+      <DependentUpon>StudentInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\StudentInfo.aspx.designer.cs">
+      <DependentUpon>StudentInfo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Tool.cs" />
     <Compile Include="Global.asax.cs">

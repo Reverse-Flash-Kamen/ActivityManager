@@ -11,7 +11,7 @@ namespace ActivityManager.Student
 {
 
 
-    public partial class WebForm1
+    public partial class StudentInfo
     {
 
         /// <summary>
@@ -33,120 +33,156 @@ namespace ActivityManager.Student
         protected global::System.Web.UI.WebControls.Label Label;
 
         /// <summary>
-        /// DivIdentified 控件。
+        /// DivInfo 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivIdentified;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivInfo;
 
         /// <summary>
-        /// LblStudentID 控件。
+        /// DropDownListFaculty 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblStudentID;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownListFaculty;
 
         /// <summary>
-        /// TxtStudentID 控件。
+        /// DropDownListMajor 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtStudentID;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownListMajor;
 
         /// <summary>
-        /// RfvStudentID 控件。
+        /// DropDownListGrade 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvStudentID;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownListGrade;
 
         /// <summary>
-        /// LblStudentName 控件。
+        /// DropDownListClass 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblStudentName;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownListClass;
 
         /// <summary>
-        /// TxtStudentName 控件。
+        /// LblNewPsw 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtStudentName;
+        protected global::System.Web.UI.WebControls.Label LblNewPsw;
 
         /// <summary>
-        /// RfvStudentName 控件。
+        /// TxtNewPsw 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvStudentName;
+        protected global::System.Web.UI.WebControls.TextBox TxtNewPsw;
 
         /// <summary>
-        /// LblID 控件。
+        /// RfvNewPsw 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblID;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvNewPsw;
 
         /// <summary>
-        /// TxtID 控件。
+        /// LblRePsw 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtID;
+        protected global::System.Web.UI.WebControls.Label LblRePsw;
 
         /// <summary>
-        /// RfvID 控件。
+        /// TxtRePsw 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvID;
+        protected global::System.Web.UI.WebControls.TextBox TxtRePsw;
 
         /// <summary>
-        /// Vs 控件。
+        /// RfvRePsw 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary Vs;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvRePsw;
 
         /// <summary>
-        /// BtnIdentifying 控件。
+        /// CompareValidator 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnIdentifying;
+        protected global::System.Web.UI.WebControls.CompareValidator CompareValidator;
 
         /// <summary>
-        /// BtnReturn 控件。
+        /// LblPhone 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnReturn;
+        protected global::System.Web.UI.WebControls.Label LblPhone;
+
+        /// <summary>
+        /// TxtPhone 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtPhone;
+
+        /// <summary>
+        /// RfvPhone 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvPhone;
+
+        /// <summary>
+        /// RadioButtonListGender 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList RadioButtonListGender;
+
+        /// <summary>
+        /// BtnSubmit 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnSubmit;
     }
 }

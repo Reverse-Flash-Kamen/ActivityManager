@@ -1,6 +1,7 @@
 ﻿using ActivityManager.App_Data;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace ActivityManager
 {
@@ -19,7 +20,7 @@ namespace ActivityManager
 
             if (dbPsw == "" || dbPsw == null)
                 // 账户错误
-                Response.Write("<script>alert('请确认账户ID|端口！')</script>");
+                Response.Write("<script>alert('未找到登录账号ID，请确认账户ID或端口是否正确！')</script>");
             else if (dbPsw.Equals(loginPsw))
             {
                 // 验证通过，创建会话信息

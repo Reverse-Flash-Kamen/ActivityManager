@@ -98,6 +98,9 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        
+        <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False"/>
+
         <div class="auto-style1" runat="server">
             <%--左导航栏--%>
            <div class="auto-style2">
@@ -122,6 +125,7 @@
            </div>
 
              <%--上导航栏--%>
+  
            <div class="auto-style3">
                <%--查询--%>
                <div class="auto-style8" id="DivSearch" runat="server">

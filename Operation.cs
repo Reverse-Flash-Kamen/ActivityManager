@@ -234,7 +234,7 @@ namespace ActivityManager
             MyActivity aSign = new MyActivity(actID);
 
             // 获取学生信息
-            var resStuName = from info in dbSign.Student
+            var resStuName = from info in dbSign.StudentIdentified
                              where info.studentID == studentID
                              select info.studentName;
             string studentName = resStuName.First();

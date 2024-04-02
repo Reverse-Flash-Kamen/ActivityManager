@@ -102,6 +102,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False"/>
         <div id="display" runat="server" visible="False">
             <h2 style="width: 100px; margin: 17px auto;">活动申请</h2>
             <div>

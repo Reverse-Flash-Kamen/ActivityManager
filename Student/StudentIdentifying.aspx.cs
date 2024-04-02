@@ -19,64 +19,36 @@ namespace ActivityManager.Student
              * 将学生信息插入 StudentIdentified 表
              */
 
-            string studentID = TxtStudentID.Text;
-            string studentName = TxtStudentName.Text;
-            int genderId = RblGender.SelectedIndex;
-            string major = DdlMajor.Text;
-            string sClass = DdlClass.Text;
-            string phone = TxtPhone.Text;
-
-            string gender = "";
-            switch (genderId)
-            {
-                case -1:
-                    Response.Write("<script>alert('请选择性别！')</script>");
-                    return;
-
-                case 0:
-                    gender = "男";
-                    break;
-
-                case 1:
-                    gender = "女";
-                    break;
-            }
+            string studentID = TxtStudentID.Text.Trim();
+            string studentName = TxtStudentName.Text.Trim();
+            string ID = TxtID.Text.Trim();
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
 
-            var res = from info in db.Student
-                      where info.studentID == studentID && info.studentName == studentName && info.gender == gender && info.major == major && info.@class == sClass
+            var res = from info in db.StudentIdentified
+                      where info.studentID == studentID
                       select info;
 
-            if (res.Count() > 0)
+            if (res.Any())
             {
-                // 查到信息，说明认证成功，进行添加操作
-                StudentIdentified studentIdentified = new StudentIdentified();
-                studentIdentified.studentID = studentID;
-                studentIdentified.studentPassword = "123456";
-                studentIdentified.phone = phone;
-                studentIdentified.credit_1 = 0;
-                studentIdentified.credit_2 = 0;
-                studentIdentified.credit_3 = 0;
+                Response.Write("<script>alert('无需二次认证，请返回登录界面！');</script>");
+                return;
+            }
 
-                // 插入操作
-                try
-                {
-                    db.StudentIdentified.InsertOnSubmit(studentIdentified);
-                    db.SubmitChanges();
-                    Response.Write("<script>alert('认证成功！初始密码为123456，请尽快前往修改密码！')</script>");
+            var resI = from info in db.Student
+                       where info.studentID == studentID && info.studentName == studentName && info.ID == ID
+                       select info;
 
-                    Server.Transfer("../Login.aspx");
-                }
-                catch
-                {
-                    /*弹出异常问题待解决*/
-                    Response.Write("<script>alert('学生已认证，无需二次认证，请返回登录！')</script>");
-                }
+            if (resI.Any())
+            {
+                Response.Write("<script>alert('请继续填写基本信息！');</script>");
+                Session["ID"] = studentID;
+                Session["name"] = TxtStudentName.Text.Trim();
+                Server.Transfer("StudentInfo.aspx");
             }
             else
             {
-                Response.Write("<script>alert('学生认证失败，请确认个人信息！')</script>");
+                Response.Write("<script>alert('请检查认证信息！');</script>");
             }
         }
 

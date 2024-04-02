@@ -19,16 +19,24 @@ namespace ActivityManager.Test
             Session["ID"] = "org2022121201";
             Tool.curUser = 1;
 
-            Tool.FormatGridView(GvTemplate, 9);
+            // Tool.FormatGridView(GvTemplate, 9);
+
+            Tool.UpdateActivityState(GvTemplate);
 
             schoolConnector.Where = null;
             schoolConnector.Where = "activityOrgID = \"" + Session["ID"].ToString() + "\"";
+        }
+
+        protected void Esc_Click(object sender, System.Web.UI.ImageClickEventArgs e)
+        {
+            Server.Transfer("../Login.aspx");
         }
 
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
             Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
             Tool.FormatGridView((GridView)sender, 9);
+            Tool.UpdateActivityState((GridView)sender);
         }
 
         protected void commit_Click(object sender, EventArgs e)

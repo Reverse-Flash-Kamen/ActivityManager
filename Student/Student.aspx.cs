@@ -90,6 +90,8 @@ namespace ActivityManager.Test
         {
             Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
             Tool.FormatGridView((GridView)sender, 8);
+
+            Tool.UpdateActivityState((GridView)sender);
         }
 
         protected void GvTemplate_DataBinding(object sender, EventArgs e)
@@ -255,7 +257,7 @@ namespace ActivityManager.Test
             MyImage.ImageUrl = "~/image/users/" + Session["ID"] + ".jpg";
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
-            var res1 = from info in db.Student
+            var res1 = from info in db.StudentIdentified
                            // where info.studentID == Tool.studentID
                        where info.studentID == Session["ID"].ToString()
                        select info;
@@ -432,7 +434,9 @@ namespace ActivityManager.Test
             if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
             ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
 
-            Tool.FormatGridView(GvTemplate, 8);
+            // Tool.FormatGridView(GvTemplate, 8);
+
+            Tool.UpdateActivityState(GvTemplate);
         }
 
         protected void MyImage_Click(object sender, System.Web.UI.ImageClickEventArgs e)
@@ -441,6 +445,11 @@ namespace ActivityManager.Test
                 DivUploadImage.Style["display"] = "block";
             else
                 DivUploadImage.Style["display"] = "none";
+        }
+
+        protected void Esc_Click(object sender, System.Web.UI.ImageClickEventArgs e)
+        {
+            Server.Transfer("../Login.aspx");
         }
 
         protected void BtnImage_Click(object sender, EventArgs e)

@@ -17,7 +17,7 @@
       <Column Name="holdEnd" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="submitTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="failReason" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="activityType" Type="System.Int32" CanBeNull="false" />
+      <Column Name="activityType" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Activity_LikedActivity" Member="LikedActivity" ThisKey="activityID" OtherKey="activityID" Type="LikedActivity" />
       <Association Name="Activity_SignedActivity" Member="SignedActivity" ThisKey="activityID" OtherKey="activityID" Type="SignedActivity" />
       <Association Name="Organization_Activity" Member="Organization" ThisKey="activityOrgID" OtherKey="organizationID" Type="Organization" IsForeignKey="true" />
@@ -28,14 +28,6 @@
     <Type Name="Administration">
       <Column Name="adminID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="adminPassword" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.LikedActivity" Member="LikedActivity">
-    <Type Name="LikedActivity">
-      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Activity_LikedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
-      <Association Name="Student_LikedActivity" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Organization" Member="Organization">
@@ -54,6 +46,14 @@
       <Association Name="Place_Activity" Member="Activity" ThisKey="placeID" OtherKey="activityPlaceID" Type="Activity" />
     </Type>
   </Table>
+  <Table Name="dbo.LikedActivity" Member="LikedActivity">
+    <Type Name="LikedActivity">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Activity_LikedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+      <Association Name="Student_LikedActivity" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.SignedActivity" Member="SignedActivity">
     <Type Name="SignedActivity">
       <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -66,10 +66,7 @@
     <Type Name="Student">
       <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="ID" Type="System.String" DbType="Char(18)" CanBeNull="true" />
-      <Column Name="studentName" Type="System.String" DbType="VarChar(22) NOT NULL" CanBeNull="false" />
-      <Column Name="gender" Type="System.String" DbType="Char(2)" CanBeNull="true" />
-      <Column Name="major" Type="System.String" DbType="VarChar(26)" CanBeNull="true" />
-      <Column Name="class" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="studentName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Association Name="Student_LikedActivity" Member="LikedActivity" ThisKey="studentID" OtherKey="studentID" Type="LikedActivity" />
       <Association Name="Student_SignedActivity" Member="SignedActivity" ThisKey="studentID" OtherKey="studentID" Type="SignedActivity" />
       <Association Name="Student_StudentIdentified" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" Cardinality="One" />
@@ -78,11 +75,16 @@
   <Table Name="dbo.StudentIdentified" Member="StudentIdentified">
     <Type Name="StudentIdentified">
       <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="studentPassword" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
       <Column Name="phone" Type="System.String" DbType="Char(11)" CanBeNull="true" />
+      <Column Name="studentName" Type="System.String" DbType="VarChar(22) NOT NULL" CanBeNull="false" />
+      <Column Name="gender" Type="System.String" DbType="Char(2)" CanBeNull="true" />
+      <Column Name="faculty" Type="System.String" DbType="VarChar(26)" CanBeNull="true" />
+      <Column Name="major" Type="System.String" DbType="VarChar(26)" CanBeNull="true" />
+      <Column Name="class" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
       <Column Name="credit_1" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="credit_2" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="credit_3" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="studentPassword" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Association Name="Student_StudentIdentified" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
     </Type>
   </Table>

@@ -84,6 +84,7 @@
 </head>
 <body>  
     <form id="form1" runat="server">
+        <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False"/>
         <div id="display" runat="server" visible="false">
             <h3 style="text-align: center; margin: 0 0 6px 0;">
                 审核活动
