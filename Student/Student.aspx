@@ -11,7 +11,6 @@
         .hidden {
             display:none;
         }
-
         .auto-style2 {
             width:15%;
             height: 750px;
@@ -94,43 +93,33 @@
             padding:10px;
              Font-Size:larger;
         }
+        .mask{
+                background-color: rgba(0, 0, 0, .3);
+                position: absolute;
+                width:100%;
+                height:100%;
+                z-index: 999;
+                display: none;
+        }
+        .overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0);
+          pointer-events:auto;
+        }
     </style>
 </head>
-<body>
+<body style="background-color:white">
     <form id="form1" runat="server">
-        <%--评价功能--%>
-        <div runat="server" id="DivAppraise" style="position:absolute; width:300px; height:200px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
-            <asp:Label ID="LblAppraise" runat="server" Text="" style="margin:10px;"></asp:Label>
-            <asp:Label ID="LblActID" runat="server" Text="" style="display:none"></asp:Label>
-            <br />
-            <asp:RadioButtonList ID="RblAppraise" runat="server" RepeatDirection="Horizontal">
-                <asp:ListItem Text="1"></asp:ListItem>
-                <asp:ListItem Text="2"></asp:ListItem>
-                <asp:ListItem Text="3"></asp:ListItem>
-                <asp:ListItem Text="4"></asp:ListItem>
-                <asp:ListItem Text="5"></asp:ListItem>
-            </asp:RadioButtonList>
-            <asp:TextBox ID="TxtAppraise" runat="server" Columns="30" Rows="5" TextMode="MultiLine" style="resize:none;"></asp:TextBox>
-            <br />
-            <asp:Button ID="BtnAppraiseCommit" runat="server" Text="确定" OnClick="BtnAppraiseCommit_Click" CausesValidation="False" />
-            <asp:Button ID="BtnAppraiseCancel" runat="server" Text="取消" OnClick="BtnAppraiseCancel_Click" CausesValidation="False" />
-        </div>
-
-        <%--退出功能--%>
-        <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False" ToolTip="返回登陆"/>
-
-        <%--签到功能--%>
-        <div runat="server" id="DivCheckIn" style="position:absolute; width:200px; height:100px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
-            <asp:Label ID="LblCheckIn" runat="server" Text="签到码"></asp:Label>
-            <asp:TextBox ID="TxtCheckIn" runat="server"></asp:TextBox>
-            <asp:Button ID="BtnCheckInCommit" runat="server" Text="确定" OnClick="BtnCheckInCommit_Click" CausesValidation="False" />
-            <asp:Button ID="BtnCheckInCancel" runat="server" Text="取消" OnClick="BtnCheckInCancel_Click" CausesValidation="False" />
-            <asp:Label ID="LblCheckInActID" runat="server" Text="" style="display:none"></asp:Label>
-        </div>        
-
-        <div class="auto-style1" runat="server">
-            <%--左导航栏--%>
-           <div class="auto-style2">
+        <%--遮罩--%>
+       <div runat="server" class="overlay" id="DivMask" >
+            <%--主界面--%>
+            <div class="auto-style1" runat="server">
+                <%--左导航栏--%>
+                <div class="auto-style2">
                <%--标题--%>
                <div style="background-color:#758b9e; text-align:center;">
                    <h1 style="padding:50px 0px; color:white; margin:0;">校生通</h1>
@@ -151,9 +140,8 @@
                </div>
            </div>
 
-             <%--上导航栏--%>
-  
-           <div class="auto-style3">
+                <%--上导航栏--%>
+                <div class="auto-style3">
                <%--查询--%>
                <div class="auto-style8" id="DivSearch" runat="server">
                     <span class="">&nbsp;&nbsp;&nbsp;活动名称&nbsp;<asp:TextBox ID="name" runat="server"></asp:TextBox></span>
@@ -178,7 +166,7 @@
                         <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
                     </asp:DropDownList>
                     </span>
-                <div style="width:320px; position:absolute; top: 242px; left: 1248px;">
+                <div style="width:320px; position:absolute; top: 242px; left: 1243px;">
                     <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
                     <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
                 </div>   
@@ -193,8 +181,8 @@
                </div>
            </div>
 
-            <%--列表--%>
-           <div>
+                <%--列表--%>
+                <div>
                 <asp:GridView ID="GvTemplate" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataKeyNames="activityID" DataSourceID="schoolConnector" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" OnDataBound="GridView1_DataBound" OnRowCommand="GvTemplate_RowCommand" HorizontalAlign="Center" GridLines="None" OnDataBinding="GvTemplate_DataBinding" OnPageIndexChanging="GvTemplate_PageIndexChanging">
                     <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                     <Columns>
@@ -296,9 +284,10 @@
                 </asp:GridView>
                 <asp:LinqDataSource ID="schoolConnector" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="Activity" EnableDelete="True" EnableInsert="True" EnableUpdate="True" OrderBy="activityState">
                 </asp:LinqDataSource>
-           </div>
+             </div>    
+            </div>
         </div>
-        
+            
          <%--活动详情--%>
         <div runat="server" class="divCheck" id="CheckActDiv">
             <div class="auto-style13"><asp:Label runat="server" Text="活动申请详情" Font-Bold="True" Font-Size="Large"></asp:Label></div>
@@ -327,7 +316,40 @@
             </table>
         </div>
 
-         <%--信息面板--%>
+         <%--评价功能--%>
+        <div runat="server" id="DivAppraise" style="position:absolute; width:300px; height:200px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
+            <div style="margin:10px">
+                <asp:Label ID="LblAppraise" runat="server" style="margin:10px 0px;" Font-Bold="True" Font-Size="Medium"></asp:Label>
+                <asp:Label ID="LblActID" runat="server" Text="" style="display:none"></asp:Label>
+                <br />
+                <asp:RadioButtonList ID="RblAppraise" runat="server" RepeatDirection="Horizontal" style="margin:5px 0px">
+                    <asp:ListItem Text="1"></asp:ListItem>
+                    <asp:ListItem Text="2"></asp:ListItem>
+                    <asp:ListItem Text="3"></asp:ListItem>
+                    <asp:ListItem Text="4"></asp:ListItem>
+                    <asp:ListItem Text="5"></asp:ListItem>
+                </asp:RadioButtonList>
+                <asp:TextBox ID="TxtAppraise" runat="server" Columns="30" Rows="5" TextMode="MultiLine" style="resize:none; margin:5px 0px" ></asp:TextBox>
+                <br />
+                <asp:Button ID="BtnAppraiseCommit" runat="server" Text="确定" OnClick="BtnAppraiseCommit_Click" CausesValidation="False" style="padding:2px 10px; margin: 5px 0px" />
+                <asp:Button ID="BtnAppraiseCancel" runat="server" Text="取消" OnClick="BtnAppraiseCancel_Click" CausesValidation="False" style="padding:2px 10px; margin: 5px" />
+            </div>
+        </div>
+
+        <%--签到功能--%>
+        <div runat="server" id="DivCheckIn" style="position:absolute; width:200px; height:100px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
+            <div style="margin:10px">
+                <asp:Label ID="LblCheckIn" runat="server" Text="签到码"></asp:Label>
+                <br />
+                <asp:TextBox ID="TxtCheckIn" runat="server"></asp:TextBox>
+                <br />
+                <asp:Button ID="BtnCheckInCommit" runat="server" Text="确定" OnClick="BtnCheckInCommit_Click" CausesValidation="False" style="padding:2px 5px; margin:5px 0px;"/>
+                <asp:Button ID="BtnCheckInCancel" runat="server" Text="取消" OnClick="BtnCheckInCancel_Click" CausesValidation="False" style="padding:2px 5px; margin:5px;"/>
+                <asp:Label ID="LblCheckInActID" runat="server" Text="" style="display:none"></asp:Label>
+            </div>
+        </div>    
+
+        <%--信息面板--%>
         <div class="divInfo" runat="server" id="DivMyInfoR">
             <div style="width:120px; height:250px; padding:5px; float:left;">
                 <asp:ImageButton ID="MyImage" runat="server" Height="100px" ImageUrl="~/image/users/7020820000.jpg" Width="100px" style="border-radius:50%; " OnClick="MyImage_Click" CausesValidation="False" ToolTip="更换头像"/>
@@ -440,6 +462,9 @@
                 </asp:LinqDataSource>
             </div>
         </div>
+
+        <%--退出功能--%>
+       <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False" ToolTip="返回登陆"/>
     </form>
 </body>
 </html>

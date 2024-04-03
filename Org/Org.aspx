@@ -4,17 +4,6 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-
-    <script language="javascript">
-        function ActConfirm() {
-            if (confirm('删除后不可恢复，确认要删除吗？')) {
-                document.getElementById('LblFlag').innerHTML = "true";
-                
-            }
-        }
-    </script>
-
-
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
     <style type="text/css">
@@ -98,11 +87,196 @@
         #display div {
             margin: 17px 17px;
         }
+        .overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0);
+          pointer-events:auto;
+        }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
+
+        <%--遮罩--%>
+        <div class="overlay" id="DivMask" runat="server">
+            <%--主界面--%>
+            <div class="auto-style1" runat="server">
+               <%--左导航栏--%>
+               <div class="auto-style2">
+                   <%--标题--%>
+                   <div style="background-color:#758b9e; text-align:center;">
+                       <h1 style="padding:50px 0px; color:white; margin:0;">校生通</h1>
+                   </div>
+                   <%--导航--%>
+                   <div style="padding:20px 20px; text-align:center; background-color:#ccad9f " >
+                       <asp:LinkButton ID="ActMan" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="ActMan_Click">活动管理</asp:LinkButton>
+                   </div>
+                   <%--校徽--%>
+                   <div>
+                       <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/image/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
+                   </div>
+               </div>
+
+               <div class="auto-style3">
+                   <%--查询--%>
+                   <div class="auto-style8">
+                        <span class="">&nbsp;&nbsp;&nbsp;活动名称&nbsp;<asp:TextBox ID="name" runat="server"></asp:TextBox></span>
+                        <span class="auto-style7">申请组织&nbsp;<asp:TextBox ID="org" runat="server"></asp:TextBox></span>
+                        <span class="auto-style7"> 活动状态&nbsp; 
+                            <asp:DropDownList ID="state" runat="server"> 
+                            <asp:ListItem Value="0">活动状态</asp:ListItem>
+                            <asp:ListItem Value="2">待审核</asp:ListItem>
+                            <asp:ListItem Value="3">未通过</asp:ListItem>
+                            <asp:ListItem Value="4">审核过期</asp:ListItem>
+                            <asp:ListItem Value="5">待报名</asp:ListItem>
+                            <asp:ListItem Value="6">报名中</asp:ListItem>
+                            <asp:ListItem Value="7">待开始</asp:ListItem>
+                            <asp:ListItem Value="8">活动中</asp:ListItem>
+                            <asp:ListItem Value="9">已结束</asp:ListItem>
+                            <asp:ListItem Value="10">已上报</asp:ListItem>
+                            <asp:ListItem Value="11">已完成</asp:ListItem>
+                        </asp:DropDownList>
+                        </span>
+
+                        <span class="auto-style7"> 活动类别&nbsp; 
+                            <asp:DropDownList ID="type" runat="server">
+                            <asp:ListItem Value="0">活动类别</asp:ListItem> 
+                            <asp:ListItem Value="1">创新创业与就业见习</asp:ListItem>
+                            <asp:ListItem Value="2">社会实践与志愿公益</asp:ListItem>
+                            <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
+                            </asp:DropDownList>
+                        </span>
+
+                        <div style="width:320px; position:absolute; top: 242px; left: 1238px;">
+                            <asp:Button ID="Button1" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
+                            <asp:Button ID="Button2" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
+                        </div>   
+                    </div>
+
+                    <%--上导航栏--%>
+                    <div class="auto-style9">
+                            <asp:Button ID="BtnApply" runat="server" Text="+ 申请活动" CssClass="auto-style14" Font-Size="Large" Height="50px" Width="130px" OnClick="BtnApply_Click" />
+                    </div>
+               </div>
+
+                <%--列表--%>
+               <div>
+                    <asp:GridView ID="GvTemplate" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataKeyNames="activityID" DataSourceID="schoolConnector" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" OnDataBound="GridView1_DataBound" OnRowCommand="GvTemplate_RowCommand" HorizontalAlign="Center" GridLines="None">
+                        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                        <Columns>
+                            <asp:BoundField AccessibleHeaderText="activityID" DataField="activityID" HeaderText="activityID" ReadOnly="True" SortExpression="activityID">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="activityType" DataField="activityType" HeaderText="类别" SortExpression="activityType" >
+                                <HeaderStyle Width="44px" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="activityName" DataField="activityName" HeaderText="活动名称" SortExpression="activityName" >
+                            <HeaderStyle Width="150px" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="activityIntro" DataField="activityIntro" HeaderText="活动简介" SortExpression="activityIntro">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="activityOrgID" DataField="activityOrgID" HeaderText="申办组织" SortExpression="activityOrgID">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle Width="140px" CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="submitTime" DataField="submitTime" HeaderText="申报时间" SortExpression="submitTime">
+                            <HeaderStyle Width="100px" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="activityPlaceID" DataField="activityPlaceID" HeaderText="举办场地" SortExpression="activityPlaceID">
+                            <HeaderStyle Width="100px" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="availableCredit" DataField="availableCredit" HeaderText="活动学分" SortExpression="availableCredit">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="maxSigned" DataField="maxSigned" HeaderText="最大人数" SortExpression="maxSigned">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="signStartDate" DataField="signStartDate" HeaderText="报名时间" SortExpression="signStartDate" >
+                            <HeaderStyle Width="180px" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="signEndDate" DataField="signEndDate" HeaderText="signEndDate" SortExpression="signEndDate">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="holdDate" DataField="holdDate" HeaderText="举办时间" SortExpression="holdDate" >
+                            <HeaderStyle Width="180px" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="holdStart" DataField="holdStart" HeaderText="holdStart" SortExpression="holdStart">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="holdEnd" DataField="holdEnd" HeaderText="holdEnd" SortExpression="holdEnd">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="failReason" DataField="failReason" HeaderText="failReason" SortExpression="failReason">
+                            <ControlStyle CssClass="hidden" />
+                            <FooterStyle CssClass="hidden" />
+                            <HeaderStyle CssClass="hidden" />
+                            <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="activityState" DataField="activityState" HeaderText="活动状态" SortExpression="activityState" >
+                            <HeaderStyle Width="60px" />
+                            </asp:BoundField>
+                            <asp:BoundField AccessibleHeaderText="signed" DataField="signed" HeaderText="报名人数" SortExpression="signed">
+                            <HeaderStyle Width="100px" />
+                            </asp:BoundField>
+                            <asp:ButtonField Text="操作" >
+                                <HeaderStyle Width="40px" />
+                            </asp:ButtonField>
+                                <asp:ButtonField Text="按钮" HeaderText="操作" >
+                                <HeaderStyle Width="40px" />
+                            </asp:ButtonField>
+                                <asp:ButtonField Text="按钮" >
+                                <HeaderStyle Width="40px" />
+                            </asp:ButtonField>
+                        </Columns>
+                        <EditRowStyle BackColor="#999999" />
+                        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#8d9ba5" Font-Bold="True" ForeColor="White" CssClass="head" />
+                        <PagerStyle BackColor="#8d9ba5" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" HorizontalAlign="Center" />
+                        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                        <SortedAscendingCellStyle BackColor="#E9E7E2" />
+                        <SortedAscendingHeaderStyle BackColor="#506C8C" />
+                        <SortedDescendingCellStyle BackColor="#FFFDF8" />
+                        <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+                    </asp:GridView>
+                    <asp:LinqDataSource ID="schoolConnector" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="Activity" EnableDelete="True" EnableInsert="True" EnableUpdate="True" OrderBy="activityState">
+                    </asp:LinqDataSource>
+               </div>
+            </div>
+        </div>
+
+        <%--退出功能--%>
         <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False"/>
+
+        <%--报名页面--%>
         <div id="display" runat="server" visible="False">
             <h2 style="width: 100px; margin: 17px auto;">活动申请</h2>
             <div>
@@ -159,8 +333,6 @@
                 <asp:RangeValidator ID="volumeRangeValidator" runat="server" ErrorMessage="请输入50~800的数字！" MaximumValue="800" MinimumValue="50" ControlToValidate="aVolume" Type="Integer" ForeColor="#CC0000"></asp:RangeValidator>        
             </div>
             
-            
-
             <div>
                 活动学分
                  <asp:TextBox ID="aCredit" runat="server" Columns="1" OnTextChanged="aCredit_TextChanged"></asp:TextBox>
@@ -177,175 +349,7 @@
             </div>
         </div>
 
-        <div class="auto-style1" runat="server">
-           <%--左导航栏--%>
-           <div class="auto-style2">
-               <%--标题--%>
-               <div style="background-color:#758b9e; text-align:center;">
-                   <h1 style="padding:50px 0px; color:white; margin:0;">校生通</h1>
-               </div>
-               <%--导航--%>
-               <div style="padding:20px 20px; text-align:center; background-color:#ccad9f " >
-                   <asp:LinkButton ID="ActMan" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="ActMan_Click">活动管理</asp:LinkButton>
-               </div>
-               <%--校徽--%>
-               <div>
-                   <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/image/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
-               </div>
-           </div>
-
-           <div class="auto-style3">
-               <%--查询--%>
-               <div class="auto-style8">
-                    <span class="">&nbsp;&nbsp;&nbsp;活动名称&nbsp;<asp:TextBox ID="name" runat="server"></asp:TextBox></span>
-                    <span class="auto-style7">申请组织&nbsp;<asp:TextBox ID="org" runat="server"></asp:TextBox></span>
-                    <span class="auto-style7"> 活动状态&nbsp; 
-                        <asp:DropDownList ID="state" runat="server"> 
-                        <asp:ListItem Value="0">活动状态</asp:ListItem>
-                        <asp:ListItem Value="2">待审核</asp:ListItem>
-                        <asp:ListItem Value="3">未通过</asp:ListItem>
-                        <asp:ListItem Value="4">审核过期</asp:ListItem>
-                        <asp:ListItem Value="5">待报名</asp:ListItem>
-                        <asp:ListItem Value="6">报名中</asp:ListItem>
-                        <asp:ListItem Value="7">待开始</asp:ListItem>
-                        <asp:ListItem Value="8">活动中</asp:ListItem>
-                        <asp:ListItem Value="9">已结束</asp:ListItem>
-                        <asp:ListItem Value="10">已上报</asp:ListItem>
-                        <asp:ListItem Value="11">已完成</asp:ListItem>
-                    </asp:DropDownList>
-                    </span>
-
-                    <span class="auto-style7"> 活动类别&nbsp; 
-                        <asp:DropDownList ID="type" runat="server">
-                        <asp:ListItem Value="0">活动类别</asp:ListItem> 
-                        <asp:ListItem Value="1">创新创业与就业见习</asp:ListItem>
-                        <asp:ListItem Value="2">社会实践与志愿公益</asp:ListItem>
-                        <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
-                        </asp:DropDownList>
-                    </span>
-
-                    <div style="width:320px; position:absolute; top: 242px; left: 1242px;">
-                        <asp:Button ID="Button1" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
-                        <asp:Button ID="Button2" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
-                    </div>   
-            </div>
-
-               <%--上导航栏--%>
-               <div class="auto-style9">
-                   <asp:Button ID="BtnApply" runat="server" Text="+ 申请活动" CssClass="auto-style14" Font-Size="Large" Height="50px" Width="130px" OnClick="BtnApply_Click" />
-               </div>
-           </div>
-
-            <%--列表--%>
-           <div>
-                <asp:GridView ID="GvTemplate" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataKeyNames="activityID" DataSourceID="schoolConnector" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" OnDataBound="GridView1_DataBound" OnRowCommand="GvTemplate_RowCommand" HorizontalAlign="Center" GridLines="None">
-                    <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
-                    <Columns>
-                        <asp:BoundField AccessibleHeaderText="activityID" DataField="activityID" HeaderText="activityID" ReadOnly="True" SortExpression="activityID">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="activityType" DataField="activityType" HeaderText="类别" SortExpression="activityType" >
-                            <HeaderStyle Width="44px" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="activityName" DataField="activityName" HeaderText="活动名称" SortExpression="activityName" >
-                        <HeaderStyle Width="150px" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="activityIntro" DataField="activityIntro" HeaderText="活动简介" SortExpression="activityIntro">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="activityOrgID" DataField="activityOrgID" HeaderText="申办组织" SortExpression="activityOrgID">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle Width="140px" CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="submitTime" DataField="submitTime" HeaderText="申报时间" SortExpression="submitTime">
-                        <HeaderStyle Width="100px" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="activityPlaceID" DataField="activityPlaceID" HeaderText="举办场地" SortExpression="activityPlaceID">
-                        <HeaderStyle Width="100px" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="availableCredit" DataField="availableCredit" HeaderText="活动学分" SortExpression="availableCredit">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="maxSigned" DataField="maxSigned" HeaderText="最大人数" SortExpression="maxSigned">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="signStartDate" DataField="signStartDate" HeaderText="报名时间" SortExpression="signStartDate" >
-                        <HeaderStyle Width="180px" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="signEndDate" DataField="signEndDate" HeaderText="signEndDate" SortExpression="signEndDate">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="holdDate" DataField="holdDate" HeaderText="举办时间" SortExpression="holdDate" >
-                        <HeaderStyle Width="180px" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="holdStart" DataField="holdStart" HeaderText="holdStart" SortExpression="holdStart">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="holdEnd" DataField="holdEnd" HeaderText="holdEnd" SortExpression="holdEnd">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="failReason" DataField="failReason" HeaderText="failReason" SortExpression="failReason">
-                        <ControlStyle CssClass="hidden" />
-                        <FooterStyle CssClass="hidden" />
-                        <HeaderStyle CssClass="hidden" />
-                        <ItemStyle CssClass="hidden" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="activityState" DataField="activityState" HeaderText="活动状态" SortExpression="activityState" >
-                        <HeaderStyle Width="60px" />
-                        </asp:BoundField>
-                        <asp:BoundField AccessibleHeaderText="signed" DataField="signed" HeaderText="报名人数" SortExpression="signed">
-                        <HeaderStyle Width="100px" />
-                        </asp:BoundField>
-                        <asp:ButtonField Text="操作" >
-                            <HeaderStyle Width="40px" />
-                        </asp:ButtonField>
-                            <asp:ButtonField Text="按钮" HeaderText="操作" >
-                            <HeaderStyle Width="40px" />
-                        </asp:ButtonField>
-                            <asp:ButtonField Text="按钮" >
-                            <HeaderStyle Width="40px" />
-                        </asp:ButtonField>
-                    </Columns>
-                    <EditRowStyle BackColor="#999999" />
-                    <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-                    <HeaderStyle BackColor="#8d9ba5" Font-Bold="True" ForeColor="White" CssClass="head" />
-                    <PagerStyle BackColor="#8d9ba5" ForeColor="White" HorizontalAlign="Center" />
-                    <RowStyle BackColor="#F7F6F3" ForeColor="#333333" HorizontalAlign="Center" />
-                    <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-                    <SortedAscendingCellStyle BackColor="#E9E7E2" />
-                    <SortedAscendingHeaderStyle BackColor="#506C8C" />
-                    <SortedDescendingCellStyle BackColor="#FFFDF8" />
-                    <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
-                </asp:GridView>
-                <asp:LinqDataSource ID="schoolConnector" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="Activity" EnableDelete="True" EnableInsert="True" EnableUpdate="True" OrderBy="activityState">
-                </asp:LinqDataSource>
-           </div>
-        </div>
-        
-         <%--活动详情--%>
+        <%--活动详情--%>
         <div runat="server" class="divCheck" id="CheckActDiv" visible="False">
             <div class="auto-style13"><asp:Label runat="server" Text="活动申请详情" Font-Bold="True" Font-Size="Large"></asp:Label></div>
 

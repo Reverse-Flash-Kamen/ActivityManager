@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace ActivityManager.Test
@@ -149,15 +147,18 @@ namespace ActivityManager.Test
                 LblSignDate.Text += a.SignStartDate;
                 LblMaxSize.Text += a.MaxSigned;
                 LblScore.Text += a.AvailableCredit;
+
+                DivMask.Style["pointer-events"] = "none";
             }
             else if (e.CommandName == "editA" || e.CommandName == "resubmit")
             {
+                DivMask.Style["pointer-events"] = "none";
                 editAct(actID);
             }
             else
             {
                 // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
-                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
+                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender);
             }
 
             GvTemplate.DataBind();
@@ -166,6 +167,7 @@ namespace ActivityManager.Test
         protected void BtnCheck_Click(object sender, EventArgs e)
         {
             CheckActDiv.Visible = false;
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         protected void ActMan_Click(object sender, EventArgs e)
@@ -381,6 +383,7 @@ namespace ActivityManager.Test
         protected void BtnApply_Click(object sender, EventArgs e)
         {
             display.Visible = true;
+            DivMask.Style["pointer-events"] = "none";
         }
 
         protected void returnA_Click(object sender, EventArgs e)
@@ -398,6 +401,8 @@ namespace ActivityManager.Test
             aHoldEnd.Items.Clear();
             aHoldStart.Enabled = false;
             aHoldEnd.Enabled = false;
+
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         /// <summary>
@@ -453,11 +458,12 @@ namespace ActivityManager.Test
             a.Update();
 
             GvTemplate.DataBind();
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         protected void save_Click(object sender, EventArgs e)
         {
-            Response.Write("<script language='javascript'>if(confirm('确定删除?'))</script>");
+            // Response.Write("<script language='javascript'>if(confirm('确定删除?'))</script>");
 
             MyActivity a;
             if (mode == 1)
@@ -500,14 +506,10 @@ namespace ActivityManager.Test
             aHoldStart.Enabled = false;
             aHoldEnd.Enabled = false;
             Tool.SetButton(GvTemplate, Session["ID"].ToString());
+
+            DivMask.Style["pointer-events"] = "auto";
         }
 
-        /// <summary>
-        /// 点击GridView的RowCommand编辑活动
-        /// 显示报名活动页面进行修改
-        /// 向数据库提交修改
-        /// </summary>
-        /// <param name="activityID"></param>
         public void editAct(string activityID)
         {
             Session["activityID"] = activityID;

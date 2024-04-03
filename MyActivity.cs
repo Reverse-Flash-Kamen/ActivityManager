@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
-using System.Windows;
 
 namespace ActivityManager
 {
@@ -38,27 +37,34 @@ namespace ActivityManager
             var res = from activity in db.Activity
                       where activity.activityID == id
                       select activity;
-            var a = res.First();
 
-            activityID = a.activityID.ToString().Trim();
-            activityName = a.activityName.ToString().Trim();
-            activityIntro = a.activityIntro.ToString().Trim();
-            activityPlaceID = a.activityPlaceID.ToString().Trim();
-            activityOrgID = a.activityOrgID.ToString().Trim();
-            availableCredit = a.availableCredit.ToString().Trim();
-            maxSigned = a.maxSigned.ToString().Trim();
-            signed = a.signed.ToString().Trim();
-            activityState = a.activityState.ToString().Trim();
-            signStartDate = Convert.ToDateTime(a.signStartDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            signEndDate = Convert.ToDateTime(a.signEndDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            holdDate = Convert.ToDateTime(a.holdDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            holdStart = a.holdStart.ToString().Trim();
-            holdEnd = a.holdEnd.ToString().Trim();
-            submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            failReason = a.failReason.ToString().Trim();
-            activityType = a.activityType.ToString().Trim();
-            checkInCode = a.checkInCode.ToString().Trim();
-            checkOutCode = a.checkOutCode.ToString().Trim();
+            if (res.Any())
+            {
+                var a = res.First();
+                activityID = a.activityID.ToString().Trim();
+                activityName = a.activityName.ToString().Trim();
+                activityIntro = a.activityIntro.ToString().Trim();
+                activityPlaceID = a.activityPlaceID.ToString().Trim();
+                activityOrgID = a.activityOrgID.ToString().Trim();
+                availableCredit = a.availableCredit.ToString().Trim();
+                maxSigned = a.maxSigned.ToString().Trim();
+                signed = a.signed.ToString().Trim();
+                activityState = a.activityState.ToString().Trim();
+                signStartDate = Convert.ToDateTime(a.signStartDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                signEndDate = Convert.ToDateTime(a.signEndDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                holdDate = Convert.ToDateTime(a.holdDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                holdStart = a.holdStart.ToString().Trim();
+                holdEnd = a.holdEnd.ToString().Trim();
+                submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                activityType = a.activityType.ToString().Trim();
+                if (a.failReason != null) failReason = a.failReason.ToString().Trim();
+                if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
+                if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
+            }
+            else
+            {
+                HttpContext.Current.Response.Write("<script>alert('数据加载错误,请稍后重试！')</script>");
+            }
         }
 
         public MyActivity(Activity a)
@@ -78,10 +84,10 @@ namespace ActivityManager
             holdStart = a.holdStart.ToString().Trim();
             holdEnd = a.holdEnd.ToString().Trim();
             submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            failReason = a.failReason.ToString().Trim();
             activityType = a.activityType.ToString().Trim();
-            checkInCode = a.checkInCode.ToString().Trim();
-            checkOutCode = a.checkOutCode.ToString().Trim();
+            if (a.failReason != null) failReason = a.failReason.ToString().Trim();
+            if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
+            if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
         }
 
         public void Create()
@@ -146,10 +152,10 @@ namespace ActivityManager
                 holdStart = intHoldStart,
                 holdEnd = intHoldEnd,
                 submitTime = DateTime.Now,
-                failReason = "",
+                // failReason = "",
                 activityType = intActivityType,
-                checkInCode = this.checkInCode,
-                checkOutCode = this.checkOutCode,
+                // checkInCode = this.checkInCode,
+                // checkOutCode = this.checkOutCode,
             };
 
             db.Activity.InsertOnSubmit(A);
@@ -177,11 +183,11 @@ namespace ActivityManager
             a.holdStart = Convert.ToInt32(holdStart);
             a.holdEnd = Convert.ToInt32(holdEnd);
             a.submitTime = DateTime.Now;
-            a.failReason = failReason;
+            if (failReason != null) a.failReason = failReason;
             a.activityState = Convert.ToInt32(activityState);
             a.activityType = Convert.ToInt32(activityType);
-            a.checkInCode = checkInCode;
-            a.checkOutCode = checkOutCode;
+            if (checkInCode != null) a.checkInCode = checkInCode;
+            if (checkOutCode != null) a.checkOutCode = checkOutCode;
 
             db.SubmitChanges();
         }

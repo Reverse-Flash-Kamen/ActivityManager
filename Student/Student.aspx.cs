@@ -2,11 +2,9 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Windows;
 
 namespace ActivityManager.Test
 {
@@ -16,6 +14,7 @@ namespace ActivityManager.Test
         {
             /*活动报名详情页返回*/
             CheckActDiv.Style["display"] = "none";
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         protected void commit_Click(object sender, EventArgs e)
@@ -177,21 +176,23 @@ namespace ActivityManager.Test
                 LblSignDate.Text += a.SignStartDate;
                 LblMaxSize.Text += a.MaxSigned;
                 LblScore.Text += a.AvailableCredit;
+                DivMask.Style["pointer-events"] = "none";
+            }
+            else if (e.CommandName == "appraise")
+            {
+                ActAppraise(actID);
+                DivMask.Style["pointer-events"] = "none";
+            }
+            else if (e.CommandName == "checkIn")
+            {
+                DivCheckIn.Style["display"] = "block";
+                DivMask.Style["pointer-events"] = "none";
+                LblCheckInActID.Text = actID;
             }
             else
             {
                 // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
-                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
-            }
-
-            if (e.CommandName == "appraise")
-            {
-                ActAppraise(actID);
-            }
-
-            if (e.CommandName == "checkIn")
-            {
-                DivCheckIn.Style["display"] = "block";
+                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender);
             }
 
             GvTemplate.DataBind();
@@ -200,6 +201,7 @@ namespace ActivityManager.Test
         protected void ActAppraise(string actID)
         {
             Session["Appraised"] = false;
+            DivAppraise.Style["display"] = "block";
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
 
@@ -218,8 +220,6 @@ namespace ActivityManager.Test
                 TxtAppraise.Text = res.First().appraise;
                 Session["Appraised"] = true;
             }
-
-            DivAppraise.Style["display"] = "block";
         }
 
         protected void LbtnAllAct_Click(object sender, EventArgs e)
@@ -735,6 +735,7 @@ namespace ActivityManager.Test
         protected void BtnAppraiseCancel_Click(object sender, EventArgs e)
         {
             DivAppraise.Style["display"] = "none";
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         public static string LinqDataSourceCreditChange(int index1, int index2, string connectWhere)
@@ -780,6 +781,12 @@ namespace ActivityManager.Test
 
         protected void BtnCheckInCommit_Click(object sender, EventArgs e)
         {
+            if (TxtCheckIn.Text == "")
+            {
+                Response.Write("<script>alert('请输入签到码！');</script>");
+                return;
+            }
+
             string actID = LblCheckInActID.Text.Trim();
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
@@ -793,11 +800,27 @@ namespace ActivityManager.Test
 
                 if (TxtCheckIn.Text.ToString().Trim() == a.CheckInCode)
                 {
+                    if (res.First().checkIn == 1)
+                    {
+                        Response.Write("<script>alert('已签入，请勿重复签入！');</script>");
+                        return;
+                    }
+
                     res.First().checkIn = 1;
                 }
                 else if (TxtCheckIn.Text.ToString().Trim() == a.CheckOutCode)
                 {
+                    if (res.First().checkOut == 1)
+                    {
+                        Response.Write("<script>alert('已签出，请勿重复签出！');</script>");
+                        return;
+                    }
                     res.First().checkOut = 1;
+                }
+                else
+                {
+                    Response.Write("<script>alert('签到码错误，请向主办方确认！');</script>");
+                    return;
                 }
 
                 db.SubmitChanges();
@@ -809,11 +832,14 @@ namespace ActivityManager.Test
             }
 
             Response.Write("<script>alert('签到成功！');</script>");
+            DivMask.Style["pointer-events"] = "auto";
+            DivCheckIn.Style["display"] = "none";
         }
 
         protected void BtnCheckInCancel_Click(object sender, EventArgs e)
         {
             DivCheckIn.Style["display"] = "none";
+            DivMask.Style["pointer-events"] = "auto";
         }
     }
 }

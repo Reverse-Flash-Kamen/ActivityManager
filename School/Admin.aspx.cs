@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Web.UI.WebControls;
-using System.Windows;
 
 namespace ActivityManager.Test
 {
@@ -219,15 +218,17 @@ namespace ActivityManager.Test
                 LblSignDate.Text += a.SignStartDate;
                 LblMaxSize.Text += a.MaxSigned;
                 LblScore.Text += a.AvailableCredit;
+                DivMask.Style["pointer-events"] = "none";
             }
             else if (e.CommandName == "aduit")
             {
                 checkAct(actID);
+                DivMask.Style["pointer-events"] = "none";
             }
             else
             {
                 // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
-                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender, schoolConnector);
+                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender);
             }
 
             GvTemplate.DataBind();
@@ -242,6 +243,7 @@ namespace ActivityManager.Test
         protected void BtnCheck_Click(object sender, EventArgs e)
         {
             CheckActDiv.Visible = false;
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         protected void ActMan_Click(object sender, EventArgs e)
@@ -255,6 +257,7 @@ namespace ActivityManager.Test
             passRadio.Checked = false;
             noPassRadio.Checked = false;
             failReason.Text = string.Empty;
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         protected void btnConfirm_Click(object sender, EventArgs e)
@@ -300,6 +303,7 @@ namespace ActivityManager.Test
             btnCancel_Click(sender, e);
 
             GvTemplate.DataBind();
+            DivMask.Style["pointer-events"] = "auto";
         }
 
         protected void GvTemplate_PageIndexChanging(object sender, GridViewPageEventArgs e)

@@ -1,17 +1,10 @@
 ﻿using ActivityManager.App_Data;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.EnterpriseServices;
 using System.Linq;
-using System.Web;
-using System.Web.Services.Description;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Windows;
 
 namespace ActivityManager
 {
@@ -33,27 +26,6 @@ namespace ActivityManager
 
         public static void FormatActivity(GridView gv, string ID)
         {
-            /*
-             * 初始化列表头map，只运行一次减少工作量
-             * map包含Act原数据表所有表头
-             * gv.row 隐藏或添加部分数据项,三端列号不同
-             * 通过原表名称获取真正列号
-             */
-
-            /*            if (flag)
-                        {
-                            for (int i = 0; i < gv.Columns.Count; i++)
-                            {
-                                string s = gv.Columns[i].AccessibleHeaderText.ToString();
-                                if (!map.ContainsKey(s))
-                                    map.Add(s, i);
-                            }
-
-                            flag = false;
-                        }*/
-
-            //UpdateActivityState(gv);
-
             SetButton(gv, ID);  // 根据各端及活动状态设置功能按钮
 
             /*
@@ -128,6 +100,12 @@ namespace ActivityManager
 
         public static void FormatActivityHeader(GridView gv)
         {
+            /*
+             * 初始化列表头map，只运行一次减少工作量
+             * map包含Act原数据表所有表头
+             * gv.row 隐藏或添加部分数据项,三端列号不同
+             * 通过原表名称获取真正列号
+             */
             for (int i = 0; i < gv.Columns.Count; i++)
             {
                 string s = gv.Columns[i].AccessibleHeaderText.ToString();
@@ -351,8 +329,8 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "生成签到";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
                     }
                     else if (state == 8)
                     {

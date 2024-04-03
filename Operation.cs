@@ -1,25 +1,19 @@
 ﻿using ActivityManager.App_Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI.WebControls;
-using System.Windows;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System.IO;
 using System;
-using MathNet.Numerics.Distributions;
-using System.Drawing;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace ActivityManager
 {
     public class Operation
     {
-        // private static bool flag;
-
-        public static void SetOperation(string commandName, string actID, string ID, GridView gv, LinqDataSource data)
+        public static void SetOperation(string commandName, string actID, string ID, GridView gv)
         {
             Operation operation = new Operation();
 
@@ -112,7 +106,7 @@ namespace ActivityManager
                       where info.activityID == actID
                       select info;
 
-            if (res.First().checkInCode == "" || res.First().checkOutCode == "" || res.First().checkInCode == null || res.First().checkOutCode == null)
+            if (res.First().checkInCode == null || res.First().checkOutCode == null)
             {
                 string num = "0123456789";
                 string lower = "abcdefghijklmnopqrstuvwxyz";
