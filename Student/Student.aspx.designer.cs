@@ -96,6 +96,60 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.ImageButton IBtnEsc;
 
         /// <summary>
+        /// DivCheckIn 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivCheckIn;
+
+        /// <summary>
+        /// LblCheckIn 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblCheckIn;
+
+        /// <summary>
+        /// TxtCheckIn 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtCheckIn;
+
+        /// <summary>
+        /// BtnCheckInCommit 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnCheckInCommit;
+
+        /// <summary>
+        /// BtnCheckInCancel 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnCheckInCancel;
+
+        /// <summary>
+        /// LblCheckInActID 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblCheckInActID;
+
+        /// <summary>
         /// DivAllAct 控件。
         /// </summary>
         /// <remarks>

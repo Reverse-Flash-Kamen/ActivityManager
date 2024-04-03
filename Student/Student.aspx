@@ -98,6 +98,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <%--评价功能--%>
         <div runat="server" id="DivAppraise" style="position:absolute; width:300px; height:200px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
             <asp:Label ID="LblAppraise" runat="server" Text="" style="margin:10px;"></asp:Label>
             <asp:Label ID="LblActID" runat="server" Text="" style="display:none"></asp:Label>
@@ -115,8 +116,17 @@
             <asp:Button ID="BtnAppraiseCancel" runat="server" Text="取消" OnClick="BtnAppraiseCancel_Click" CausesValidation="False" />
         </div>
 
-
+        <%--退出功能--%>
         <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False" ToolTip="返回登陆"/>
+
+        <%--签到功能--%>
+        <div runat="server" id="DivCheckIn" style="position:absolute; width:200px; height:100px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
+            <asp:Label ID="LblCheckIn" runat="server" Text="签到码"></asp:Label>
+            <asp:TextBox ID="TxtCheckIn" runat="server"></asp:TextBox>
+            <asp:Button ID="BtnCheckInCommit" runat="server" Text="确定" OnClick="BtnCheckInCommit_Click" CausesValidation="False" />
+            <asp:Button ID="BtnCheckInCancel" runat="server" Text="取消" OnClick="BtnCheckInCancel_Click" CausesValidation="False" />
+            <asp:Label ID="LblCheckInActID" runat="server" Text="" style="display:none"></asp:Label>
+        </div>        
 
         <div class="auto-style1" runat="server">
             <%--左导航栏--%>

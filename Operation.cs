@@ -8,6 +8,10 @@ using NPOI.XSSF.UserModel;
 using System.IO;
 using System;
 using MathNet.Numerics.Distributions;
+using System.Drawing;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 
 namespace ActivityManager
 {
@@ -22,12 +26,10 @@ namespace ActivityManager
             if (commandName == "check")
             {
                 // 查看操作 前端实现
-                MessageBox.Show("Check");
             }
             else if (commandName == "editA")
             {
                 // 编辑操作 前端实现
-                MessageBox.Show("Edit");
             }
             else if (commandName == "deleteA")
             {
@@ -40,8 +42,7 @@ namespace ActivityManager
             }
             else if (commandName == "resubmit")
             {
-                // 重新提交操作 = 编辑操作
-                MessageBox.Show("Resubmit");
+                // 重新提交操作 = 编辑操作 前端实现
             }
             else if (commandName == "export")
             {
@@ -81,21 +82,22 @@ namespace ActivityManager
             else if (commandName == "aduit")
             {
                 // 审核操作 前端实现
-                MessageBox.Show("审核操作！");
-            }
-            else if (commandName == "exportFinal")
-            {
-                // 导出完成名单操作
-                MessageBox.Show("导出名单成功！");
             }
             else if (commandName == "appraise")
             {
                 // 评价功能 前端实现
-                // MessageBox.Show("评价功能！");
             }
             else if (commandName == "exportAppraise")
             {
                 operation.ActExportAppraise(actID, ID);
+            }
+            else if (commandName == "checkCode")
+            {
+                operation.ActCheckCode(actID);
+            }
+            else if (commandName == "checkIn")
+            {
+                // 签到功能 前端实现
             }
 
             //  gv.DataBind(); // 重现绑定数据，刷新添加|删除|退回的数据行
@@ -103,7 +105,66 @@ namespace ActivityManager
             Tool.SetButton(gv, ID);
         }
 
-        public void ActDelete(string actID)
+        private void ActCheckCode(string actID)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.Activity
+                      where info.activityID == actID
+                      select info;
+
+            if (res.First().checkInCode == "" || res.First().checkOutCode == "" || res.First().checkInCode == null || res.First().checkOutCode == null)
+            {
+                string num = "0123456789";
+                string lower = "abcdefghijklmnopqrstuvwxyz";
+                string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+                List<string> list = new List<string>();
+                list.Add(num);
+                list.Add(lower);
+                list.Add(upper);
+
+                string checkInCode = "";
+                string checkOutCode = "";
+
+                // 生成两个不相同的，带数字，小写字符，大写字符的签到码
+                Random rnd = new Random();
+                do
+                {
+                    for (int n = 0; n < 6; n++)
+                    {
+                        int i = rnd.Next(0, 3);
+
+                        switch (i)
+                        {
+                            case 0:
+                                checkInCode += list[0][rnd.Next(0, 10)];
+                                checkOutCode += list[0][rnd.Next(0, 10)];
+                                break;
+
+                            case 1:
+                                checkInCode += list[1][rnd.Next(0, 26)];
+                                checkOutCode += list[1][rnd.Next(0, 26)];
+                                break;
+
+                            case 2:
+                                checkInCode += list[2][rnd.Next(0, 26)];
+                                checkOutCode += list[2][rnd.Next(0, 26)];
+                                break;
+                        }
+                    }
+                } while (checkInCode == checkOutCode);
+
+                // HttpContext.Current.Response.Write("ok");
+
+                res.First().checkInCode = checkInCode;
+                res.First().checkOutCode = checkOutCode;
+                db.SubmitChanges();
+            }
+
+            HttpContext.Current.Response.Write("<script>alert('签到码已生成\\r签入码：" + res.First().checkInCode + "\\r签出码：" + res.First().checkOutCode + "');</script>");
+        }
+
+        private void ActDelete(string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
@@ -124,7 +185,7 @@ namespace ActivityManager
             // HttpContext.Current.Response.Write("<script>alert('删除成功！')</script>");
         }
 
-        public void ActWithdraw(string actID)
+        private void ActWithdraw(string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
@@ -161,7 +222,7 @@ namespace ActivityManager
             }
         }
 
-        public void ActReport(string actID)
+        private void ActReport(string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
@@ -174,7 +235,7 @@ namespace ActivityManager
             db.SubmitChanges();
         }
 
-        public void ActComplete(string actID)
+        private void ActComplete(string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
@@ -190,16 +251,17 @@ namespace ActivityManager
 
             // 根据活动ID获取报名学生ID
 
-            var resStudents = from info in db.SignedActivity
-                              where info.activityID == actID
-                              select info.studentID;
+            var resStudentIDs = from info in db.SignedActivity
+                                where info.activityID == actID && info.checkIn == 1 && info.checkOut == 1
+                                select info.studentID;
 
             int type = int.Parse(a.ActivityType);
 
-            foreach (var studentID in resStudents)
+            foreach (var studentID in resStudentIDs)
             {
                 // 给报名学生加学分
-                // 之后还要判断是否签到
+                // 需两次均签到
+
                 var resCredit = from info in db.StudentIdentified
                                 where info.studentID == studentID
                                 select info;
@@ -226,7 +288,7 @@ namespace ActivityManager
             }
         }
 
-        public void ActLike(string actID, string studentID)
+        private void ActLike(string actID, string studentID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
@@ -238,7 +300,7 @@ namespace ActivityManager
             db.SubmitChanges();
         }
 
-        public void ActLikeCancel(string actID, string studentID)
+        private void ActLikeCancel(string actID, string studentID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
@@ -250,7 +312,7 @@ namespace ActivityManager
             db.SubmitChanges();
         }
 
-        public void ActSign(string actID, string studentID)
+        private void ActSign(string actID, string studentID)
         {
             ActivityManagerDataContext dbSign = new ActivityManagerDataContext();
 
@@ -291,7 +353,8 @@ namespace ActivityManager
                 "举办时间：" + aSign.HoldDate + " " + aSign.HoldStart + ":00 至 " + aSign.HoldDate + " " + aSign.HoldEnd + ":00\\r" +
                 "报名者姓名：" + studentName + "\\r" +
                 "报名者学号：" + studentID + "\\r" +
-                "报名者联系方式：" + phone;
+                "报名者联系方式：" + phone + "\\r" +
+                "**如信息有误，请于‘我的信息’重新认证**";
 
             // 需要更改
             /*if (MessageBox.Show(Text, "活动报名确认", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
@@ -331,7 +394,7 @@ namespace ActivityManager
             HttpContext.Current.Response.Write("<script>alert('" + Text + "')</script>");
         }
 
-        public void ActSignCancel(string actID, string studentID)
+        private void ActSignCancel(string actID, string studentID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity();
@@ -357,7 +420,7 @@ namespace ActivityManager
             db.SubmitChanges();
         }
 
-        public void ActExport(string actID, string orgID)
+        private void ActExport(string actID, string orgID)
         {
             // 创建一个工作薄
             IWorkbook workbook = new XSSFWorkbook();
@@ -470,7 +533,7 @@ namespace ActivityManager
             HttpContext.Current.Response.Write("<script>alert('导出成功，请在C:/Code/Reverse-Flash-Kamen/ActivityManager/File/#orgName#/Signed中查看！')</script>");
         }
 
-        public void ActExportAppraise(string actID, string orgID)
+        private void ActExportAppraise(string actID, string orgID)
         {
             // 创建一个工作薄
             IWorkbook workbook = new XSSFWorkbook();

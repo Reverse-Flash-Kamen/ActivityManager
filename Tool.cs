@@ -21,7 +21,6 @@ namespace ActivityManager
         public static string ID = "";
         public static int cnt = 0;
 
-        private static bool flag = true;
         private static Dictionary<string, int> map = new Dictionary<string, int>(); // 存放列表头及对应列序号（三端列表头不同所以需根据列表头名查询列序号）
 
         public static Hashtable states = new Hashtable() { { 1, "未提交" }, { 2, "待审核" }, { 3, "未通过" },
@@ -236,7 +235,7 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "导出完成名单";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "exportFinal";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "export";
                     }
                     else
                     {
@@ -365,7 +364,7 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "生成签到";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
                     }
                     else if (state == 9)
                     {
@@ -450,45 +449,49 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "null";
                     }
 
-                    // 判断是否已报名
-                    if (state == 6)
+                    // 判断是否报名活动
+                    var resSign = from info in db.SignedActivity
+                                  where info.studentID == ID && (info.activityID == actID)
+                                  select info;
+                    if (resSign.Any())
                     {
-                        var resSign = from info in db.SignedActivity
-                                      where info.studentID == ID && (info.activityID == actID)
-                                      select info;
-
-                        if (resSign.Count() > 0)
+                        // 已报名
+                        if (state == 6)
                         {
+                            // 可报名
                             ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "取消\n报名";
                             ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "signCancel";
                         }
+                        else if (state == 8)
+                        {
+                            // 活动中
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "签到";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkIn";
+                        }
+                        else if (state >= 10)
+                        {
+                            // 已上报，已完成
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "评分";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "appraise";
+                        }
                         else
                         {
-                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "报名";
-                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "sign";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                         }
                     }
                     else
                     {
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
-                    }
-
-                    // 对于报名且上报的活动可评价
-                    if (state >= 10)
-                    {
-                        var resSign = from info in db.SignedActivity
-                                      where info.studentID == ID && (info.activityID == actID)
-                                      select info;
-
-                        var resLiked = from info in db.LikedActivity
-                                       where info.studentID == ID && info.activityID == actID
-                                       select info;
-
-                        if (resSign.Any())
+                        // 未报名
+                        if (state == 6)
                         {
-                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "评分";
-                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "appraise";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "报名";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "sign";
+                        }
+                        else
+                        {
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                         }
                     }
                 }

@@ -26,6 +26,8 @@ namespace ActivityManager
         private string submitTime = "1900-01-01 00:00:00";
         private string failReason;
         private string activityType;
+        private string checkInCode;
+        private string checkOutCode;
 
         public MyActivity()
         { }
@@ -55,6 +57,8 @@ namespace ActivityManager
             submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             failReason = a.failReason.ToString().Trim();
             activityType = a.activityType.ToString().Trim();
+            checkInCode = a.checkInCode.ToString().Trim();
+            checkOutCode = a.checkOutCode.ToString().Trim();
         }
 
         public MyActivity(Activity a)
@@ -76,6 +80,8 @@ namespace ActivityManager
             submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             failReason = a.failReason.ToString().Trim();
             activityType = a.activityType.ToString().Trim();
+            checkInCode = a.checkInCode.ToString().Trim();
+            checkOutCode = a.checkOutCode.ToString().Trim();
         }
 
         public void Create()
@@ -142,6 +148,8 @@ namespace ActivityManager
                 submitTime = DateTime.Now,
                 failReason = "",
                 activityType = intActivityType,
+                checkInCode = this.checkInCode,
+                checkOutCode = this.checkOutCode,
             };
 
             db.Activity.InsertOnSubmit(A);
@@ -172,6 +180,8 @@ namespace ActivityManager
             a.failReason = failReason;
             a.activityState = Convert.ToInt32(activityState);
             a.activityType = Convert.ToInt32(activityType);
+            a.checkInCode = checkInCode;
+            a.checkOutCode = checkOutCode;
 
             db.SubmitChanges();
         }
@@ -324,5 +334,7 @@ namespace ActivityManager
         public string SubmitTime { get => submitTime; set => submitTime = value; }
         public string FailReason { get => failReason; set => failReason = value; }
         public string ActivityType { get => activityType; set => activityType = value; }
+        public string CheckInCode { get => checkInCode; set => checkInCode = value; }
+        public string CheckOutCode { get => checkOutCode; set => checkOutCode = value; }
     }
 }

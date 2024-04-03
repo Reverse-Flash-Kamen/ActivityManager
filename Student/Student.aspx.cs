@@ -189,6 +189,11 @@ namespace ActivityManager.Test
                 ActAppraise(actID);
             }
 
+            if (e.CommandName == "checkIn")
+            {
+                DivCheckIn.Style["display"] = "block";
+            }
+
             GvTemplate.DataBind();
         }
 
@@ -771,6 +776,44 @@ namespace ActivityManager.Test
             }
 
             return connectWhere;
+        }
+
+        protected void BtnCheckInCommit_Click(object sender, EventArgs e)
+        {
+            string actID = LblCheckInActID.Text.Trim();
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            MyActivity a = new MyActivity(actID);
+
+            try
+            {
+                var res = from info in db.SignedActivity
+                          where info.studentID == Session["ID"].ToString() && info.activityID == actID
+                          select info;
+
+                if (TxtCheckIn.Text.ToString().Trim() == a.CheckInCode)
+                {
+                    res.First().checkIn = 1;
+                }
+                else if (TxtCheckIn.Text.ToString().Trim() == a.CheckOutCode)
+                {
+                    res.First().checkOut = 1;
+                }
+
+                db.SubmitChanges();
+            }
+            catch
+            {
+                Response.Write("<script>alert('签到失败，请稍后重试！');</script>");
+                return;
+            }
+
+            Response.Write("<script>alert('签到成功！');</script>");
+        }
+
+        protected void BtnCheckInCancel_Click(object sender, EventArgs e)
+        {
+            DivCheckIn.Style["display"] = "none";
         }
     }
 }
