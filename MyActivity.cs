@@ -11,22 +11,42 @@ namespace ActivityManager
         private string activityID;
         private string activityName;
         private string activityIntro;
-        private string activityPlaceID;
+        private int activityPlaceID;
         private string activityOrgID;
-        private string availableCredit = "1";
-        private string maxSigned;
-        private string signed = "0";
-        private string activityState = "1";
+        private int availableCredit;
+        private int maxSigned;
+        private int signed;
+        private int activityState;
         private string signStartDate;
         private string signEndDate;
         private string holdDate;
-        private string holdStart;
-        private string holdEnd;
+        private int holdStart;
+        private int holdEnd;
         private string submitTime = "1900-01-01 00:00:00";
         private string failReason;
-        private string activityType;
+        private int activityType;
         private string checkInCode;
         private string checkOutCode;
+
+        public string ActivityID { get => activityID; set => activityID = value; }
+        public string ActivityName { get => activityName; set => activityName = value; }
+        public string ActivityIntro { get => activityIntro; set => activityIntro = value; }
+        public int ActivityPlaceID { get => activityPlaceID; set => activityPlaceID = value; }
+        public string ActivityOrgID { get => activityOrgID; set => activityOrgID = value; }
+        public int AvailableCredit { get => availableCredit; set => availableCredit = value; }
+        public int MaxSigned { get => maxSigned; set => maxSigned = value; }
+        public int Signed { get => signed; set => signed = value; }
+        public int ActivityState { get => activityState; set => activityState = value; }
+        public string SignStartDate { get => signStartDate; set => signStartDate = value; }
+        public string SignEndDate { get => signEndDate; set => signEndDate = value; }
+        public string HoldDate { get => holdDate; set => holdDate = value; }
+        public int HoldStart { get => holdStart; set => holdStart = value; }
+        public int HoldEnd { get => holdEnd; set => holdEnd = value; }
+        public string SubmitTime { get => submitTime; set => submitTime = value; }
+        public string FailReason { get => failReason; set => failReason = value; }
+        public int ActivityType { get => activityType; set => activityType = value; }
+        public string CheckInCode { get => checkInCode; set => checkInCode = value; }
+        public string CheckOutCode { get => checkOutCode; set => checkOutCode = value; }
 
         public MyActivity()
         { }
@@ -44,19 +64,19 @@ namespace ActivityManager
                 activityID = a.activityID.ToString().Trim();
                 activityName = a.activityName.ToString().Trim();
                 activityIntro = a.activityIntro.ToString().Trim();
-                activityPlaceID = a.activityPlaceID.ToString().Trim();
+                activityPlaceID = a.activityPlaceID;
                 activityOrgID = a.activityOrgID.ToString().Trim();
-                availableCredit = a.availableCredit.ToString().Trim();
-                maxSigned = a.maxSigned.ToString().Trim();
-                signed = a.signed.ToString().Trim();
-                activityState = a.activityState.ToString().Trim();
+                availableCredit = a.availableCredit;
+                maxSigned = a.maxSigned;
+                signed = a.signed;
+                activityState = a.activityState;
                 signStartDate = Convert.ToDateTime(a.signStartDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 signEndDate = Convert.ToDateTime(a.signEndDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 holdDate = Convert.ToDateTime(a.holdDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                holdStart = a.holdStart.ToString().Trim();
-                holdEnd = a.holdEnd.ToString().Trim();
+                holdStart = a.holdStart;
+                holdEnd = a.holdEnd;
                 submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                activityType = a.activityType.ToString().Trim();
+                activityType = a.activityType;
                 if (a.failReason != null) failReason = a.failReason.ToString().Trim();
                 if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
                 if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
@@ -72,19 +92,19 @@ namespace ActivityManager
             activityID = a.activityID.ToString().Trim();
             activityName = a.activityName.ToString().Trim();
             activityIntro = a.activityIntro.ToString().Trim();
-            activityPlaceID = a.activityPlaceID.ToString().Trim();
+            activityPlaceID = a.activityPlaceID;
             activityOrgID = a.activityOrgID.ToString().Trim();
-            availableCredit = a.availableCredit.ToString().Trim();
-            maxSigned = a.maxSigned.ToString().Trim();
-            signed = a.signed.ToString().Trim();
-            activityState = a.activityState.ToString().Trim();
+            availableCredit = a.availableCredit;
+            maxSigned = a.maxSigned;
+            signed = a.signed;
+            activityState = a.activityState;
             signStartDate = Convert.ToDateTime(a.signStartDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             signEndDate = Convert.ToDateTime(a.signEndDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             holdDate = Convert.ToDateTime(a.holdDate).ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            holdStart = a.holdStart.ToString().Trim();
-            holdEnd = a.holdEnd.ToString().Trim();
+            holdStart = a.holdStart;
+            holdEnd = a.holdEnd;
             submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            activityType = a.activityType.ToString().Trim();
+            activityType = a.activityType;
             if (a.failReason != null) failReason = a.failReason.ToString().Trim();
             if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
             if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
@@ -118,12 +138,12 @@ namespace ActivityManager
                 activityID = submitTimePro + "01"; // 如果是第一次创建,生成01
 
             // 处理数据格式
-            int intActivityPlaceID = int.Parse(activityPlaceID);
-            int intAvailableCredit = int.Parse(availableCredit);
-            int intMaxSigned = int.Parse(maxSigned);
-            int intSigned = int.Parse(signed);
-            int intActivityState = int.Parse(activityState);
-            int intActivityType = int.Parse(activityType);
+            int intActivityPlaceID = activityPlaceID;
+            int intAvailableCredit = availableCredit;
+            int intMaxSigned = maxSigned;
+            int intSigned = signed;
+            int intActivityState = activityState;
+            int intActivityType = activityType;
 
             /*DateTimeFormatInfo dtFormat = new System.Globalization.DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
@@ -132,8 +152,8 @@ namespace ActivityManager
             DateTime dtHoldDate = Convert.ToDateTime(holdDate, dtFormat);
             DateTime dtSubmitTime = Convert.ToDateTime(submitTime);*/
 
-            int intHoldStart = int.Parse(holdStart);
-            int intHoldEnd = int.Parse(holdEnd);
+            int intHoldStart = holdStart;
+            int intHoldEnd = holdEnd;
 
             Activity A = new Activity()
             {
@@ -218,8 +238,8 @@ namespace ActivityManager
 
             // HttpContext.Current.Response.Write(activityName + " now:" + nowTime + " signStart:" + signStartDate + " signEnd:" + signEndDate + "\\");
 
-            int state = int.Parse(activityState);
-            if (int.Parse(activityState) == 2)
+            int state = activityState;
+            if (activityState == 2)
             {
                 // 对于审核中（2）的活动，如果当前时间超过报名截止时间，则更新为审核过期（4）
                 if (!Lesser(nowTime, SignEndDate))
@@ -237,10 +257,10 @@ namespace ActivityManager
 
                 db.SubmitChanges();
 
-                activityState = state.ToString();
+                activityState = state;
             }
 
-            if (int.Parse(activityState) >= 5 && int.Parse(activityState) <= 9)
+            if (activityState >= 5 && activityState <= 9)
             {
                 // 对于审核通过的活动进行状态更新
                 if (Lesser(nowTime, SignStartDate))
@@ -264,12 +284,12 @@ namespace ActivityManager
                 else if (Equals(nowTime, HoldDate))
                 {
                     // 举办活动当天
-                    if (nowHour < int.Parse(holdStart))
+                    if (nowHour < holdStart)
                     {
                         // 待开始7
                         state = 7;
                     }
-                    else if (nowHour <= int.Parse(holdEnd))
+                    else if (nowHour <= holdEnd)
                     {
                         // 活动中8
                         state = 8;
@@ -296,7 +316,7 @@ namespace ActivityManager
 
                 db.SubmitChanges();
 
-                activityState = state.ToString();
+                activityState = state;
             }
         }
 
@@ -322,25 +342,5 @@ namespace ActivityManager
 
             return lesser;
         }
-
-        public string ActivityID { get => activityID; set => activityID = value; }
-        public string ActivityName { get => activityName; set => activityName = value; }
-        public string ActivityIntro { get => activityIntro; set => activityIntro = value; }
-        public string ActivityPlaceID { get => activityPlaceID; set => activityPlaceID = value; }
-        public string ActivityOrgID { get => activityOrgID; set => activityOrgID = value; }
-        public string AvailableCredit { get => availableCredit; set => availableCredit = value; }
-        public string MaxSigned { get => maxSigned; set => maxSigned = value; }
-        public string Signed { get => signed; set => signed = value; }
-        public string ActivityState { get => activityState; set => activityState = value; }
-        public string SignStartDate { get => signStartDate; set => signStartDate = value; }
-        public string SignEndDate { get => signEndDate; set => signEndDate = value; }
-        public string HoldDate { get => holdDate; set => holdDate = value; }
-        public string HoldStart { get => holdStart; set => holdStart = value; }
-        public string HoldEnd { get => holdEnd; set => holdEnd = value; }
-        public string SubmitTime { get => submitTime; set => submitTime = value; }
-        public string FailReason { get => failReason; set => failReason = value; }
-        public string ActivityType { get => activityType; set => activityType = value; }
-        public string CheckInCode { get => checkInCode; set => checkInCode = value; }
-        public string CheckOutCode { get => checkOutCode; set => checkOutCode = value; }
     }
 }

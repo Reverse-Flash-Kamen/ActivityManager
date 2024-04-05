@@ -155,20 +155,20 @@ namespace ActivityManager.Test
 
                 MyActivity a = new MyActivity(actID);
 
-                if (a.ActivityState == "3")
+                if (a.ActivityState == 3)
                 {
                     LblFail.Text = "审核不通过理由：" + a.FailReason;
                     LblFail.Height = 40;
                     LblFail.Visible = true;
                 }
 
-                LblState.Text += Tool.states[int.Parse(a.ActivityState)];
+                LblState.Text += Tool.states[a.ActivityState];
                 LblActName.Text += a.ActivityName;
                 LblActInfo.Text += a.ActivityIntro;
 
                 ActivityManagerDataContext db = new ActivityManagerDataContext();
                 var res = from info in db.Place
-                          where info.placeID == int.Parse(a.ActivityPlaceID)
+                          where info.placeID == a.ActivityPlaceID
                           select info.placeName;
                 LblPlace.Text += res.First();
 

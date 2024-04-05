@@ -241,7 +241,7 @@ namespace ActivityManager
             db.SubmitChanges();
 
             // 完成后给学生加学分
-            int credit = int.Parse(a.AvailableCredit); // 获取活动学分
+            int credit = a.AvailableCredit; // 获取活动学分
 
             // 根据活动ID获取报名学生ID
 
@@ -249,7 +249,7 @@ namespace ActivityManager
                                 where info.activityID == actID && info.checkIn == 1 && info.checkOut == 1
                                 select info.studentID;
 
-            int type = int.Parse(a.ActivityType);
+            int type = a.ActivityType;
 
             foreach (var studentID in resStudentIDs)
             {
@@ -326,8 +326,8 @@ namespace ActivityManager
             string phone = resStuPhone.First();
 
             // 判断是否可以报名（基于人数）
-            int signed = int.Parse(aSign.Signed); // 已报名人数
-            int maxSigned = int.Parse(aSign.MaxSigned); // 最大可报名人数
+            int signed = aSign.Signed; // 已报名人数
+            int maxSigned = aSign.MaxSigned; // 最大可报名人数
 
             if (signed >= maxSigned)
             {
@@ -338,7 +338,7 @@ namespace ActivityManager
 
             // 确认报名
             var resPlaceName = from info in dbSign.Place
-                               where info.placeID == int.Parse(aSign.ActivityPlaceID)
+                               where info.placeID == aSign.ActivityPlaceID
                                select info.placeName;
             string placeName = resPlaceName.First();
             string Text =
@@ -373,7 +373,7 @@ namespace ActivityManager
                 signedActivity.studentID = studentID;
 
                 ++signed;
-                aSign.Signed = signed.ToString();
+                aSign.Signed = signed;
                 aSign.Update();
 
                 dbSign.SignedActivity.InsertOnSubmit(signedActivity);
@@ -393,7 +393,7 @@ namespace ActivityManager
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity();
 
-            int signed = int.Parse(a.Signed); // 获取报名人数
+            int signed = a.Signed; // 获取报名人数
             if (signed != 0)
                 signed--;
 

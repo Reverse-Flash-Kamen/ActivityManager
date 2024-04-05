@@ -126,20 +126,20 @@ namespace ActivityManager.Test
 
                 MyActivity a = new MyActivity(actID);
 
-                if (a.ActivityState == "3")
+                if (a.ActivityState == 3)
                 {
                     LblFail.Text = "审核不通过理由：" + a.FailReason;
                     LblFail.Height = 40;
                     LblFail.Visible = true;
                 }
 
-                LblState.Text += Tool.states[int.Parse(a.ActivityState)];
+                LblState.Text += Tool.states[a.ActivityState];
                 LblActName.Text += a.ActivityName;
                 LblActInfo.Text += a.ActivityIntro;
 
                 ActivityManagerDataContext db = new ActivityManagerDataContext();
                 var res = from info in db.Place
-                          where info.placeID == int.Parse(a.ActivityPlaceID)
+                          where info.placeID == a.ActivityPlaceID
                           select info.placeName;
                 LblPlace.Text += res.First();
 
@@ -411,14 +411,34 @@ namespace ActivityManager.Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-
         protected void submit_Click(object sender, EventArgs e)
         {
-            // 验证必须选择日期
+            if (Save_Click(sender, e))
+            {
+                MyActivity a = new MyActivity(Session["activityID"].ToString());
+                //MessageBox.Show(a.ActivityName);
+                a.ActivityState = 2;
+                a.Update();
+
+                GvTemplate.DataBind();
+                // DivMask.Style["pointer-events"] = "auto";
+            }
+        }
+
+        protected void save_Click(object sender, EventArgs e)
+        {
+            Save_Click(sender, e);
+        }
+
+        protected bool Save_Click(object sender, EventArgs e)
+        {
+            // Response.Write("<script language='javascript'>if(confirm('确定删除?'))</script>");
+
+            // 验证选择日期
             if (setSignStartDate.Text == "选择报名开始日期" || setSignEndDate.Text == "选择报名结束日期" || setHoldDate.Text == "选择举办日期")
             {
                 Response.Write("<script>alert('申请活动需选择日期！');</script>");
-                return;
+                return false;
             }
 
             int signStartInt = int.Parse(Regex.Replace(setSignStartDate.Text, "[-]", ""));
@@ -428,13 +448,13 @@ namespace ActivityManager.Test
             if (signStartInt > signEndInt)
             {
                 Response.Write("<script>alert('报名开始日期不得晚于报名结束日期！');</script>");
-                return;
+                return false;
             }
 
             if (signStartInt > holdDateInt)
             {
                 Response.Write("<script>alert('报名日期不得晚于活动开始日期！');</script>");
-                return;
+                return false;
             }
 
             int nowTimeInt = int.Parse(DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo));
@@ -442,28 +462,25 @@ namespace ActivityManager.Test
             if (signStartInt < nowTimeInt || signEndInt < nowTimeInt || holdDateInt < nowTimeInt)
             {
                 Response.Write("<script>alert('活动日期不得早于当前日期！');</script>");
-                return;
+                return false;
             }
 
             if (aHoldStart.SelectedValue == "")
             {
                 Response.Write("<script>alert('请选择活动举办具体时间！');</script>");
-                return;
+                return false;
             }
 
-            save_Click(sender, e);
-            MyActivity a = new MyActivity(Session["activityID"].ToString());
-            //MessageBox.Show(a.ActivityName);
-            a.ActivityState = "2";
-            a.Update();
-
-            GvTemplate.DataBind();
-            DivMask.Style["pointer-events"] = "auto";
-        }
-
-        protected void save_Click(object sender, EventArgs e)
-        {
-            // Response.Write("<script language='javascript'>if(confirm('确定删除?'))</script>");
+            // 验证场地人数
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var resVolume = from info in db.Place
+                            where info.placeID == int.Parse(aPlace.SelectedValue)
+                            select info.volume;
+            if (int.Parse(aVolume.Text) > resVolume.First())
+            {
+                Response.Write("<script>alert('活动人数超过场地人数限制！');</script>");
+                return false;
+            }
 
             MyActivity a;
             if (mode == 1)
@@ -473,16 +490,16 @@ namespace ActivityManager.Test
 
             a.ActivityName = aName.Text;
             a.ActivityIntro = aIntro.Text;
-            a.ActivityPlaceID = aPlace.SelectedValue;
+            a.ActivityPlaceID = int.Parse(aPlace.SelectedValue);
             a.ActivityOrgID = Session["ID"].ToString();
-            a.AvailableCredit = aCredit.Text;
-            a.MaxSigned = aVolume.Text;
+            a.AvailableCredit = int.Parse(aCredit.Text);
+            a.MaxSigned = int.Parse(aVolume.Text);
             a.SignStartDate = setSignStartDate.Text.ToString();
             a.SignEndDate = setSignEndDate.Text.ToString();
             a.HoldDate = setHoldDate.Text.ToString();
-            a.HoldStart = aHoldStart.SelectedItem.ToString().Substring(0, 2);
-            a.HoldEnd = aHoldEnd.SelectedItem.ToString().Substring(0, 2);
-            a.ActivityType = DropDownListType.SelectedValue;
+            a.HoldStart = int.Parse(aHoldStart.SelectedItem.ToString().Substring(0, 2));
+            a.HoldEnd = int.Parse(aHoldEnd.SelectedItem.ToString().Substring(0, 2));
+            a.ActivityType = int.Parse(DropDownListType.SelectedValue);
 
             if (mode == 1)
                 a.Create();
@@ -508,6 +525,8 @@ namespace ActivityManager.Test
             Tool.SetButton(GvTemplate, Session["ID"].ToString());
 
             DivMask.Style["pointer-events"] = "auto";
+            GvTemplate.DataBind();
+            return true;
         }
 
         public void editAct(string activityID)
