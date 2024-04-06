@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -182,7 +183,9 @@ namespace ActivityManager
                               where a.activityID == activityID
                               select a;
 
-                    int state = Convert.ToInt32(res.First().activityState);
+                    int state = -1;
+                    if (res.Any())
+                        state = Convert.ToInt32(res.First().activityState);
 
                     int n = gv.Columns.Count;
 
@@ -212,7 +215,7 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "导出名单";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "导出<br/>名单";
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "export";
                     }
                     else

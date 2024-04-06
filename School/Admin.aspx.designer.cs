@@ -33,6 +33,15 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivMask;
 
         /// <summary>
+        /// DivActMan 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivActMan;
+
+        /// <summary>
         /// ActMan 控件。
         /// </summary>
         /// <remarks>
@@ -42,6 +51,24 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.LinkButton ActMan;
 
         /// <summary>
+        /// DivPlaceMan 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivPlaceMan;
+
+        /// <summary>
+        /// PlaceMan 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton PlaceMan;
+
+        /// <summary>
         /// Image 控件。
         /// </summary>
         /// <remarks>
@@ -49,6 +76,15 @@ namespace ActivityManager.Test
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image Image;
+
+        /// <summary>
+        /// DivTopNav 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivTopNav;
 
         /// <summary>
         /// name 控件。
@@ -132,6 +168,15 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.LinkButton LinkButton3;
 
         /// <summary>
+        /// DivActGv 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivActGv;
+
+        /// <summary>
         /// GvTemplate 控件。
         /// </summary>
         /// <remarks>
@@ -148,6 +193,33 @@ namespace ActivityManager.Test
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinqDataSource schoolConnector;
+
+        /// <summary>
+        /// DivPlaceGv 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivPlaceGv;
+
+        /// <summary>
+        /// GvPlace 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GvPlace;
+
+        /// <summary>
+        /// PlaceLinqDataSource 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinqDataSource PlaceLinqDataSource;
 
         /// <summary>
         /// IBtnEsc 控件。

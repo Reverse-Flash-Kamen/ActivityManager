@@ -239,6 +239,8 @@ namespace ActivityManager
             // HttpContext.Current.Response.Write(activityName + " now:" + nowTime + " signStart:" + signStartDate + " signEnd:" + signEndDate + "\\");
 
             int state = activityState;
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+
             if (activityState == 2)
             {
                 // 对于审核中（2）的活动，如果当前时间超过报名截止时间，则更新为审核过期（4）
@@ -247,7 +249,6 @@ namespace ActivityManager
                     state = 4;
                 }
 
-                ActivityManagerDataContext db = new ActivityManagerDataContext();
                 var res = from a in db.Activity
                           where a.activityID == activityID
                           select a;
@@ -293,11 +294,25 @@ namespace ActivityManager
                     {
                         // 活动中8
                         state = 8;
+
+                        // 同时更改场地的状态
+                        var resPlaceState = from info in db.Place
+                                            where info.placeID == activityPlaceID
+                                            select info;
+
+                        resPlaceState.First().placeState = 1; // 使用中
+                        db.SubmitChanges();
                     }
                     else
                     {
                         // 已结束9
                         state = 9;
+                        var resPlaceState = from info in db.Place
+                                            where info.placeID == activityPlaceID
+                                            select info;
+
+                        resPlaceState.First().placeState = 0; // 结束使用
+                        db.SubmitChanges();
                     }
                 }
                 else
@@ -306,7 +321,6 @@ namespace ActivityManager
                     state = 9;
                 }
 
-                ActivityManagerDataContext db = new ActivityManagerDataContext();
                 var res = from a in db.Activity
                           where a.activityID == activityID
                           select a;

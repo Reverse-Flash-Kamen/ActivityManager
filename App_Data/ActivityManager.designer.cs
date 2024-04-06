@@ -29,11 +29,11 @@ namespace ActivityManager.App_Data
         // 数据库的本地绝对路径
         private static string conStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\App_Data\\ActivityManager.mdf;Integrated Security=True";
 
-		// 存储不同需求的查询条件
-		public static string connectorWhere = "";
-		public static string connectorCredit = "";
+        // 存储不同需求的查询条件
+        public static string connectorWhere = "";
+        public static string connectorCredit = "";
 
-		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
+        private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
 		
     #region 可扩展性方法定义
     partial void OnCreated();
@@ -43,9 +43,6 @@ namespace ActivityManager.App_Data
     partial void InsertOrganization(Organization instance);
     partial void UpdateOrganization(Organization instance);
     partial void DeleteOrganization(Organization instance);
-    partial void InsertPlace(Place instance);
-    partial void UpdatePlace(Place instance);
-    partial void DeletePlace(Place instance);
     partial void InsertLikedActivity(LikedActivity instance);
     partial void UpdateLikedActivity(LikedActivity instance);
     partial void DeleteLikedActivity(LikedActivity instance);
@@ -64,6 +61,9 @@ namespace ActivityManager.App_Data
     partial void InsertActivity(Activity instance);
     partial void UpdateActivity(Activity instance);
     partial void DeleteActivity(Activity instance);
+    partial void InsertPlace(Place instance);
+    partial void UpdatePlace(Place instance);
+    partial void DeletePlace(Place instance);
         #endregion
         public ActivityManagerDataContext() :
 				base(conStr, mappingSource)
@@ -108,14 +108,6 @@ namespace ActivityManager.App_Data
 			get
 			{
 				return this.GetTable<Organization>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Place> Place
-		{
-			get
-			{
-				return this.GetTable<Place>();
 			}
 		}
 		
@@ -164,6 +156,14 @@ namespace ActivityManager.App_Data
 			get
 			{
 				return this.GetTable<Activity>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Place> Place
+		{
+			get
+			{
+				return this.GetTable<Place>();
 			}
 		}
 	}
@@ -389,144 +389,6 @@ namespace ActivityManager.App_Data
 		{
 			this.SendPropertyChanging();
 			entity.Organization = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Place")]
-	public partial class Place : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _placeID;
-		
-		private string _placeName;
-		
-		private int _volume;
-		
-		private EntitySet<Activity> _Activity;
-		
-    #region 可扩展性方法定义
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnplaceIDChanging(int value);
-    partial void OnplaceIDChanged();
-    partial void OnplaceNameChanging(string value);
-    partial void OnplaceNameChanged();
-    partial void OnvolumeChanging(int value);
-    partial void OnvolumeChanged();
-    #endregion
-		
-		public Place()
-		{
-			this._Activity = new EntitySet<Activity>(new Action<Activity>(this.attach_Activity), new Action<Activity>(this.detach_Activity));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_placeID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int placeID
-		{
-			get
-			{
-				return this._placeID;
-			}
-			set
-			{
-				if ((this._placeID != value))
-				{
-					this.OnplaceIDChanging(value);
-					this.SendPropertyChanging();
-					this._placeID = value;
-					this.SendPropertyChanged("placeID");
-					this.OnplaceIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_placeName", DbType="VarChar(20)")]
-		public string placeName
-		{
-			get
-			{
-				return this._placeName;
-			}
-			set
-			{
-				if ((this._placeName != value))
-				{
-					this.OnplaceNameChanging(value);
-					this.SendPropertyChanging();
-					this._placeName = value;
-					this.SendPropertyChanged("placeName");
-					this.OnplaceNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="Int NOT NULL")]
-		public int volume
-		{
-			get
-			{
-				return this._volume;
-			}
-			set
-			{
-				if ((this._volume != value))
-				{
-					this.OnvolumeChanging(value);
-					this.SendPropertyChanging();
-					this._volume = value;
-					this.SendPropertyChanged("volume");
-					this.OnvolumeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Place_Activity", Storage="_Activity", ThisKey="placeID", OtherKey="activityPlaceID")]
-		public EntitySet<Activity> Activity
-		{
-			get
-			{
-				return this._Activity;
-			}
-			set
-			{
-				this._Activity.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Activity(Activity entity)
-		{
-			this.SendPropertyChanging();
-			entity.Place = this;
-		}
-		
-		private void detach_Activity(Activity entity)
-		{
-			this.SendPropertyChanging();
-			entity.Place = null;
 		}
 	}
 	
@@ -2356,6 +2218,168 @@ namespace ActivityManager.App_Data
 		{
 			this.SendPropertyChanging();
 			entity.Activity = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Place")]
+	public partial class Place : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _placeID;
+		
+		private string _placeName;
+		
+		private int _volume;
+		
+		private int _placeState;
+		
+		private EntitySet<Activity> _Activity;
+		
+    #region 可扩展性方法定义
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnplaceIDChanging(int value);
+    partial void OnplaceIDChanged();
+    partial void OnplaceNameChanging(string value);
+    partial void OnplaceNameChanged();
+    partial void OnvolumeChanging(int value);
+    partial void OnvolumeChanged();
+    partial void OnplaceStateChanging(int value);
+    partial void OnplaceStateChanged();
+    #endregion
+		
+		public Place()
+		{
+			this._Activity = new EntitySet<Activity>(new Action<Activity>(this.attach_Activity), new Action<Activity>(this.detach_Activity));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_placeID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int placeID
+		{
+			get
+			{
+				return this._placeID;
+			}
+			set
+			{
+				if ((this._placeID != value))
+				{
+					this.OnplaceIDChanging(value);
+					this.SendPropertyChanging();
+					this._placeID = value;
+					this.SendPropertyChanged("placeID");
+					this.OnplaceIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_placeName", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
+		public string placeName
+		{
+			get
+			{
+				return this._placeName;
+			}
+			set
+			{
+				if ((this._placeName != value))
+				{
+					this.OnplaceNameChanging(value);
+					this.SendPropertyChanging();
+					this._placeName = value;
+					this.SendPropertyChanged("placeName");
+					this.OnplaceNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="Int NOT NULL")]
+		public int volume
+		{
+			get
+			{
+				return this._volume;
+			}
+			set
+			{
+				if ((this._volume != value))
+				{
+					this.OnvolumeChanging(value);
+					this.SendPropertyChanging();
+					this._volume = value;
+					this.SendPropertyChanged("volume");
+					this.OnvolumeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_placeState", DbType="Int NOT NULL")]
+		public int placeState
+		{
+			get
+			{
+				return this._placeState;
+			}
+			set
+			{
+				if ((this._placeState != value))
+				{
+					this.OnplaceStateChanging(value);
+					this.SendPropertyChanging();
+					this._placeState = value;
+					this.SendPropertyChanged("placeState");
+					this.OnplaceStateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Place_Activity", Storage="_Activity", ThisKey="placeID", OtherKey="activityPlaceID")]
+		public EntitySet<Activity> Activity
+		{
+			get
+			{
+				return this._Activity;
+			}
+			set
+			{
+				this._Activity.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Activity(Activity entity)
+		{
+			this.SendPropertyChanging();
+			entity.Place = this;
+		}
+		
+		private void detach_Activity(Activity entity)
+		{
+			this.SendPropertyChanging();
+			entity.Place = null;
 		}
 	}
 }

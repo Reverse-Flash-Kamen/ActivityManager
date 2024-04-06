@@ -13,14 +13,6 @@
       <Association Name="Organization_Activity" Member="Activity" ThisKey="organizationID" OtherKey="activityOrgID" Type="Activity" />
     </Type>
   </Table>
-  <Table Name="dbo.Place" Member="Place">
-    <Type Name="Place">
-      <Column Name="placeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="placeName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Column Name="volume" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Place_Activity" Member="Activity" ThisKey="placeID" OtherKey="activityPlaceID" Type="Activity" />
-    </Type>
-  </Table>
   <Table Name="dbo.LikedActivity" Member="LikedActivity">
     <Type Name="LikedActivity">
       <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -102,6 +94,15 @@
       <Association Name="Activity_SignedActivity" Member="SignedActivity" ThisKey="activityID" OtherKey="activityID" Type="SignedActivity" />
       <Association Name="Organization_Activity" Member="Organization" ThisKey="activityOrgID" OtherKey="organizationID" Type="Organization" IsForeignKey="true" />
       <Association Name="Place_Activity" Member="Place" ThisKey="activityPlaceID" OtherKey="placeID" Type="Place" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Place" Member="Place">
+    <Type Name="Place">
+      <Column Name="placeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="placeName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="volume" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="placeState" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Place_Activity" Member="Activity" ThisKey="placeID" OtherKey="activityPlaceID" Type="Activity" />
     </Type>
   </Table>
 </Database>

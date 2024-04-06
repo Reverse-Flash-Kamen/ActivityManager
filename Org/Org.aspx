@@ -277,7 +277,7 @@
         <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False"/>
 
         <%--报名页面--%>
-        <div id="display" runat="server" visible="False">
+        <div id="display" runat="server" Visible="false" >
             <h2 style="width: 100px; margin: 17px auto;">活动申请</h2>
             <div>
                 活动名称
@@ -304,7 +304,13 @@
 
             <div>
                 举办地点
-                <asp:DropDownList ID="aPlace" runat="server" DataTextField="placeName" DataValueField="placeID" DataSourceID="placeConnector" Width="120px"></asp:DropDownList><asp:LinqDataSource runat="server" EntityTypeName="" ID="placeConnector" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" TableName="Place"></asp:LinqDataSource>
+                <asp:DropDownList ID="aPlace" runat="server" DataTextField="placeName" DataValueField="placeID" DataSourceID="placeConnector" Width="120px">
+                </asp:DropDownList>
+                <asp:LinqDataSource runat="server" EntityTypeName="" ID="placeConnector" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" TableName="Place" Where="placeState &gt;= @placeState">
+                    <WhereParameters>
+                        <asp:Parameter DefaultValue="0" Name="placeState" Type="Int32" />
+                    </WhereParameters>
+                </asp:LinqDataSource>
             </div>
             
             <div>

@@ -1,5 +1,7 @@
 ﻿using ActivityManager.App_Data;
+using NPOI.SS.Formula.Functions;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -45,9 +47,9 @@ namespace ActivityManager.Test
 
         protected void GridView1_DataBound(object sender, EventArgs e)
         {
-            Tool.FormatActivity((GridView)sender, Session["ID"].ToString());
-            Tool.FormatGridView((GridView)sender, 9);
-            Tool.UpdateActivityState((GridView)sender);
+            Tool.FormatActivity(GvTemplate, Session["ID"].ToString());
+            Tool.FormatGridView(GvTemplate, 9);
+            Tool.UpdateActivityState(GvTemplate);
         }
 
         protected void commit_Click(object sender, EventArgs e)
@@ -169,12 +171,12 @@ namespace ActivityManager.Test
             if (e.CommandName == "Page") return;
 
             int index = int.Parse(e.CommandArgument.ToString());
-            string actID = ((GridView)sender).Rows[index].Cells[0].Text;
+            string actID = GvTemplate.Rows[index].Cells[0].Text;
 
             if (e.CommandName == "check")
             {
                 // 查看操作
-                CheckActDiv.Visible = true;
+                CheckActDiv.Style["display"] = "block";
 
                 LblState.Text = "当前状态：";
                 LblState.Height = 40;
@@ -228,7 +230,7 @@ namespace ActivityManager.Test
             else
             {
                 // Operation.SetOperation(e.CommandName, actID, Tool.studentID, (GridView)sender, schoolConnector);
-                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), (GridView)sender);
+                Operation.SetOperation(e.CommandName, actID, Session["ID"].ToString(), GvTemplate);
             }
 
             GvTemplate.DataBind();
@@ -237,23 +239,31 @@ namespace ActivityManager.Test
         protected void checkAct(string actID)
         {
             Session["activityID"] = actID;
-            display.Visible = true;
+            display.Style["display"] = "block";
         }
 
         protected void BtnCheck_Click(object sender, EventArgs e)
         {
-            CheckActDiv.Visible = false;
+            CheckActDiv.Style["display"] = "none";
             DivMask.Style["pointer-events"] = "auto";
         }
 
         protected void ActMan_Click(object sender, EventArgs e)
         {
+            DivTopNav.Style["display"] = "block";
+            DivActGv.Style["display"] = "block";
+
+            DivPlaceGv.Style["display"] = "none";
+
+            DivPlaceMan.Style["background-color"] = "#ccad9f";
+            DivActMan.Style["background-color"] = "red";
+
             LinkButton1_Click(sender, e);
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
-            display.Visible = false;
+            display.Style["display"] = "none";
             passRadio.Checked = false;
             noPassRadio.Checked = false;
             failReason.Text = string.Empty;
@@ -310,6 +320,111 @@ namespace ActivityManager.Test
         {
             GvTemplate.PageIndex = e.NewPageIndex;
             schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
+        }
+
+        protected void PlaceMan_Click(object sender, EventArgs e)
+        {
+            DivTopNav.Style["display"] = "none";
+            DivActGv.Style["display"] = "none";
+
+            DivPlaceGv.Style["display"] = "block";
+
+            DivActMan.Style["background-color"] = "#ccad9f";
+            DivPlaceMan.Style["background-color"] = "red";
+        }
+
+        protected void GvPlace_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Page") return;
+            int index = int.Parse(e.CommandArgument.ToString());
+            int placeID = int.Parse(GvPlace.Rows[index].Cells[0].Text);
+            Debug.Write("placeID" + placeID);
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.Place
+                      where info.placeID == placeID
+                      select info;
+
+            if (e.CommandName == "editP")
+            {
+                // 调用创建
+            }
+            else if (e.CommandName == "deletP")
+            {
+                db.Place.DeleteOnSubmit(res.First());
+                db.SubmitChanges();
+            }
+            else if (e.CommandName == "enableP")
+            {
+                // 启用
+                res.First().placeState = 0;
+                db.SubmitChanges();
+            }
+            else if (e.CommandName == "disableP")
+            {
+                // 停用
+                res.First().placeState = -1;
+                db.SubmitChanges();
+            }
+
+            GvPlace.DataBind();
+        }
+
+        protected void GvPlace_DataBound(object sender, EventArgs e)
+        {
+            foreach (GridViewRow row in GvPlace.Rows)
+            {
+                // 获取场地状态
+                int placeState = int.Parse(row.Cells[3].Text);
+
+                // 格式化按钮
+                ((LinkButton)row.Cells[5].Controls[0]).Text = "编辑";
+                ((LinkButton)row.Cells[5].Controls[0]).CommandName = "editP";
+
+                ((LinkButton)row.Cells[6].Controls[0]).Text = "删除";
+                ((LinkButton)row.Cells[6].Controls[0]).CommandName = "deletP";
+
+                if (placeState == -1)
+                {
+                    ((LinkButton)row.Cells[7].Controls[0]).Text = "启用";
+                    ((LinkButton)row.Cells[7].Controls[0]).CommandName = "enableP";
+                }
+                else if (placeState == 0)
+                {
+                    ((LinkButton)row.Cells[7].Controls[0]).Text = "停用";
+                    ((LinkButton)row.Cells[7].Controls[0]).CommandName = "disableP";
+                }
+                else if (placeState == 1)
+                {
+                    // 活动中无法操作
+                    ((LinkButton)row.Cells[7].Controls[0]).Text = "";
+                    ((LinkButton)row.Cells[7].Controls[0]).CommandName = "null";
+                }
+
+                // 格式化场地状态
+                switch (placeState)
+                {
+                    case -1:
+                        row.Cells[3].Text = "已停用";
+                        break;
+
+                    case 0:
+                        row.Cells[3].Text = "空闲中";
+                        break;
+
+                    case 1:
+                        row.Cells[3].Text = "使用中";
+                        break;
+                }
+
+                // 统计使用次数
+                int placeID = int.Parse(row.Cells[0].Text);
+                ActivityManagerDataContext db = new ActivityManagerDataContext();
+                var res = from info in db.Activity
+                          where info.activityPlaceID == placeID
+                          select info;
+                row.Cells[4].Text = res.Count().ToString();
+            }
         }
     }
 }

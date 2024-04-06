@@ -104,16 +104,19 @@
                         <h1 style="padding:50px 0px; color:white; margin:0;">校生通</h1>
                     </div>
                     <%--导航--%>
-                    <div style="padding:20px 20px; text-align:center; background-color:#ccad9f " >
-                        <asp:LinkButton ID="ActMan" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="ActMan_Click">活动管理</asp:LinkButton>
+                    <div style="text-align:center; background-color:red "  id ="DivActMan" runat="server">
+                        <asp:LinkButton ID="ActMan" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="ActMan_Click" Height="39px" Width="180px" style="padding:22px 5px 5px;">活动管理</asp:LinkButton>
+                    </div>
+                    <div style="text-align:center; background-color:#ccad9f " id="DivPlaceMan" runat="server">
+                        <asp:LinkButton ID="PlaceMan" runat="server" Font-Underline="False" Font-Size="Larger" ForeColor="White" OnClick="PlaceMan_Click" Height="40px" Width="180px" style="padding:22px 5px 5px;">场地管理</asp:LinkButton>
                     </div>
                     <%--校徽--%>
                     <div>
-                        <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/image/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 250px; opacity:50%"/>
+                        <asp:Image ID="Image" runat="server" Height="190px" ImageUrl="~/image/Ndky.png" Width="190px" style="margin-left:5px; margin-top: 220px; opacity:50%"/>
                     </div>
                 </div>
 
-               <div class="auto-style3">
+               <div class="auto-style3" id="DivTopNav" runat="server">
                    <%--查询--%>
                    <div class="auto-style8">
                         <span class="">&nbsp;&nbsp;&nbsp;活动名称&nbsp;<asp:TextBox ID="name" runat="server"></asp:TextBox></span>
@@ -141,7 +144,7 @@
                            <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
                        </asp:DropDownList>
                        </span>
-                   <div style="width:320px; position:absolute; top: 242px; left: 1237px;">
+                   <div style="width:320px; position:absolute; top: 242px; left: 1236px;">
                        <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
                        <asp:Button ID="flush" runat="server" Text="重置"  OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
                    </div>  
@@ -158,8 +161,8 @@
                    </div>
                </div>
 
-                <%--列表--%>
-               <div>
+                <%--活动列表--%>
+               <div id="DivActGv" runat="server" style="display:none">
                     <asp:GridView ID="GvTemplate" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataKeyNames="activityID" DataSourceID="schoolConnector" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" OnDataBound="GridView1_DataBound" OnRowCommand="GvTemplate_RowCommand" HorizontalAlign="Center" GridLines="None" OnPageIndexChanging="GvTemplate_PageIndexChanging">
                         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                         <Columns>
@@ -261,14 +264,55 @@
                     </asp:GridView>
                     <asp:LinqDataSource ID="schoolConnector" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="Activity" EnableDelete="True" EnableInsert="True" EnableUpdate="True" OrderBy="activityState">
                     </asp:LinqDataSource>
-               </div>
+                </div>
+
+                <%--场地详情--%>
+                <div id="DivPlaceGv" runat="server" style="display:block">
+                    <asp:GridView ID="GvPlace" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataSourceID="PlaceLinqDataSource" ForeColor="#333333" Height="525px" Width="85%" PageSize="5"  HorizontalAlign="Center" GridLines="None" DataKeyNames="placeID" OnDataBound="GvPlace_DataBound" OnRowCommand="GvPlace_RowCommand">
+                        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                        <Columns>
+                            <asp:BoundField DataField="placeID" HeaderText="placeID" ReadOnly="True" SortExpression="placeID" InsertVisible="False" >
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="placeName" HeaderText="场地名称" SortExpression="placeName" HeaderStyle-Width="200px" ItemStyle-Height="84px" />
+                            <asp:BoundField DataField="volume" HeaderText="场地容量" SortExpression="volume" HeaderStyle-Width="200px" ItemStyle-Height="84px"/>
+                            <asp:BoundField DataField="placeState" HeaderText="场地状态" SortExpression="placeID" HeaderStyle-Width="200px" ItemStyle-Height="84px"/>
+                            <asp:BoundField DataField="placeState" HeaderText="活动次数" SortExpression="placeID" HeaderStyle-Width="200px" ItemStyle-Height="84px"/>
+                            <asp:ButtonField Text="按钮" >
+                            <HeaderStyle Width="45px" />
+                            </asp:ButtonField>
+                            <asp:ButtonField HeaderText="操作" Text="按钮" >
+                            <HeaderStyle Width="45px" />
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" >
+                            <HeaderStyle Width="45px" />
+                            </asp:ButtonField>
+                        </Columns>
+                        <EditRowStyle BackColor="#999999" />
+                        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#8d9ba5" Font-Bold="True" ForeColor="White" CssClass="head" />
+                        <PagerStyle BackColor="#8d9ba5" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" HorizontalAlign="Center" />
+                        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                        <SortedAscendingCellStyle BackColor="#E9E7E2" />
+                        <SortedAscendingHeaderStyle BackColor="#506C8C" />
+                        <SortedDescendingCellStyle BackColor="#FFFDF8" />
+                        <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+                    </asp:GridView>
+                    <asp:LinqDataSource ID="PlaceLinqDataSource" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="Place" EnableDelete="True" EnableInsert="True" EnableUpdate="True" OrderBy="placeID">
+                    </asp:LinqDataSource>
+                </div>
+
             </div>
         </div>
 
         <%--退出功能--%>
         <asp:ImageButton ID="IBtnEsc" runat="server" style="position:absolute; top: 120px; left: 1600px;" ImageUrl="~/image/esc.png" Width="20"  OnClick="Esc_Click" CausesValidation="False"/>
         <%--审核功能--%>
-        <div id="display" runat="server" visible="false">
+        <div id="display" runat="server" style="display:none">
             <h3 style="text-align: center; margin: 0 0 6px 0;">
                 审核活动
             </h3>
@@ -291,7 +335,7 @@
             
         </div>
         <%--活动详情--%>
-        <div runat="server" class="divCheck" id="CheckActDiv" visible="False">
+        <div runat="server" class="divCheck" id="CheckActDiv" style="display:none">
             <div class="auto-style13"><asp:Label runat="server" Text="活动申请详情" Font-Bold="True" Font-Size="Large"></asp:Label></div>
 
             <table class="auto-style12" style="vertical-align:middle">
