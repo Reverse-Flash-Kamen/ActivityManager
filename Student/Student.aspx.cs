@@ -874,16 +874,106 @@ namespace ActivityManager.Test
             DivActPlaza.Style["background-color"] = "red";
         }
 
-        protected void BtnBuildActTeam_Click(object sender, EventArgs e)
-        {
-            DivBuildTeam.Style["display"] = "block";
-        }
-
         protected void BtnBuildTeamCancel_Click(object sender, EventArgs e)
         {
             DivBuildTeam.Style["display"] = "none";
-            DivMask.Style["pointer-events"] = "none";
             DivMask.Style["pointer-events"] = "auto";
+        }
+
+        protected void DdlBuildTeamAct_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string actID = DdlBuildTeamAct.SelectedValue;
+
+            SetDdlBulidTeamVolume(actID);
+        }
+
+        /// <summary>
+        /// 队伍创建者默认为队长，captain == 1
+        /// 队长选择队伍成员加入是否需要审核 audit == 0/1
+        /// 审核权由队长拥有
+        /// 当需要审核时，只有audit == 1 and member == 1 才能算是小队成员
+        /// 无需审核，audit == 0 and member == 1 是小队成员
+        /// 待审核成员 audit == 1 and member == 0
+        /// audit == 0 and member == 0 不创建这种情况
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void BtnBuildTeamSubmit_Click(object sender, EventArgs e)
+        {
+            string mes = "";
+            if (TxtTeamName.Text.Length <= 0)
+            {
+                mes += "-请输入队伍名称！\\r";
+            }
+
+            if (RblBuildTeam.SelectedIndex == -1)
+            {
+                mes += "-请选择是否启用审核功能\\r";
+            }
+
+            if (mes != "")
+            {
+                Response.Write("<script>alert('" + mes + "');</script>");
+                return;
+            }
+
+            string actID = DdlBuildTeamAct.SelectedValue.ToString();
+            string teamName = TxtTeamName.Text.Trim();
+            int volume = int.Parse(DdlBulidTeamVolume.SelectedValue);
+            int audit = int.Parse(RblBuildTeam.SelectedValue);
+
+            ActivitySignTeam team = new ActivitySignTeam()
+            {
+                activityID = actID,
+                teamName = teamName,
+                studentID = Session["ID"].ToString(),
+                captain = 1,
+                audit = audit,
+                member = 1,
+                volume = volume,
+            };
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            db.ActivitySignTeam.InsertOnSubmit(team);
+            db.SubmitChanges();
+        }
+
+        protected void BtnBuildTeam_Click(object sender, EventArgs e)
+        {
+            DivBuildTeam.Style["display"] = "block";
+            DivMask.Style["pointer-events"] = "none";
+
+            // 绑定可团队报名且状态为报名中的活动
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from infoTeam in db.ActivityEnableTeam
+                      join infoAct in db.Activity on infoTeam.activityID equals infoAct.activityID into temp
+                      from info in temp
+                      select info;
+
+            DdlBuildTeamAct.Items.Clear();
+            DdlBuildTeamAct.DataSource = res;
+            DdlBuildTeamAct.DataTextField = "activityName";
+            DdlBuildTeamAct.DataValueField = "activityID";
+            DdlBuildTeamAct.DataBind();
+
+            SetDdlBulidTeamVolume(res.First().activityID);
+        }
+
+        private void SetDdlBulidTeamVolume(string actID)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.ActivityEnableTeam
+                      where info.activityID == actID
+                      select info;
+
+            int minVolume = res.First().minVolume;
+            int maxVolume = res.First().maxVolume;
+
+            DdlBulidTeamVolume.Items.Clear();
+            for (int i = minVolume; i <= maxVolume; i++)
+            {
+                DdlBulidTeamVolume.Items.Add(i.ToString());
+            }
         }
     }
 }

@@ -102,7 +102,7 @@ namespace ActivityManager
         private void ActCheckCode(string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
-            var res = from info in db.Activity
+            var res = from info in db.ActivityCheckCode
                       where info.activityID == actID
                       select info;
 
@@ -168,7 +168,13 @@ namespace ActivityManager
                 var res = from info in db.Activity
                           where info.activityID == actID
                           select info;
+
+                var resTeam = from info in db.ActivityEnableTeam
+                              where info.activityID == actID
+                              select info;
+
                 db.Activity.DeleteOnSubmit(res.First());
+                db.ActivityEnableTeam.DeleteOnSubmit(resTeam.First());
                 db.SubmitChanges();
             }
             catch

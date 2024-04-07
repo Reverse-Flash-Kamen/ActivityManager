@@ -213,13 +213,13 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivBuildActTeam;
 
         /// <summary>
-        /// BtnBuildActTeam 控件。
+        /// BtnBuildTeam 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnBuildActTeam;
+        protected global::System.Web.UI.WebControls.Button BtnBuildTeam;
 
         /// <summary>
         /// DivAct 控件。
@@ -852,13 +852,22 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.DropDownList DdlBuildTeamAct;
 
         /// <summary>
-        /// ActEnableSign 控件。
+        /// LblTeamName 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinqDataSource ActEnableSign;
+        protected global::System.Web.UI.WebControls.Label LblTeamName;
+
+        /// <summary>
+        /// TxtTeamName 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtTeamName;
 
         /// <summary>
         /// LblTeamVolume 控件。
@@ -888,13 +897,13 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.Label LblTeamAudit;
 
         /// <summary>
-        /// RadioButtonList1 控件。
+        /// RblBuildTeam 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RadioButtonList1;
+        protected global::System.Web.UI.WebControls.RadioButtonList RblBuildTeam;
 
         /// <summary>
         /// BtnBuildTeamSubmit 控件。

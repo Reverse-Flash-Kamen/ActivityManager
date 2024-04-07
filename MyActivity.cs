@@ -78,8 +78,6 @@ namespace ActivityManager
                 submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 activityType = a.activityType;
                 if (a.failReason != null) failReason = a.failReason.ToString().Trim();
-                if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
-                if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
             }
             else
             {
@@ -106,8 +104,6 @@ namespace ActivityManager
             submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             activityType = a.activityType;
             if (a.failReason != null) failReason = a.failReason.ToString().Trim();
-            if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
-            if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
         }
 
         public void Create()
@@ -206,8 +202,6 @@ namespace ActivityManager
             if (failReason != null) a.failReason = failReason;
             a.activityState = Convert.ToInt32(activityState);
             a.activityType = Convert.ToInt32(activityType);
-            if (checkInCode != null) a.checkInCode = checkInCode;
-            if (checkOutCode != null) a.checkOutCode = checkOutCode;
 
             db.SubmitChanges();
         }
@@ -227,7 +221,7 @@ namespace ActivityManager
         {
             // 根据当前时间更改活动关于时间的状态（待报名5，报名中6，待开始7，活动中8，已结束9）
 
-            // 获取当前时间
+            // 获取当前时间,应该改成获取网络时间
             string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             //string nowTime = "2028-04-04 14";
             int nowHour = int.Parse(nowTime.Substring(11));

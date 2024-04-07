@@ -349,6 +349,21 @@
             </div>
 
             <div>
+                启用组队
+                <asp:RadioButtonList ID="RblEanbleTeam" runat="server" RepeatDirection="Horizontal" style="margin-top:-20px; margin-left:60px;" AutoPostBack="True" OnSelectedIndexChanged="RblEanbleTeam_SelectedIndexChanged">
+                    <asp:ListItem Text="是" Value="1"></asp:ListItem>
+                    <asp:ListItem Text="否" Value="0"></asp:ListItem>
+                </asp:RadioButtonList>
+            </div>
+
+            <div id="DivTeamVolume" runat ="server" style="display:none;">
+                团队人数
+                <asp:TextBox ID="TxtMinVolume" runat="server" TextMode="Number" Width="40px"></asp:TextBox>
+                至
+                <asp:TextBox ID="TxtMaxVolume" runat="server" TextMode="Number" Width="40px"></asp:TextBox>
+            </div>
+
+            <div>
                 <asp:Button ID="submitA" runat="server" Text="提交" OnClick="submit_Click" />
                 <asp:Button ID="saveA" runat="server" Text="保存" OnClick="save_Click" />
                 <asp:Button ID="returnA" runat="server" Text="返回" CausesValidation="False" OnClick="returnA_Click" />

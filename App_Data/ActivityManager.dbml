@@ -13,43 +13,12 @@
       <Association Name="Organization_Activity" Member="Activity" ThisKey="organizationID" OtherKey="activityOrgID" Type="Activity" />
     </Type>
   </Table>
-  <Table Name="dbo.LikedActivity" Member="LikedActivity">
-    <Type Name="LikedActivity">
-      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Student_LikedActivity" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
-      <Association Name="Activity_LikedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Student" Member="Student">
     <Type Name="Student">
       <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="ID" Type="System.String" DbType="Char(18)" CanBeNull="true" />
       <Column Name="studentName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
-      <Association Name="Student_LikedActivity" Member="LikedActivity" ThisKey="studentID" OtherKey="studentID" Type="LikedActivity" />
-      <Association Name="Student_ActivityAppraise" Member="ActivityAppraise" ThisKey="studentID" OtherKey="studentID" Type="ActivityAppraise" />
-      <Association Name="Student_SignedActivity" Member="SignedActivity" ThisKey="studentID" OtherKey="studentID" Type="SignedActivity" />
       <Association Name="Student_StudentIdentified" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" Cardinality="One" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ActivityAppraise" Member="ActivityAppraise">
-    <Type Name="ActivityAppraise">
-      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="credit" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="appraise" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
-      <Association Name="Student_ActivityAppraise" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
-      <Association Name="Activity_ActivityAppraise" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.SignedActivity" Member="SignedActivity">
-    <Type Name="SignedActivity">
-      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="checkIn" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="checkOut" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Student_SignedActivity" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
-      <Association Name="Activity_SignedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.StudentIdentified" Member="StudentIdentified">
@@ -65,7 +34,38 @@
       <Column Name="credit_2" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="credit_3" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="studentPassword" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="StudentIdentified_LikedActivity" Member="LikedActivity" ThisKey="studentID" OtherKey="studentID" Type="LikedActivity" />
+      <Association Name="StudentIdentified_SignedActivity" Member="SignedActivity" ThisKey="studentID" OtherKey="studentID" Type="SignedActivity" />
+      <Association Name="StudentIdentified_ActivityAppraise" Member="ActivityAppraise" ThisKey="studentID" OtherKey="studentID" Type="ActivityAppraise" />
+      <Association Name="StudentIdentified_ActivitySignTeam" Member="ActivitySignTeam" ThisKey="studentID" OtherKey="studentID" Type="ActivitySignTeam" />
       <Association Name="Student_StudentIdentified" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Place" Member="Place">
+    <Type Name="Place">
+      <Column Name="placeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="placeName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="volume" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="placeState" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Place_Activity" Member="Activity" ThisKey="placeID" OtherKey="activityPlaceID" Type="Activity" />
+    </Type>
+  </Table>
+  <Table Name="dbo.LikedActivity" Member="LikedActivity">
+    <Type Name="LikedActivity">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="StudentIdentified_LikedActivity" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" IsForeignKey="true" />
+      <Association Name="Activity_LikedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SignedActivity" Member="SignedActivity">
+    <Type Name="SignedActivity">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="checkIn" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="checkOut" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="StudentIdentified_SignedActivity" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" IsForeignKey="true" />
+      <Association Name="Activity_SignedActivity" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Activity" Member="Activity">
@@ -87,22 +87,54 @@
       <Column Name="submitTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="failReason" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="activityType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="checkInCode" Type="System.String" DbType="Char(6)" CanBeNull="true" />
-      <Column Name="checkOutCode" Type="System.String" DbType="Char(6)" CanBeNull="true" />
       <Association Name="Activity_LikedActivity" Member="LikedActivity" ThisKey="activityID" OtherKey="activityID" Type="LikedActivity" />
-      <Association Name="Activity_ActivityAppraise" Member="ActivityAppraise" ThisKey="activityID" OtherKey="activityID" Type="ActivityAppraise" />
       <Association Name="Activity_SignedActivity" Member="SignedActivity" ThisKey="activityID" OtherKey="activityID" Type="SignedActivity" />
+      <Association Name="Activity_ActivityEnableTeam" Member="ActivityEnableTeam" ThisKey="activityID" OtherKey="activityID" Type="ActivityEnableTeam" Cardinality="One" />
+      <Association Name="Activity_ActivityCheckCode" Member="ActivityCheckCode" ThisKey="activityID" OtherKey="activityID" Type="ActivityCheckCode" Cardinality="One" />
+      <Association Name="Activity_ActivityAppraise" Member="ActivityAppraise" ThisKey="activityID" OtherKey="activityID" Type="ActivityAppraise" />
       <Association Name="Organization_Activity" Member="Organization" ThisKey="activityOrgID" OtherKey="organizationID" Type="Organization" IsForeignKey="true" />
       <Association Name="Place_Activity" Member="Place" ThisKey="activityPlaceID" OtherKey="placeID" Type="Place" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Place" Member="Place">
-    <Type Name="Place">
-      <Column Name="placeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="placeName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+  <Table Name="dbo.ActivityEnableTeam" Member="ActivityEnableTeam">
+    <Type Name="ActivityEnableTeam">
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="minVolume" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="maxVolume" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="ActivityEnableTeam_ActivitySignTeam" Member="ActivitySignTeam" ThisKey="activityID" OtherKey="activityID" Type="ActivitySignTeam" />
+      <Association Name="Activity_ActivityEnableTeam" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ActivityCheckCode" Member="ActivityCheckCode">
+    <Type Name="ActivityCheckCode">
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="checkInCode" Type="System.String" DbType="Char(6)" CanBeNull="true" />
+      <Column Name="checkOutCode" Type="System.String" DbType="Char(6)" CanBeNull="true" />
+      <Association Name="Activity_ActivityCheckCode" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ActivityAppraise" Member="ActivityAppraise">
+    <Type Name="ActivityAppraise">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="credit" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="appraise" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Association Name="Activity_ActivityAppraise" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+      <Association Name="StudentIdentified_ActivityAppraise" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ActivitySignTeam" Member="ActivitySignTeam">
+    <Type Name="ActivitySignTeam">
+      <Column Name="teamID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" CanBeNull="false" />
+      <Column Name="teamName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" CanBeNull="false" />
+      <Column Name="captain" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="audit" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="member" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="volume" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="placeState" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Place_Activity" Member="Activity" ThisKey="placeID" OtherKey="activityPlaceID" Type="Activity" />
+      <Association Name="ActivityEnableTeam_ActivitySignTeam" Member="ActivityEnableTeam" ThisKey="activityID" OtherKey="activityID" Type="ActivityEnableTeam" IsForeignKey="true" />
+      <Association Name="StudentIdentified_ActivitySignTeam" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

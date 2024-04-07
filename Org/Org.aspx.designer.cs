@@ -375,6 +375,42 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.WebControls.RangeValidator creditRangeValidator;
 
         /// <summary>
+        /// RblEanbleTeam 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList RblEanbleTeam;
+
+        /// <summary>
+        /// DivTeamVolume 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivTeamVolume;
+
+        /// <summary>
+        /// TxtMinVolume 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtMinVolume;
+
+        /// <summary>
+        /// TxtMaxVolume 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtMaxVolume;
+
+        /// <summary>
         /// submitA 控件。
         /// </summary>
         /// <remarks>

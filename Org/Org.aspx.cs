@@ -445,30 +445,39 @@ namespace ActivityManager.Test
             int signEndInt = int.Parse(Regex.Replace(setSignEndDate.Text, "[-]", ""));
             int holdDateInt = int.Parse(Regex.Replace(setHoldDate.Text, "[-]", ""));
 
+            string msg = "";
             if (signStartInt > signEndInt)
             {
-                Response.Write("<script>alert('报名开始日期不得晚于报名结束日期！');</script>");
-                return false;
+                /*Response.Write("<script>alert('报名开始日期不得晚于报名结束日期！');</script>");
+                return false;*/
+
+                msg += "-报名开始日期不得晚于报名结束日期！\\r";
             }
 
             if (signStartInt > holdDateInt)
             {
-                Response.Write("<script>alert('报名日期不得晚于活动开始日期！');</script>");
-                return false;
+                /*Response.Write("<script>alert('报名日期不得晚于活动开始日期！');</script>");
+                return false;*/
+
+                msg += "-报名日期不得晚于活动开始日期！\\r";
             }
 
             int nowTimeInt = int.Parse(DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo));
 
             if (signStartInt < nowTimeInt || signEndInt < nowTimeInt || holdDateInt < nowTimeInt)
             {
-                Response.Write("<script>alert('活动日期不得早于当前日期！');</script>");
-                return false;
+                /*Response.Write("<script>alert('活动日期不得早于当前日期！');</script>");
+                return false;*/
+
+                msg += "-活动日期不得早于当前日期！\\r";
             }
 
             if (aHoldStart.SelectedValue == "")
             {
-                Response.Write("<script>alert('请选择活动举办具体时间！');</script>");
-                return false;
+                /*Response.Write("<script>alert('请选择活动举办具体时间！');</script>");
+                return false;*/
+
+                msg += "-请选择活动举办具体时间！\\r";
             }
 
             // 验证场地人数
@@ -478,7 +487,33 @@ namespace ActivityManager.Test
                             select info.volume;
             if (int.Parse(aVolume.Text) > resVolume.First())
             {
-                Response.Write("<script>alert('活动人数超过场地人数限制！');</script>");
+                /*Response.Write("<script>alert('活动人数超过场地人数限制！');</script>");
+                return false;*/
+
+                msg += "-活动人数超过场地人数限制！\\r";
+            }
+
+            if (RblEanbleTeam.SelectedValue == "1")
+            {
+                int minVolume = int.Parse(TxtMinVolume.Text.Trim());
+                int maxVolume = int.Parse(TxtMaxVolume.Text.Trim());
+
+                if (minVolume <= 1 || maxVolume < minVolume)
+                {
+                    /*Response.Write("<script>alert('请输入合法团队容量！');</script>");
+                    return false;*/
+
+                    msg += "-请输入合法团队容量！\\r";
+                }
+            }
+            else if (RblEanbleTeam.SelectedIndex == -1)
+            {
+                msg += "-请选择是否启用团队报名！\\r";
+            }
+
+            if (msg != "")
+            {
+                Response.Write("<script>alert('" + msg + "');</script>");
                 return false;
             }
 
@@ -508,6 +543,19 @@ namespace ActivityManager.Test
 
             Session["activityID"] = a.ActivityID;
 
+            if (RblEanbleTeam.SelectedValue == "1")
+            {
+                ActivityEnableTeam enableTeam = new ActivityEnableTeam()
+                {
+                    activityID = a.ActivityID,
+                    minVolume = int.Parse(TxtMinVolume.Text.Trim()),
+                    maxVolume = int.Parse(TxtMaxVolume.Text.Trim()),
+                };
+
+                db.ActivityEnableTeam.InsertOnSubmit(enableTeam);
+                db.SubmitChanges();
+            }
+
             display.Visible = false;
 
             aName.Text = null;
@@ -522,6 +570,10 @@ namespace ActivityManager.Test
             aHoldEnd.Items.Clear();
             aHoldStart.Enabled = false;
             aHoldEnd.Enabled = false;
+            TxtMaxVolume.Text = null;
+            TxtMinVolume.Text = null;
+            RblEanbleTeam.SelectedIndex = -1;
+
             Tool.SetButton(GvTemplate, Session["ID"].ToString());
 
             DivMask.Style["pointer-events"] = "auto";
@@ -562,10 +614,18 @@ namespace ActivityManager.Test
             aHoldEnd.Enabled = true;
         }
 
-        //protected void Button1_Click(object sender, EventArgs e)
-        //{
-        //    Session["activityID"] = Activities.Rows[0].Cells[0].Text;
-        //    editAct(Activities.Rows[0].Cells[0].Text);
-        //}
+        protected void RblEanbleTeam_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (RblEanbleTeam.SelectedValue == "1")
+            {
+                DivTeamVolume.Style["display"] = "block";
+            }
+            else
+            {
+                DivTeamVolume.Style["display"] = "none";
+                TxtMinVolume.Text = "";
+                TxtMaxVolume.Text = "";
+            }
+        }
     }
 }
