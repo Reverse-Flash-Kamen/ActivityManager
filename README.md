@@ -12,4 +12,4 @@ ndky000000
 于**ActivityManager\App_Data\ActivityManager.designer.cs**修改**C:\\Code\\Reverse-Flash-Kamen\\**
 private static string conStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\App_Data\\ActivityManager.mdf;Integrated Security=True";
 ## 2024/4/10
-下载act_info_1.0分支
+下载add_info_1.0分支
