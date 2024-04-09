@@ -305,7 +305,7 @@
                             <asp:BoundField DataField="placeID" HeaderText="placeID" ReadOnly="True" SortExpression="placeID" InsertVisible="False" >
                                 <ControlStyle CssClass="hidden" />
                                 <FooterStyle CssClass="hidden" />
-                                <HeaderStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden"/>
                                 <ItemStyle CssClass="hidden" />
                             </asp:BoundField>
                             <asp:BoundField DataField="placeName" HeaderText="场地名称" SortExpression="placeName" HeaderStyle-Width="200px" ItemStyle-Height="84px" />

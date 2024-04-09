@@ -229,6 +229,10 @@ namespace ActivityManager.Test
             DivMyInfoR.Style["display"] = "none";
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "block";
+            DivBuildActTeam.Style["display"] = "none";
+
+            DivAct.Style["display"] = "block";
+            DivTeam.Style["display"] = "none";
 
             LinkButton1.Text = "全部活动"; // 要在按钮点击事件之前
             LinkButton2.Text = "可报名";
@@ -236,6 +240,7 @@ namespace ActivityManager.Test
             DivAllAct.Style["background-color"] = "red";
             DivMyAct.Style["background-color"] = "#ccad9f";
             DivMyInfo.Style["background-color"] = "#ccad9f";
+            DivActPlaza.Style["background-color"] = "#ccad9f";
 
             // 重置选中页数,初始页为0
             GvTemplate.PageIndex = 0;
@@ -257,11 +262,16 @@ namespace ActivityManager.Test
             DivMyInfoR.Style["display"] = "none";
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "block";
+            DivBuildActTeam.Style["display"] = "none";
+
+            DivAct.Style["display"] = "block";
+            DivTeam.Style["display"] = "none";
 
             // 更新导航条
             DivAllAct.Style["background-color"] = "#ccad9f";
             DivMyAct.Style["background-color"] = "red";
             DivMyInfo.Style["background-color"] = "#ccad9f";
+            DivActPlaza.Style["background-color"] = "#ccad9f";
 
             LinkButton1.Text = "已报名";
             LinkButton2.Text = "已收藏";
@@ -282,9 +292,13 @@ namespace ActivityManager.Test
             DivAllAct.Style["background-color"] = "#ccad9f";
             DivMyAct.Style["background-color"] = "#ccad9f";
             DivMyInfo.Style["background-color"] = "red";
+            DivActPlaza.Style["background-color"] = "#ccad9f";
+
             DivMyInfoR.Style["display"] = "block";
 
             // 隐藏不需要的模块
+            DivTeam.Style["display"] = "none";
+            DivBuildActTeam.Style["display"] = "none";
             DivSearch.Style["display"] = "none";
             DivTopNov.Style["display"] = "none";
             DivChangePsw.Style["display"] = "none";
@@ -841,6 +855,34 @@ namespace ActivityManager.Test
         protected void BtnCheckInCancel_Click(object sender, EventArgs e)
         {
             DivCheckIn.Style["display"] = "none";
+            DivMask.Style["pointer-events"] = "auto";
+        }
+
+        protected void LbtnActPlaza_Click(object sender, EventArgs e)
+        {
+            DivChangePsw.Style["dispaly"] = "none";
+            DivMyInfoR.Style["display"] = "none";
+            DivSearch.Style["display"] = "block";
+            DivTopNov.Style["display"] = "none";
+            DivBuildActTeam.Style["display"] = "block";
+            DivAct.Style["display"] = "none";
+            DivTeam.Style["display"] = "block";
+
+            DivAllAct.Style["background-color"] = "#ccad9f";
+            DivMyAct.Style["background-color"] = "#ccad9f";
+            DivMyInfo.Style["background-color"] = "#ccad9f";
+            DivActPlaza.Style["background-color"] = "red";
+        }
+
+        protected void BtnBuildActTeam_Click(object sender, EventArgs e)
+        {
+            DivBuildTeam.Style["display"] = "block";
+        }
+
+        protected void BtnBuildTeamCancel_Click(object sender, EventArgs e)
+        {
+            DivBuildTeam.Style["display"] = "none";
+            DivMask.Style["pointer-events"] = "none";
             DivMask.Style["pointer-events"] = "auto";
         }
     }
