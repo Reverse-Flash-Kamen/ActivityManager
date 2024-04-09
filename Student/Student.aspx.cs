@@ -377,6 +377,7 @@ namespace ActivityManager.Test
                 default:
                     break;
             }
+
             ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 
@@ -433,6 +434,7 @@ namespace ActivityManager.Test
                 default:
                     break;
             }
+
             ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 

@@ -58,11 +58,11 @@ namespace ActivityManager.Test
             schoolConnector.Where = "activityState >= 2 ";*/
 
             if (LinkButton1.Font.Underline == true)
-                LinkButton1_Click(sender, e);
+                schoolConnector.Where = "(activityState >= 2) ";
             else if (LinkButton2.Font.Underline == true)
-                LinkButton2_Click(sender, e);
+                schoolConnector.Where = "(activityState = 2) ";
             else if (LinkButton3.Font.Underline == true)
-                LinkButton3_Click(sender, e);
+                schoolConnector.Where = "(activityState = 10) ";
 
             if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 0) ";
 
@@ -108,8 +108,20 @@ namespace ActivityManager.Test
             org.Text = null;
             state.SelectedIndex = 0;
             type.SelectedIndex = 0;
+
             schoolConnector.Where = null;
-            schoolConnector.Where = "(activityState >= 2) ";
+            if (LinkButton1.Font.Underline == true)
+            {
+                schoolConnector.Where = "(activityState >= 2) ";
+            }
+            else if (LinkButton2.Font.Underline == true)
+            {
+                schoolConnector.Where = "(activityState = 2) ";
+            }
+            else if (LinkButton3.Font.Underline == true)
+            {
+                schoolConnector.Where = "(activityState = 10) ";
+            }
         }
 
         protected void LinkButton1_Click(object sender, EventArgs e)
@@ -124,8 +136,9 @@ namespace ActivityManager.Test
 
             GvTemplate.PageIndex = 0;
 
-            schoolConnector.Where = null;
-            schoolConnector.Where = "(activityState >= 2) ";
+            /*schoolConnector.Where = null;
+            schoolConnector.Where = "(activityState >= 2) ";*/
+            flush_Click(sender, e);
 
             ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
@@ -140,8 +153,9 @@ namespace ActivityManager.Test
             LinkButton1.ForeColor = System.Drawing.Color.Black;
             LinkButton3.ForeColor = System.Drawing.Color.Black;
 
-            schoolConnector.Where = null;
-            schoolConnector.Where = "(activityState = 2) ";
+            /*schoolConnector.Where = null;
+            schoolConnector.Where = "(activityState = 2) ";*/
+            flush_Click(sender, e);
 
             GvTemplate.PageIndex = 0;
 
@@ -158,8 +172,9 @@ namespace ActivityManager.Test
             LinkButton2.ForeColor = System.Drawing.Color.Black;
             LinkButton1.ForeColor = System.Drawing.Color.Black;
 
-            schoolConnector.Where = null;
-            schoolConnector.Where = "(activityState = 10) ";
+            /*schoolConnector.Where = null;
+            schoolConnector.Where = "(activityState = 10) ";*/
+            flush_Click(sender, e);
 
             GvTemplate.PageIndex = 0;
 
@@ -250,10 +265,13 @@ namespace ActivityManager.Test
 
         protected void ActMan_Click(object sender, EventArgs e)
         {
-            DivTopNav.Style["display"] = "block";
-            DivActGv.Style["display"] = "block";
-
+            DivSearchPlace.Style["display"] = "none";
+            DivNavPlace.Style["display"] = "none";
             DivPlaceGv.Style["display"] = "none";
+
+            DivSearchAct.Style["display"] = "block";
+            DivNavAct.Style["display"] = "block";
+            DivActGv.Style["display"] = "block";
 
             DivPlaceMan.Style["background-color"] = "#ccad9f";
             DivActMan.Style["background-color"] = "red";
@@ -324,13 +342,18 @@ namespace ActivityManager.Test
 
         protected void PlaceMan_Click(object sender, EventArgs e)
         {
-            DivTopNav.Style["display"] = "none";
-            DivActGv.Style["display"] = "none";
-
+            DivSearchPlace.Style["display"] = "block";
+            DivNavPlace.Style["display"] = "block";
             DivPlaceGv.Style["display"] = "block";
+
+            DivSearchAct.Style["display"] = "none";
+            DivNavAct.Style["display"] = "none";
+            DivActGv.Style["display"] = "none";
 
             DivActMan.Style["background-color"] = "#ccad9f";
             DivPlaceMan.Style["background-color"] = "red";
+
+            BtnFlush_Click(sender, e);
         }
 
         protected void GvPlace_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -348,6 +371,12 @@ namespace ActivityManager.Test
             if (e.CommandName == "editP")
             {
                 // 调用创建
+                LblAddPlaceID.Text = placeID.ToString();
+                DivAddPlace.Style["display"] = "block";
+                DivMask.Style["pointer-events"] = "none";
+                LblAddPlace.Text = "编辑场地";
+                TxtAddPlaceName.Text = res.First().placeName;
+                TxtAddPlaceVolume.Text = res.First().volume.ToString();
             }
             else if (e.CommandName == "deletP")
             {
@@ -378,27 +407,30 @@ namespace ActivityManager.Test
                 int placeState = int.Parse(row.Cells[3].Text);
 
                 // 格式化按钮
-                ((LinkButton)row.Cells[5].Controls[0]).Text = "编辑";
-                ((LinkButton)row.Cells[5].Controls[0]).CommandName = "editP";
-
-                ((LinkButton)row.Cells[6].Controls[0]).Text = "删除";
-                ((LinkButton)row.Cells[6].Controls[0]).CommandName = "deletP";
-
-                if (placeState == -1)
+                if (placeState == 1)
                 {
-                    ((LinkButton)row.Cells[7].Controls[0]).Text = "启用";
-                    ((LinkButton)row.Cells[7].Controls[0]).CommandName = "enableP";
-                }
-                else if (placeState == 0)
-                {
-                    ((LinkButton)row.Cells[7].Controls[0]).Text = "停用";
-                    ((LinkButton)row.Cells[7].Controls[0]).CommandName = "disableP";
-                }
-                else if (placeState == 1)
-                {
-                    // 活动中无法操作
+                    ((LinkButton)row.Cells[5].Controls[0]).Text = "";
+                    ((LinkButton)row.Cells[5].Controls[0]).CommandName = "null";
+                    ((LinkButton)row.Cells[6].Controls[0]).Text = "";
+                    ((LinkButton)row.Cells[6].Controls[0]).CommandName = "null";
                     ((LinkButton)row.Cells[7].Controls[0]).Text = "";
                     ((LinkButton)row.Cells[7].Controls[0]).CommandName = "null";
+                }
+                else
+                {
+                    ((LinkButton)row.Cells[5].Controls[0]).Text = "编辑";
+                    ((LinkButton)row.Cells[5].Controls[0]).CommandName = "editP";
+
+                    if (placeState == -1)
+                    {
+                        ((LinkButton)row.Cells[7].Controls[0]).Text = "启用";
+                        ((LinkButton)row.Cells[7].Controls[0]).CommandName = "enableP";
+                    }
+                    else if (placeState == 0)
+                    {
+                        ((LinkButton)row.Cells[7].Controls[0]).Text = "停用";
+                        ((LinkButton)row.Cells[7].Controls[0]).CommandName = "disableP";
+                    }
                 }
 
                 // 格式化场地状态
@@ -425,6 +457,100 @@ namespace ActivityManager.Test
                           select info;
                 row.Cells[4].Text = res.Count().ToString();
             }
+
+            // 添加空行
+            Tool.FormatGridView(GvPlace, 1);
+        }
+
+        protected void BtnCommit_Click(object sender, EventArgs e)
+        {
+            string placeName = TxtSearchPlaceName.Text.Trim();
+            string placeState = DropDownListPlaceState.SelectedItem.ToString();
+
+            PlaceLinqDataSource.Where = "placeState >= -1 ";
+
+            if (placeName != "")
+            {
+                PlaceLinqDataSource.Where += " and (placeName = \"" + placeName + "\") ";
+            }
+
+            if (placeState != "")
+            {
+                if (placeState == "停用中")
+                {
+                    PlaceLinqDataSource.Where += " and (placeState = -1) ";
+                }
+                else if (placeState == "空闲中")
+                {
+                    PlaceLinqDataSource.Where += " and (placeState = 0) ";
+                }
+                else if (placeState == "使用中")
+                {
+                    PlaceLinqDataSource.Where += " and (placeState = 1) ";
+                }
+            }
+
+            ActivityManagerDataContext.connectorWhere = PlaceLinqDataSource.Where;
+        }
+
+        protected void BtnFlush_Click(object sender, EventArgs e)
+        {
+            TxtSearchPlaceName.Text = "";
+            DropDownListPlaceState.SelectedIndex = 0;
+
+            PlaceLinqDataSource.Where = "";
+        }
+
+        protected void GvPlace_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GvPlace.PageIndex = e.NewPageIndex;
+            PlaceLinqDataSource.Where = ActivityManagerDataContext.connectorWhere;
+        }
+
+        protected void BtnApply_Click(object sender, EventArgs e)
+        {
+            DivAddPlace.Style["display"] = "block";
+            DivMask.Style["pointer-events"] = "none";
+            LblAddPlace.Text = "新增场地";
+        }
+
+        protected void BtnAddPlaceCancel_Click(object sender, EventArgs e)
+        {
+            DivAddPlace.Style["display"] = "none";
+            DivMask.Style["pointer-events"] = "auto";
+        }
+
+        protected void BtnAddPlaceSubmit_Click(object sender, EventArgs e)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.Place
+                      where info.placeID == int.Parse(LblAddPlaceID.Text)
+                      select info;
+
+            if (res.Any())
+            {
+                // 编辑
+                res.First().placeName = TxtAddPlaceName.Text.Trim();
+                res.First().volume = int.Parse(TxtAddPlaceVolume.Text.Trim());
+                db.SubmitChanges();
+                Response.Write("<script>alert('场地编辑成功！')</script>");
+            }
+            else
+            {
+                // 新增
+                Place place = new Place()
+                {
+                    placeName = TxtAddPlaceName.Text.Trim(),
+                    volume = int.Parse(TxtAddPlaceVolume.Text.Trim()),
+                };
+                db.Place.InsertOnSubmit(place);
+                db.SubmitChanges();
+                Response.Write("<script>alert('场地增加成功！')</script>");
+            }
+
+            LblAddPlaceID.Text = "-1";
+            GvPlace.DataBind();
+            BtnAddPlaceCancel_Click(sender, e);
         }
     }
 }
