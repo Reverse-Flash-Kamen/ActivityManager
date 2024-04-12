@@ -1,4 +1,5 @@
 ﻿using ActivityManager.App_Data;
+using MathNet.Numerics;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using System.Windows;
 
 namespace ActivityManager
 {
@@ -392,6 +394,15 @@ namespace ActivityManager
             }
 
             HttpContext.Current.Response.Write("<script>alert('" + Text + "')</script>");
+
+            var resTeam = from info in dbSign.ActivityEnableTeam
+                          where info.activityID == actID
+                          select info;
+
+            if (resTeam.Any())
+            {
+                HttpContext.Current.Response.Write("<script>alert('注意！！！\\r该活动已启用团队报名！！！\\r单人报名可能导致无法正常参加活动！！！\\r如介意请从活动广场进行组队报名！！！')</script>");
+            }
         }
 
         private void ActSignCancel(string actID, string studentID)
@@ -399,9 +410,58 @@ namespace ActivityManager
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity();
 
+            var resTeam = from info in db.ActivitySignTeam
+                          where info.activityID == actID && info.studentID == studentID
+                          select info;
+
             int signed = a.Signed; // 获取报名人数
-            if (signed != 0)
-                signed--;
+
+            if (resTeam.Any())
+            {
+                if (resTeam.First().captain == 1)
+                {
+                    // 团队取消报名
+                    HttpContext.Current.Response.Write("<script>alert('您为《" + resTeam.First().teamName + "》队长！\\r将取消所有小队成员报名信息！')</script>");
+                    string teamID = resTeam.First().teamID;
+
+                    var resDelTeam = from info in db.ActivitySignTeam
+                                     where info.teamID == teamID
+                                     select info;
+
+                    if (signed >= resDelTeam.Count())
+                    {
+                        signed -= resDelTeam.Count();
+                    }
+
+                    foreach (var member in resDelTeam)
+                    {
+                        var resDel = from info in db.SignedActivity
+                                     where info.activityID == member.activityID && info.studentID == member.studentID
+                                     select info;
+
+                        db.SignedActivity.DeleteOnSubmit(resDel.First());
+                        db.SubmitChanges();
+                    }
+                }
+                else if (resTeam.First().captain == 0)
+                {
+                    HttpContext.Current.Response.Write("<script>alert('您不是《" + resTeam.First().teamName + "》队长！\\r无权取消团队报名！')</script>");
+                    return;
+                }
+            }
+            else
+            {
+                // 单人取消报名
+                if (signed != 0)
+                    signed--;
+
+                // 删除报名信息
+                var resDel = from info in db.SignedActivity
+                             where info.activityID == actID && info.studentID == studentID
+                             select info;
+                db.SignedActivity.DeleteOnSubmit(resDel.First());
+                db.SubmitChanges();
+            }
 
             // 更新活动已报名人数
             //MyActivity a2 = new MyActivity(actID);
@@ -410,13 +470,6 @@ namespace ActivityManager
                            where info.activityID == actID
                            select info;
             resState.First().signed = signed;
-            db.SubmitChanges();
-
-            // 删除报名信息
-            var resDel = from info in db.SignedActivity
-                         where info.activityID == actID && info.studentID == studentID
-                         select info;
-            db.SignedActivity.DeleteOnSubmit(resDel.First());
             db.SubmitChanges();
         }
 

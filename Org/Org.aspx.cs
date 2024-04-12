@@ -14,8 +14,15 @@ namespace ActivityManager.Test
         protected void Page_Load(object sender, EventArgs e)
         {
             // 调试用
-            Session["ID"] = "org2022121201";
+            // Session["ID"] = "org2022121201";
             Tool.curUser = 1;
+
+            if (Session["ID"] == null)
+            {
+                Server.Transfer("../Login.aspx");
+                // Response.Write("<script>alert('请登录后再访问！');</script>");
+                return;
+            }
 
             Tool.FormatActivityHeader(GvTemplate);
             if (!IsPostBack)
@@ -495,8 +502,8 @@ namespace ActivityManager.Test
 
             if (RblEanbleTeam.SelectedValue == "1")
             {
-                int minVolume = int.Parse(TxtMinVolume.Text.Trim());
-                int maxVolume = int.Parse(TxtMaxVolume.Text.Trim());
+                int minVolume = int.Parse(DdlMinVloume.SelectedValue);
+                int maxVolume = int.Parse(DdlMaxVloume.SelectedValue);
 
                 if (minVolume <= 1 || maxVolume < minVolume)
                 {

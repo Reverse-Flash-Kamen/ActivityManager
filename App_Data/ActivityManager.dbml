@@ -125,7 +125,8 @@
   </Table>
   <Table Name="dbo.ActivitySignTeam" Member="ActivitySignTeam">
     <Type Name="ActivitySignTeam">
-      <Column Name="teamID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="teamID" Type="System.String" DbType="Char(12) NOT NULL" CanBeNull="false" />
       <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" CanBeNull="false" />
       <Column Name="teamName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
       <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" CanBeNull="false" />

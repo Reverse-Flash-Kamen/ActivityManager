@@ -40,7 +40,7 @@
                         <asp:RequiredFieldValidator ID="RfvStudentName" runat="server" ErrorMessage="请输入姓名！" ForeColor="#CC0000" ControlToValidate="TxtStudentName">*</asp:RequiredFieldValidator>
                         <br />
                         <asp:Label ID="LblID" runat="server" Text="身份证："></asp:Label>
-                        <asp:TextBox ID="TxtID" runat="server" TextMode="Number"></asp:TextBox>
+                        <asp:TextBox ID="TxtID" runat="server" TextMode="SingleLine"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="RfvID" runat="server" ErrorMessage="请输入身份证！" ForeColor="#CC0000" ControlToValidate="TxtStudentName">*</asp:RequiredFieldValidator>
                     </div>
 

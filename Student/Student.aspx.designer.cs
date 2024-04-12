@@ -258,13 +258,22 @@ namespace ActivityManager.Test
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivTeam;
 
         /// <summary>
-        /// GridView1 控件。
+        /// GvTeam 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView1;
+        protected global::System.Web.UI.WebControls.GridView GvTeam;
+
+        /// <summary>
+        /// TeamLinqDataSource 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinqDataSource TeamLinqDataSource;
 
         /// <summary>
         /// CheckActDiv 控件。

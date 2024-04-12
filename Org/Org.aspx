@@ -358,9 +358,31 @@
 
             <div id="DivTeamVolume" runat ="server" style="display:none;">
                 团队人数
-                <asp:TextBox ID="TxtMinVolume" runat="server" TextMode="Number" Width="40px"></asp:TextBox>
+                <asp:DropDownList ID="DdlMinVloume" runat="server">
+                    <asp:ListItem Value="2"></asp:ListItem>
+                    <asp:ListItem Value="3"></asp:ListItem>
+                    <asp:ListItem Value="4"></asp:ListItem>
+                    <asp:ListItem Value="5"></asp:ListItem>
+                    <asp:ListItem Value="6"></asp:ListItem>
+                    <asp:ListItem Value="7"></asp:ListItem>
+                    <asp:ListItem Value="8"></asp:ListItem>
+                    <asp:ListItem Value="9"></asp:ListItem>
+                    <asp:ListItem Value="10"></asp:ListItem>
+                    <asp:ListItem Value="11"></asp:ListItem>
+                </asp:DropDownList>
                 至
-                <asp:TextBox ID="TxtMaxVolume" runat="server" TextMode="Number" Width="40px"></asp:TextBox>
+                <asp:DropDownList ID="DdlMaxVloume" runat="server">
+                    <asp:ListItem Value="2"></asp:ListItem>
+                    <asp:ListItem Value="3"></asp:ListItem>
+                    <asp:ListItem Value="4"></asp:ListItem>
+                    <asp:ListItem Value="5"></asp:ListItem>
+                    <asp:ListItem Value="6"></asp:ListItem>
+                    <asp:ListItem Value="7"></asp:ListItem>
+                    <asp:ListItem Value="8"></asp:ListItem>
+                    <asp:ListItem Value="9"></asp:ListItem>
+                    <asp:ListItem Value="10"></asp:ListItem>
+                    <asp:ListItem Value="11"></asp:ListItem>
+                </asp:DropDownList>
             </div>
 
             <div>

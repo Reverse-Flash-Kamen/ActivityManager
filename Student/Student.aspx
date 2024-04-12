@@ -110,6 +110,11 @@
           background-color: rgba(0, 0, 0, 0);
           pointer-events:auto;
         }
+        .memberImage{
+            border-radius: 50%;
+            width:60px;
+            height:60px;
+        }
     </style>
 </head>
 <body style="background-color:white">
@@ -183,13 +188,13 @@
                         &nbsp;&nbsp;
                     </div>
 
-                    <div id="DivBuildActTeam" runat="server" style="display:none; padding-top: 35px;">
-                        <asp:Button ID="BtnBuildTeam" runat="server" Text="+ 申请队伍" Font-Size="Large" Height="50px" Width="130px" CausesValidation="False" OnClick="BtnBuildTeam_Click" style="margin-left: 16px;"/>
+                    <div id="DivBuildActTeam" runat="server" style="display: none; padding-top: 35px;">
+                        <asp:Button ID="BtnBuildTeam" runat="server" Text="+ 申请队伍" Font-Size="Large" Height="50px" Width="130px" CausesValidation="False" OnClick="BtnBuildTeam_Click" Style="margin-left: 16px;" />
                     </div>
                 </div>
 
                 <%--活动列表--%>
-                <div id="DivAct" runat="server">
+                <div id="DivAct" runat="server" style="display:block;">
                     <asp:GridView ID="GvTemplate" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataKeyNames="activityID" DataSourceID="schoolConnector" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" OnDataBound="GridView1_DataBound" OnRowCommand="GvTemplate_RowCommand" HorizontalAlign="Center" GridLines="None" OnDataBinding="GvTemplate_DataBinding" OnPageIndexChanging="GvTemplate_PageIndexChanging">
                         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                         <Columns>
@@ -296,7 +301,125 @@
                 
                 <%--队伍列表--%>
                 <div id="DivTeam" runat="server" style="display: none;">
-                    <asp:GridView ID="GridView1" runat="server">
+                    <asp:GridView ID="GvTeam" runat="server" CellPadding="0" AutoGenerateColumns="False" DataKeyNames="ID" DataSourceID="TeamLinqDataSource" OnDataBound="GvTeam_DataBound" AllowPaging="True" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" GridLines="None" HorizontalAlign="Center" OnRowCommand="GvTeam_RowCommand">
+                        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                        <Columns>
+                            <asp:BoundField DataField="ID" HeaderText="ID" InsertVisible="False" ReadOnly="True" SortExpression="ID">
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="teamID" HeaderText="teamID" SortExpression="teamID">
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="activityID" HeaderText="activityID" SortExpression="activityID">
+                                <HeaderStyle Width="100px" />
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:TemplateField HeaderText="活动名称">
+                                <HeaderStyle Width="100px" />
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="teamName" HeaderText="队伍名称" SortExpression="teamName">
+                                <HeaderStyle Width="100px" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="studentID" HeaderText="studentID" SortExpression="studentID">
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="captain" HeaderText="captain" SortExpression="captain">
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="audit" HeaderText="审核" SortExpression="audit">
+                                <HeaderStyle Width="50px" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="member" HeaderText="member" SortExpression="member">
+                                <HeaderStyle Width="50px" />
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="volume" HeaderText="队伍容量" SortExpression="volume">
+                                <ControlStyle CssClass="hidden" />
+                                <FooterStyle CssClass="hidden" />
+                                <HeaderStyle CssClass="hidden" />
+                                <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:ButtonField Text="按钮" HeaderText="队长" ButtonType="Image" HeaderStyle-Width="50px" CommandName="checkMember">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="成员" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" HeaderText="" ButtonType="Image" HeaderStyle-Width="50px" ImageUrl="../image/add.png" CommandName="memberSign">
+                                <ControlStyle CssClass="memberImage" />
+
+                                <HeaderStyle Width="50px"></HeaderStyle>
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="" HeaderText="操作">
+                                <HeaderStyle Width="40px" />
+                            </asp:ButtonField>
+                            <asp:ButtonField Text="" HeaderText="">
+                                <HeaderStyle Width="40px" />
+                            </asp:ButtonField>
+
+                        </Columns>
                         <EditRowStyle BackColor="#999999" />
                         <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
                         <HeaderStyle BackColor="#8d9ba5" Font-Bold="True" ForeColor="White" CssClass="head" />
@@ -308,6 +431,11 @@
                         <SortedDescendingCellStyle BackColor="#FFFDF8" />
                         <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
                     </asp:GridView>
+                    <asp:LinqDataSource ID="TeamLinqDataSource" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="ActivitySignTeam" Where="captain == @captain">
+                        <WhereParameters>
+                            <asp:Parameter DefaultValue="1" Name="captain" Type="Int32" />
+                        </WhereParameters>
+                    </asp:LinqDataSource>
                 </div>
                 <!-队伍列表->
             </div>
@@ -541,6 +669,11 @@
                 <asp:Button ID="BtnBuildTeamSubmit" runat="server" Text="确认" Width="60px" CausesValidation="False" OnClick="BtnBuildTeamSubmit_Click" />
                 <asp:Button ID="BtnBuildTeamCancel" runat="server" Text="取消" Width="60px" OnClick="BtnBuildTeamCancel_Click" CausesValidation="False" Style="margin-left: 5px;" />
             </div>
+        </div>
+
+        <%--成员信息页面--%>
+        <div>
+
         </div>
     </form>
 </body>

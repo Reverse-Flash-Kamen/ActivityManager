@@ -9,6 +9,13 @@ namespace ActivityManager.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["ID"] == null)
+            {
+                Server.Transfer("../Login.aspx");
+                // Response.Write("<script>alert('请登录后再访问！');</script>");
+                return;
+            }
+
             if (!IsPostBack)
             {
                 for (int n = 20; n <= 30; n++)

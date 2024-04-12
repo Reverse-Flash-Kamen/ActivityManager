@@ -108,7 +108,7 @@ namespace ActivityManager
 
         public void Create()
         {
-            // 根据保存时间与顺序计算activityID,如果不按序删除,会导致插入主键重复
+            // 根据保存时间与顺序计算activityID,如果不按序删除,会导致插入主键重复,不采用
             //submitTime = DateTime.Now.ToString("yyyy-MM-dd"); // 时间格式
             string submitTimePro = DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
 

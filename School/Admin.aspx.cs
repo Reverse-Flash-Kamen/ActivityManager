@@ -12,7 +12,14 @@ namespace ActivityManager.Test
         protected void Page_Load(object sender, EventArgs e)
         {
             // 调试用
-            Session["ID"] = "ndky000001";
+            // Session["ID"] = "ndky000001";
+            if (Session["ID"] == null)
+            {
+                Server.Transfer("../Login.aspx");
+                // Response.Write("<script>alert('请登录后再访问！');</script>");
+                return;
+            }
+
             Tool.curUser = 0;
 
             /*LinkButton1.ForeColor = System.Drawing.Color.Brown;

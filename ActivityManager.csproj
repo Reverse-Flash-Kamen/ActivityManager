@@ -139,6 +139,7 @@
       <DependentUpon>ActivityManager.mdf</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
+    <Content Include="image\add.png" />
     <Content Include="image\esc.png" />
     <Content Include="image\info.png" />
     <Content Include="image\Ndky.png" />

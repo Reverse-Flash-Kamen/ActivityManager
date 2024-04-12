@@ -2797,7 +2797,9 @@ namespace ActivityManager.App_Data
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _teamID;
+		private int _ID;
+		
+		private string _teamID;
 		
 		private string _activityID;
 		
@@ -2821,7 +2823,9 @@ namespace ActivityManager.App_Data
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnteamIDChanging(int value);
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnteamIDChanging(string value);
     partial void OnteamIDChanged();
     partial void OnactivityIDChanging(string value);
     partial void OnactivityIDChanged();
@@ -2846,8 +2850,28 @@ namespace ActivityManager.App_Data
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_teamID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int teamID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_teamID", DbType="Char(12) NOT NULL", CanBeNull=false)]
+		public string teamID
 		{
 			get
 			{
