@@ -555,8 +555,8 @@ namespace ActivityManager.Test
                 ActivityEnableTeam enableTeam = new ActivityEnableTeam()
                 {
                     activityID = a.ActivityID,
-                    minVolume = int.Parse(TxtMinVolume.Text.Trim()),
-                    maxVolume = int.Parse(TxtMaxVolume.Text.Trim()),
+                    minVolume = int.Parse(DdlMinVloume.SelectedValue),
+                    maxVolume = int.Parse(DdlMaxVloume.SelectedValue),
                 };
 
                 db.ActivityEnableTeam.InsertOnSubmit(enableTeam);
@@ -577,8 +577,8 @@ namespace ActivityManager.Test
             aHoldEnd.Items.Clear();
             aHoldStart.Enabled = false;
             aHoldEnd.Enabled = false;
-            TxtMaxVolume.Text = null;
-            TxtMinVolume.Text = null;
+            DdlMinVloume.SelectedIndex = -1;
+            DdlMaxVloume.SelectedIndex = -1;
             RblEanbleTeam.SelectedIndex = -1;
 
             Tool.SetButton(GvTemplate, Session["ID"].ToString());
@@ -630,8 +630,8 @@ namespace ActivityManager.Test
             else
             {
                 DivTeamVolume.Style["display"] = "none";
-                TxtMinVolume.Text = "";
-                TxtMaxVolume.Text = "";
+                DdlMinVloume.SelectedIndex = -1;
+                DdlMaxVloume.SelectedIndex = -1;
             }
         }
     }

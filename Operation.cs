@@ -321,6 +321,16 @@ namespace ActivityManager
             // 获取本行活动信息
             MyActivity aSign = new MyActivity(actID);
 
+            var resTeam = from info in dbSign.ActivitySignTeam
+                          where actID == info.activityID && info.studentID == studentID
+                          select info;
+
+            if (resTeam.Any())
+            {
+                HttpContext.Current.Response.Write("<script>alert('您已组队报名该活动,请解散或退出原队伍后再进行申请！');</script>");
+                return;
+            }
+
             // 获取学生信息
             var resStuName = from info in dbSign.StudentIdentified
                              where info.studentID == studentID
@@ -395,11 +405,11 @@ namespace ActivityManager
 
             HttpContext.Current.Response.Write("<script>alert('" + Text + "')</script>");
 
-            var resTeam = from info in dbSign.ActivityEnableTeam
-                          where info.activityID == actID
-                          select info;
+            var resEnableTeam = from info in dbSign.ActivityEnableTeam
+                                where info.activityID == actID
+                                select info;
 
-            if (resTeam.Any())
+            if (resEnableTeam.Any())
             {
                 HttpContext.Current.Response.Write("<script>alert('注意！！！\\r该活动已启用团队报名！！！\\r单人报名可能导致无法正常参加活动！！！\\r如介意请从活动广场进行组队报名！！！')</script>");
             }
@@ -464,7 +474,6 @@ namespace ActivityManager
             }
 
             // 更新活动已报名人数
-            //MyActivity a2 = new MyActivity(actID);
 
             var resState = from info in db.Activity
                            where info.activityID == actID

@@ -1,10 +1,13 @@
 ﻿using ActivityManager.App_Data;
+using MathNet.Numerics.Distributions;
 using NPOI.SS.Formula.Functions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -888,8 +891,8 @@ namespace ActivityManager.Test
             DivMyInfo.Style["background-color"] = "#ccad9f";
             DivActPlaza.Style["background-color"] = "red";
 
-            // GvTeam.DataBind();
-            Tool.FormatGridView(GvTeam, 7);
+            GvTeam.DataBind();
+            // Tool.FormatGridView(GvTeam, 7);
         }
 
         protected void BtnBuildTeamCancel_Click(object sender, EventArgs e)
@@ -999,8 +1002,7 @@ namespace ActivityManager.Test
             db.ActivitySignTeam.InsertOnSubmit(team);
             db.SubmitChanges();
 
-            // GvTeam.DataBind();
-            Tool.FormatGridView(GvTeam, 7);
+            GvTeam.DataBind();
 
             BtnBuildTeamCancel_Click(sender, e);
         }
@@ -1080,7 +1082,7 @@ namespace ActivityManager.Test
                 if (captainID == Session["ID"].ToString())
                 {
                     var resSigned = from info in db.SignedActivity
-                                    where info.studentID == Session["ID"].ToString()
+                                    where info.studentID == Session["ID"].ToString() && info.activityID == actID
                                     select info;
 
                     // 可报名
@@ -1090,7 +1092,7 @@ namespace ActivityManager.Test
                         if (resSigned.Any())
                         {
                             ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "取消<br/>报名";
-                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "signCancel";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "teamSignCancel";
                         }
                         // 未报名
                         else
@@ -1121,8 +1123,8 @@ namespace ActivityManager.Test
                 }
 
                 // 关闭超出容量的报名ImageButton
-                int lastVolume = 10 - int.Parse(row.Cells[9].Text);
-                for (int i = 0; i < lastVolume; i++)
+                int extraVolume = 11 - int.Parse(row.Cells[9].Text);
+                for (int i = 0; i < extraVolume; i++)
                 {
                     // row.Cells[n - i - 2].Visible = false;
                     // row.Cells[n - i - 2].Style["display"] = "none";
@@ -1162,6 +1164,8 @@ namespace ActivityManager.Test
                     }
 
                     row.Cells[10 + begin].ToolTip = toolTip;
+
+                    begin++;
                 }
             }
 
@@ -1205,28 +1209,159 @@ namespace ActivityManager.Test
             {
                 DelTeam(teamID, actID);
             }
-            else if (e.CommandName == "signCancel")
+            else if (e.CommandName == "teamSignCancel")
             {
-                Operation.SetOperation("signCancel", actID, Session["ID"].ToString(), GvTeam);
+                TeamSignCancel(teamID, actID);
             }
 
             GvTeam.DataBind();
         }
 
-        private void TeamSign(string teamID, string actID)
+        private void TeamSignCancel(string teamID, string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
-            var res = from info in db.ActivitySignTeam
-                      where info.teamID == teamID && info.activityID == actID
-                      select info.studentID;
+            var resTeam = from info in db.ActivitySignTeam
+                          where info.teamID == teamID && info.activityID == actID
+                          select info;
+
+            Response.Write("<script>alert('您为《" + resTeam.First().teamName + "》队长！\\r将取消所有小队成员报名信息！')</script>");
             try
             {
-                // 活动可报名剩余人数要大于等于团队当前人数
-                // 团队未满也可以报名，但要符合活动最低人数限制
+                foreach (var member in resTeam)
+                {
+                    var resSignCancel = from info in db.SignedActivity
+                                        where info.activityID == actID && info.studentID == member.studentID
+                                        select info;
+
+                    db.SignedActivity.DeleteOnSubmit(resSignCancel.First());
+                }
+                db.SubmitChanges();
+
+                MyActivity act = new MyActivity(actID);
+                act.Signed -= resTeam.Count();
+                act.Update();
             }
             catch
             {
-                Response.Write("<script>alert('团队报名错误，请稍后重试！');</script>");
+                Response.Write("<script>alert('团队取消报名错误，请稍后重试！')</script>");
+                return;
+            }
+
+            Response.Write("<script>alert('团队取消报名成功！')</script>");
+        }
+
+        private void TeamSign(string teamID, string actID)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+
+            var res = from info in db.ActivitySignTeam
+                      where info.teamID == teamID && info.activityID == actID
+                      select info;
+
+            var resAudit = from info in res
+                           where info.audit == 1 && info.member == 0
+                           select info;
+
+            if (resAudit.Any())
+            {
+                // 存在待审核成员
+                Response.Write("<script>alert('您的队伍仍存在待审核成员！')</script>");
+                return;
+            }
+
+            // 活动团队报名最低人数限制
+            var resVolume = from info in db.ActivityEnableTeam
+                            where info.activityID == actID
+                            select info.minVolume;
+
+            MyActivity act = new MyActivity(actID);
+
+            int actTeamMinVlome = resVolume.First(); // 团队报名最低人数限制
+            int teamSigned = res.Count(); // 团队已报名人数
+            int teamVolume = res.First().volume; // 团队容量
+
+            if (act.Signed >= act.MaxSigned)
+            {
+                // 活动已报满
+                Response.Write("<script>alert('抱歉！此活动人数已满！')</script>");
+                return;
+            }
+
+            if (act.Signed + teamSigned >= act.MaxSigned)
+            {
+                // 活动剩余容量不足
+                Response.Write("<script>alert('抱歉！此活动剩余容量小于您的小队人数！')</script>");
+                return;
+            }
+
+            if (teamSigned < teamVolume && teamSigned < actTeamMinVlome)
+            {
+                // 团队未满时
+                // 当团队人数低于活动团队报名最低人数限制
+                Response.Write("<script>alert('团队人数低于活动团队报名最低人数限制，请至少组队" + actTeamMinVlome + "人后进行报名！');</script>");
+                return;
+            }
+
+            // 获取场地名称
+            var resPlaceName = from info in db.Place
+                               where info.placeID == act.ActivityPlaceID
+                               select info.placeName;
+            string placeName = resPlaceName.First();
+
+            int signed = act.Signed; // 已报名人数
+            List<SignedActivity> signedActivityList = new List<SignedActivity>();
+
+            try
+            {
+                foreach (var stu in res)
+                {
+                    // 获取学生信息
+                    var resStu = from info in db.StudentIdentified
+                                 where info.studentID == stu.studentID
+                                 select info;
+
+                    string studentName = resStu.First().studentName;
+                    string phone = resStu.First().phone;
+
+                    string Text =
+                        "活动名称：" + act.ActivityName + "\\r" +
+                        "举办地点：" + placeName + "\\r" +
+                        "举办时间：" + act.HoldDate + " " + act.HoldStart + ":00 至 " + act.HoldDate + " " + act.HoldEnd + ":00\\r" +
+                        "报名者姓名：" + studentName + "\\r" +
+                        "报名者学号：" + stu.studentID + "\\r" +
+                        "报名者联系方式：" + phone + "\\r" +
+                        "**如信息有误，请于‘我的信息’重新认证**";
+
+                    // 报名
+                    signed++;
+
+                    SignedActivity signedActivity = new SignedActivity()
+                    {
+                        activityID = actID,
+                        studentID = stu.studentID,
+                    };
+                    signedActivityList.Add(signedActivity);
+
+                    Response.Write("<script>alert('" + Text + "')</script>");
+                }
+            }
+            catch
+            {
+                Response.Write("<script>alert('获取成员信息失败，请稍后重试！');</script>");
+                return;
+            }
+
+            try
+            {
+                act.Signed = signed;
+                act.Update();
+                db.SignedActivity.InsertAllOnSubmit(signedActivityList);
+
+                db.SubmitChanges();
+            }
+            catch
+            {
+                Response.Write("<script>alert('团队报名错误s，请稍后重试！');</script>");
                 return;
             }
 
