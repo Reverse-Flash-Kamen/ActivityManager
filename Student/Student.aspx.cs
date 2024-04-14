@@ -905,8 +905,8 @@ namespace ActivityManager.Test
             TxtTeamName.Text = null;
             RblBuildTeam.SelectedIndex = -1;
 
-            // GvTeam.DataBind();
-            Tool.FormatGridView(GvTeam, 7);
+            GvTeam.DataBind();
+            // Tool.FormatGridView(GvTeam, 7);
         }
 
         protected void DdlBuildTeamAct_SelectedIndexChanged(object sender, EventArgs e)
@@ -954,55 +954,104 @@ namespace ActivityManager.Test
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
 
+            // 判断是否单人报名
+            try
+            {
+                var resOne = from info in db.SignedActivity
+                             where info.activityID == actID && info.studentID == Session["ID"].ToString()
+                             select info;
+
+                if (resOne.Any())
+                {
+                    Response.Write("<script>alert('您已单人报名该活动,请取消报名后再进行申请！');</script>");
+                    Tool.FormatGridView(GvTeam, 7);
+                    return;
+                }
+            }
+            catch
+            {
+                Response.Write("<script>alert('报名信息查询错误，请稍后重试！');</script>");
+                Tool.FormatGridView(GvTeam, 7);
+                return;
+            }
+
+            // 判断队伍名称是否重名
+            try
+            {
+                var resTeamName = from info in db.ActivitySignTeam
+                                  where info.activityID == actID && info.teamName == teamName
+                                  select info.teamName;
+
+                if (resTeamName.Any())
+                {
+                    Response.Write("<script>alert('队伍名称已使用，请重试！');</script>");
+                    Tool.FormatGridView(GvTeam, 7);
+                    return;
+                }
+            }
+            catch
+            {
+                Response.Write("<script>alert('队伍名称查询错误，请稍后重试！');</script>");
+                Tool.FormatGridView(GvTeam, 7);
+                return;
+            }
+
             // 判断是否已经有队伍
-            var resHad = from info in db.ActivitySignTeam
-                         where info.activityID == actID && info.studentID == Session["ID"].ToString()
-                         select info;
-            if (resHad.Any())
+            try
             {
-                Response.Write("<script>alert('您已组队报名该活动,请解散或退出原队伍后再进行申请！');</script>");
+                var resHad = from info in db.ActivitySignTeam
+                             where info.activityID == actID && info.studentID == Session["ID"].ToString()
+                             select info;
+                if (resHad.Any())
+                {
+                    Response.Write("<script>alert('您已组队报名该活动,请解散或退出原队伍后再进行申请！');</script>");
+                    Tool.FormatGridView(GvTeam, 7);
+                    return;
+                }
+            }
+            catch
+            {
+                Response.Write("<script>alert('队伍信息查询错误，请稍后重试！');</script>");
                 Tool.FormatGridView(GvTeam, 7);
                 return;
             }
 
-            var resOne = from info in db.SignedActivity
-                         where info.activityID == actID && info.studentID == Session["ID"].ToString()
-                         select info;
-
-            if (resOne.Any())
+            string teamID = "";
+            try
             {
-                Response.Write("<script>alert('您已单人报名该活动,请取消报名后再进行申请！');</script>");
-                Tool.FormatGridView(GvTeam, 7);
+                // 创建团队ID
+                var res = from info in db.ActivitySignTeam
+                          where info.teamID.StartsWith(actID)
+                          select info;
+
+                if (res.Count() > 0)
+                    teamID = (long.Parse(res.ToList().Last().teamID) + 1).ToString(); // 如果不是该活动第一支队伍,取最后一个创建的团队ID+1
+                else
+                    teamID = actID + "01"; // 如果是第一次创建,生成01
+
+                ActivitySignTeam team = new ActivitySignTeam()
+                {
+                    teamID = teamID,
+                    activityID = actID,
+                    teamName = teamName,
+                    studentID = Session["ID"].ToString(),
+                    captain = 1,
+                    audit = audit,
+                    member = 1,
+                    volume = volume,
+                };
+
+                db.ActivitySignTeam.InsertOnSubmit(team);
+                db.SubmitChanges();
+            }
+            catch
+            {
+                Response.Write("<script>alert('创建队伍ID错误，请稍后重试！\\r错误ID" + teamID + "');</script>");
+                // Tool.FormatGridView(GvTeam, 7);
                 return;
             }
 
-            // 创建团队ID
-            string teamID;
-            var res = from info in db.ActivitySignTeam
-                      where info.teamID.StartsWith(actID)
-                      select info;
-
-            if (res.Count() > 0)
-                teamID = (int.Parse(res.ToList().Last().teamID) + 1).ToString(); // 如果不是该活动第一支队伍,取最后一个创建的团队ID+1
-            else
-                teamID = actID + "01"; // 如果是第一次创建,生成01
-
-            ActivitySignTeam team = new ActivitySignTeam()
-            {
-                teamID = teamID,
-                activityID = actID,
-                teamName = teamName,
-                studentID = Session["ID"].ToString(),
-                captain = 1,
-                audit = audit,
-                member = 1,
-                volume = volume,
-            };
-
-            db.ActivitySignTeam.InsertOnSubmit(team);
-            db.SubmitChanges();
-
-            GvTeam.DataBind();
+            // GvTeam.DataBind();
 
             BtnBuildTeamCancel_Click(sender, e);
         }
@@ -1076,7 +1125,7 @@ namespace ActivityManager.Test
                 var resCap = from info in db.StudentIdentified
                              where info.studentID == captainID
                              select info.studentName;
-                ((ImageButton)row.Cells[10].Controls[0]).ToolTip = captainID + " " + resCap.First() + " 队长";
+                row.Cells[10].ToolTip = captainID + " " + resCap.First() + " 队长";
 
                 // 队长操作
                 if (captainID == Session["ID"].ToString())
@@ -1097,7 +1146,7 @@ namespace ActivityManager.Test
                         // 未报名
                         else
                         {
-                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "团队<br/>报名";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "队伍<br/>报名";
                             ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "teamSign";
                         }
                     }
@@ -1139,6 +1188,10 @@ namespace ActivityManager.Test
                           select info;
 
                 int begin = 1;
+                ((ImageButton)row.Cells[10].Controls[0]).CommandName = "checkMember_10";
+                ((ImageButton)row.Cells[10].Controls[0]).BorderColor = System.Drawing.Color.GreenYellow;
+                ((ImageButton)row.Cells[10].Controls[0]).BorderWidth = 1;
+                ((ImageButton)row.Cells[10].Controls[0]).BorderStyle = BorderStyle.Outset;
                 foreach (var member in res)
                 {
                     ((ImageButton)row.Cells[10 + begin].Controls[0]).ImageUrl = "~/image/users/" + member.studentID + ".jpg";
@@ -1156,11 +1209,17 @@ namespace ActivityManager.Test
                     if (audit == 1 && member.member == 0)
                     {
                         toolTip += " 待审核";
-                        ((ImageButton)row.Cells[10 + begin].Controls[0]).Style["opacity"] = "60%";
+                        // ((ImageButton)row.Cells[10 + begin].Controls[0]).Style["opacity"] = "60%";
+                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderColor = System.Drawing.Color.OrangeRed;
+                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderWidth = 1;
+                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderStyle = BorderStyle.Outset;
                     }
                     else
                     {
                         toolTip += " 已入队";
+                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderColor = System.Drawing.Color.GreenYellow;
+                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderWidth = 1;
+                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderStyle = BorderStyle.Outset;
                     }
 
                     row.Cells[10 + begin].ToolTip = toolTip;
@@ -1192,10 +1251,18 @@ namespace ActivityManager.Test
             else if (e.CommandName.StartsWith("checkMember"))
             {
                 int colIndex = int.Parse(e.CommandName.Split('_')[1]);
-                string stuID = (GvTeam.Rows[rowIndex].Cells[colIndex]).ToolTip.Split(' ')[0];
+                string stuID = GvTeam.Rows[rowIndex].Cells[colIndex].ToolTip.Split(' ')[0];
                 int needAudit = GvTeam.Rows[rowIndex].Cells[colIndex].ToolTip.Split(' ')[2] == "待审核" ? 1 : 0;
+                if (GvTeam.Rows[rowIndex].Cells[colIndex].ToolTip.Split(' ')[2] == "队长") needAudit = -1;
                 // Response.Write("<script>alert('" + stuID + "');</script>");
-                CheckMember(stuID, needAudit);
+
+                int isCaptain = 0;
+                if (Session["ID"].ToString() == GvTeam.Rows[rowIndex].Cells[5].Text)
+                {
+                    isCaptain = 1;
+                }
+
+                CheckMember(stuID, teamID, needAudit, isCaptain);
             }
             else if (e.CommandName == "teamSign")
             {
@@ -1243,11 +1310,11 @@ namespace ActivityManager.Test
             }
             catch
             {
-                Response.Write("<script>alert('团队取消报名错误，请稍后重试！')</script>");
+                Response.Write("<script>alert('队伍取消报名错误，请稍后重试！')</script>");
                 return;
             }
 
-            Response.Write("<script>alert('团队取消报名成功！')</script>");
+            Response.Write("<script>alert('队伍取消报名成功！')</script>");
         }
 
         private void TeamSign(string teamID, string actID)
@@ -1298,7 +1365,7 @@ namespace ActivityManager.Test
             {
                 // 团队未满时
                 // 当团队人数低于活动团队报名最低人数限制
-                Response.Write("<script>alert('团队人数低于活动团队报名最低人数限制，请至少组队" + actTeamMinVlome + "人后进行报名！');</script>");
+                Response.Write("<script>alert('队伍人数低于活动团队报名最低人数限制，请至少组队" + actTeamMinVlome + "人后进行报名！');</script>");
                 return;
             }
 
@@ -1361,11 +1428,11 @@ namespace ActivityManager.Test
             }
             catch
             {
-                Response.Write("<script>alert('团队报名错误s，请稍后重试！');</script>");
+                Response.Write("<script>alert('队伍报名错误，请稍后重试！');</script>");
                 return;
             }
 
-            Response.Write("<script>alert('团队报名成功！');</script>");
+            Response.Write("<script>alert('队伍报名成功！');</script>");
         }
 
         private void DelTeam(string teamID, string actID)
@@ -1384,10 +1451,10 @@ namespace ActivityManager.Test
             }
             catch
             {
-                Response.Write("<script>alert('团队解散错误，请稍后重试！');</script>");
+                Response.Write("<script>alert('队伍解散错误，请稍后重试！');</script>");
                 return;
             }
-            Response.Write("<script>alert('团队解散成功！');</script>");
+            Response.Write("<script>alert('队伍解散成功！');</script>");
         }
 
         private void OutTeam(string teamID, string stuID)
@@ -1408,8 +1475,78 @@ namespace ActivityManager.Test
             }
         }
 
-        private void CheckMember(string stuID, int needAudit)
+        private void CheckMember(string stuID, string teamID, int needAudit, int isCaptain)
         {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+
+            try
+            {
+                var res = from info in db.StudentIdentified
+                          where info.studentID == stuID
+                          select info;
+
+                var stu = res.First();
+
+                LblMemberTeamID.Text = teamID;
+                LblMemberName.Text = stu.studentName;
+                LblMemberStudentID.Text = stuID;
+                LblMemberClass.Text = stu.major + stu.@class;
+                LblMemberGender.Text = stu.gender;
+                LblMemberPhone.Text = stu.phone;
+
+                DivMemberInfo.Style["display"] = "block";
+            }
+            catch
+            {
+                Response.Write("<script>alert('查看失败，请稍后重试！');</script>");
+                return;
+            }
+
+            // 成员状态
+            if (needAudit == 1)
+            {
+                LblMemberState.Text = "待审核";
+            }
+            else if (needAudit == 0)
+            {
+                LblMemberState.Text = "已入队";
+            }
+            else if (needAudit == -1)
+            {
+                LblMemberState.Text = "队长";
+            }
+
+            // 队长操作
+            if (isCaptain == 1)
+            {
+                if (needAudit == 1)
+                {
+                    // 待审核操作
+                    BtnAuditAgree.Visible = true;
+                    BtnAuditReject.Visible = true;
+
+                    BtnAuditAgree.Text = "通过";
+                    BtnAuditReject.Text = "拒绝";
+                }
+                else if (needAudit == 0)
+                {
+                    // 已入队操作
+                    BtnAuditAgree.Visible = false;
+                    BtnAuditReject.Text = "移出";
+                }
+                else if (needAudit == -1)
+                {
+                    BtnAuditAgree.Visible = false;
+                    BtnAuditReject.Visible = false;
+                }
+            }
+            else
+            {
+                BtnAuditAgree.Visible = false;
+                BtnAuditReject.Visible = false;
+            }
+
+            DivMask.Style["pointer-events"] = "none";
         }
 
         private void MemberSign(string teamID, string teamName, string actID, int audit, int volume)
@@ -1468,6 +1605,68 @@ namespace ActivityManager.Test
             {
                 Response.Write("<script>alert('入队成功！\\r请注意，团队报名活动后将无法退出小队或自行取消报名');</script>");
             }
+        }
+
+        protected void BtnMemberBack_Click(object sender, EventArgs e)
+        {
+            DivMask.Style["pointer-events"] = "block";
+            DivMemberInfo.Style["display"] = "none";
+            GvTeam.DataBind();
+        }
+
+        protected void BtnAuditAgree_Click(object sender, EventArgs e)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            try
+            {
+                var res = from info in db.ActivitySignTeam
+                          where info.studentID == LblMemberStudentID.Text && info.teamID == LblMemberTeamID.Text
+                          select info;
+                if (res.Any())
+                {
+                    res.First().member = 1;
+                    db.SubmitChanges();
+                }
+            }
+            catch
+            {
+                Response.Write("<script>alert('审核错误，请稍后重试！');</script>");
+                return;
+            }
+
+            Response.Write("<script>alert('审核通过，成员已入队！');</script>");
+            BtnMemberBack_Click(sender, e);
+        }
+
+        protected void BtnAuditReject_Click(object sender, EventArgs e)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+
+            try
+            {
+                var res = from info in db.ActivitySignTeam
+                          where info.studentID == LblMemberStudentID.Text && info.teamID == LblMemberTeamID.Text
+                          select info;
+
+                db.ActivitySignTeam.DeleteOnSubmit(res.First());
+                db.SubmitChanges();
+            }
+            catch
+            {
+                Response.Write("<script>alert('审核错误，请稍后重试！');</script>");
+                return;
+            }
+
+            if (BtnAuditReject.Text == "拒绝")
+            {
+                Response.Write("<script>alert('已拒绝成员入队！');</script>");
+            }
+            else if (BtnAuditReject.Text == "移出")
+            {
+                Response.Write("<script>alert('已将成员移出队伍！');</script>");
+            }
+
+            BtnMemberBack_Click(sender, e);
         }
     }
 }

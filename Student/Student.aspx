@@ -174,7 +174,7 @@
                             <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
                         </asp:DropDownList>
                         </span>
-                        <div style="width: 320px; position: absolute; top: 242px; left: 1243px;">
+                        <div style="width: 320px; position: absolute; top: 242px; left: 1240px;">
                             <asp:Button ID="commit" runat="server" Text="查询" OnClick="commit_Click" CssClass="auto-style6" Width="60px" CausesValidation="False" />
                             <asp:Button ID="flush" runat="server" Text="重置" OnClick="flush_Click" CssClass="auto-style5" Width="60px" CausesValidation="False" />
                         </div>
@@ -672,8 +672,22 @@
         </div>
 
         <%--成员信息页面--%>
-        <div>
-
+        <div id="DivMemberInfo" runat="server" style="position: absolute; display:none; top: 283px; left: 789px; border-style: solid; border-color: inherit; border-width: 1px; background-color: #F7F6F3; padding: 5px; width: 300px;">
+            <div style="text-align: center; padding: 5px;">
+                <asp:Label ID="LBlMemberInfo" runat="server" Text="成员信息" Font-Bold="True" Font-Size="Large"></asp:Label>
+            </div>
+            <asp:Label ID="LblMemberTeamID" runat="server" style="display:none;"></asp:Label>
+            <div style="padding:5px">姓名：<asp:Label ID="LblMemberName" runat="server" Text="Label"></asp:Label></div>
+            <div style="padding:5px">学号：<asp:Label ID="LblMemberStudentID" runat="server" Text="Label"></asp:Label></div>
+            <div style="padding:5px">班级：<asp:Label ID="LblMemberClass" runat="server" Text="Label"></asp:Label></div>
+            <div style="padding:5px">性别：<asp:Label ID="LblMemberGender" runat="server" Text="Label"></asp:Label></div>
+            <div style="padding:5px">电话：<asp:Label ID="LblMemberPhone" runat="server" Text="Label"></asp:Label></div>
+            <div style="padding:5px">状态：<asp:Label ID="LblMemberState" runat="server" Text="Label"></asp:Label></div>
+            <div style="padding:5px; float:right;">
+                <asp:Button ID="BtnAuditAgree" runat="server" Text="通过" OnClick="BtnAuditAgree_Click" CausesValidation="False" />
+                <asp:Button ID="BtnAuditReject" runat="server" Text="拒绝" OnClick="BtnAuditReject_Click" CausesValidation="False"/>
+                <asp:Button ID="BtnMemberBack" runat="server" Text="返回" OnClick="BtnMemberBack_Click" CausesValidation="False"/>
+            </div>
         </div>
     </form>
 </body>
