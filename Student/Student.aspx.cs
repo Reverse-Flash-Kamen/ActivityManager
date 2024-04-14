@@ -242,6 +242,9 @@ namespace ActivityManager.Test
             DivAct.Style["display"] = "block";
             DivTeam.Style["display"] = "none";
 
+            DivActTopNav.Style["display"] = "block";
+            DivTeamTopNav.Style["display"] = "none";
+
             LinkButton1.Text = "全部活动"; // 要在按钮点击事件之前
             LinkButton2.Text = "可报名";
 
@@ -275,6 +278,9 @@ namespace ActivityManager.Test
             DivAct.Style["display"] = "block";
             DivTeam.Style["display"] = "none";
 
+            DivActTopNav.Style["display"] = "block";
+            DivTeamTopNav.Style["display"] = "none";
+
             // 更新导航条
             DivAllAct.Style["background-color"] = "#ccad9f";
             DivMyAct.Style["background-color"] = "red";
@@ -303,6 +309,7 @@ namespace ActivityManager.Test
             DivActPlaza.Style["background-color"] = "#ccad9f";
 
             DivMyInfoR.Style["display"] = "block";
+            DivTeamTopNav.Style["display"] = "none";
 
             // 隐藏不需要的模块
             DivTeam.Style["display"] = "none";
@@ -883,8 +890,12 @@ namespace ActivityManager.Test
             DivSearch.Style["display"] = "block";
             DivTopNov.Style["display"] = "none";
             DivBuildActTeam.Style["display"] = "block";
+
             DivAct.Style["display"] = "none";
             DivTeam.Style["display"] = "block";
+
+            DivActTopNav.Style["display"] = "none";
+            DivTeamTopNav.Style["display"] = "block";
 
             DivAllAct.Style["background-color"] = "#ccad9f";
             DivMyAct.Style["background-color"] = "#ccad9f";
@@ -1667,6 +1678,60 @@ namespace ActivityManager.Test
             }
 
             BtnMemberBack_Click(sender, e);
+        }
+
+        protected void BtnTeamSearch_Click(object sender, EventArgs e)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from infoTeam in db.ActivitySignTeam
+                      where infoTeam.captain == 1
+                      select infoTeam;
+
+            string actName = TxtTeamActName.Text.ToString().Trim();
+            if (actName != "" && actName != null)
+            {
+                res = from info in res
+                      where info.ActivityEnableTeam.Activity.activityName == actName
+                      select info;
+            }
+
+            string teamName = TxtNavTeamName.Text.ToString().Trim();
+            if (teamName != "" && teamName != null)
+            {
+                res = from info in res
+                      where info.teamName == teamName
+                      select info;
+            }
+
+            if (DdlTeamAudit.SelectedValue != "-1")
+            {
+                res = from info in res
+                      where info.audit == int.Parse(DdlTeamAudit.SelectedValue)
+                      select info;
+            }
+
+            if (DdlTeamActType.SelectedValue != "-1")
+            {
+                res = from info in res
+                      where info.ActivityEnableTeam.Activity.activityType == int.Parse(DdlTeamActType.SelectedValue)
+                      select info;
+            }
+
+            GvTeam.DataSourceID = null;
+            GvTeam.DataSource = res;
+            GvTeam.DataBind();
+        }
+
+        protected void BtnTeamReset_Click(object sender, EventArgs e)
+        {
+            TxtTeamActName.Text = null;
+            TxtNavTeamName.Text = null;
+            DdlTeamAudit.SelectedIndex = -1;
+            DdlTeamActType.SelectedIndex = -1;
+
+            GvTeam.DataSource = null;
+            GvTeam.DataSourceID = TeamLinqDataSource.ID;
+            GvTeam.DataBind();
         }
     }
 }

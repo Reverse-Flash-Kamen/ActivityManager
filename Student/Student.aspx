@@ -148,8 +148,8 @@
                     </div>
                 </div>
 
-                <%--上导航栏--%>
-                <div class="auto-style3">
+                <%--活动上导航栏--%>
+                <div class="auto-style3" id="DivActTopNav" runat="server">
                     <%--查询--%>
                     <div class="auto-style8" id="DivSearch" runat="server">
                         <span class="">&nbsp;&nbsp;&nbsp;活动名称&nbsp;<asp:TextBox ID="name" runat="server"></asp:TextBox></span>
@@ -161,9 +161,6 @@
                             <asp:ListItem Value="6">报名中</asp:ListItem>
                             <asp:ListItem Value="7">待开始</asp:ListItem>
                             <asp:ListItem Value="8">活动中</asp:ListItem>
-                            <asp:ListItem Value="9">已结束</asp:ListItem>
-                            <asp:ListItem Value="10">已上报</asp:ListItem>
-                            <asp:ListItem Value="11">已完成</asp:ListItem>
                         </asp:DropDownList>
                         </span>
                         <span class="auto-style7">活动类别&nbsp; 
@@ -186,6 +183,34 @@
                         &nbsp;&nbsp;
                    <asp:LinkButton ID="LinkButton2" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton2_Click" CausesValidation="False">可报名</asp:LinkButton>
                         &nbsp;&nbsp;
+                    </div>
+                </div>
+
+                <%--团队上导航栏--%>
+                <div class="auto-style3" id="DivTeamTopNav" runat="server" style="display:none;">
+                    <%--查询--%>
+                    <div class="auto-style8" id="Div1" runat="server">
+                        <span class="">&nbsp;&nbsp;&nbsp;活动名称&nbsp;<asp:TextBox ID="TxtTeamActName" runat="server"></asp:TextBox></span>
+                        <span class="auto-style7">队伍名称&nbsp;<asp:TextBox ID="TxtNavTeamName" runat="server"></asp:TextBox></span>
+                        <span class="auto-style7">队伍审核&nbsp; 
+                        <asp:DropDownList ID="DdlTeamAudit" runat="server">
+                            <asp:ListItem Value="-1">队伍审核</asp:ListItem>
+                            <asp:ListItem Value="0">无需审核</asp:ListItem>
+                            <asp:ListItem Value="1">需要审核</asp:ListItem>
+                        </asp:DropDownList>
+                        </span>
+                        <span class="auto-style7">活动类别&nbsp; 
+                        <asp:DropDownList ID="DdlTeamActType" runat="server">
+                            <asp:ListItem Value="-1">活动类别</asp:ListItem>
+                            <asp:ListItem Value="1">创新创业与就业见习</asp:ListItem>
+                            <asp:ListItem Value="2">社会实践与志愿公益</asp:ListItem>
+                            <asp:ListItem Value="3">思想引领与文体素质拓展</asp:ListItem>
+                        </asp:DropDownList>
+                        </span>
+                        <div style="width: 320px; position: absolute; top: 242px; left: 1240px;">
+                            <asp:Button ID="BtnTeamSearch" runat="server" Text="查询"  CssClass="auto-style6" Width="60px" CausesValidation="False" OnClick="BtnTeamSearch_Click" />
+                            <asp:Button ID="BtnTeamReset" runat="server" Text="重置"  CssClass="auto-style5" Width="60px" CausesValidation="False" OnClick="BtnTeamReset_Click" />
+                        </div>
                     </div>
 
                     <div id="DivBuildActTeam" runat="server" style="display: none; padding-top: 35px;">
