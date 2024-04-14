@@ -33,6 +33,15 @@ namespace ActivityManager.Student
         protected global::System.Web.UI.WebControls.Label Label;
 
         /// <summary>
+        /// DivIdentified 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivIdentified;
+
+        /// <summary>
         /// LblStudentID 控件。
         /// </summary>
         /// <remarks>
@@ -87,58 +96,31 @@ namespace ActivityManager.Student
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvStudentName;
 
         /// <summary>
-        /// RblGender 控件。
+        /// LblID 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RblGender;
+        protected global::System.Web.UI.WebControls.Label LblID;
 
         /// <summary>
-        /// DdlMajor 控件。
+        /// TxtID 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlMajor;
+        protected global::System.Web.UI.WebControls.TextBox TxtID;
 
         /// <summary>
-        /// DdlClass 控件。
+        /// RfvID 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlClass;
-
-        /// <summary>
-        /// LblPhone 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblPhone;
-
-        /// <summary>
-        /// TxtPhone 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtPhone;
-
-        /// <summary>
-        /// RfvPhone 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvPhone;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RfvID;
 
         /// <summary>
         /// Vs 控件。
