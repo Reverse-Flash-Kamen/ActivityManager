@@ -78,6 +78,8 @@ namespace ActivityManager
                 submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 activityType = a.activityType;
                 if (a.failReason != null) failReason = a.failReason.ToString().Trim();
+                if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
+                if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
             }
             else
             {
@@ -104,6 +106,8 @@ namespace ActivityManager
             submitTime = Convert.ToDateTime(a.submitTime).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             activityType = a.activityType;
             if (a.failReason != null) failReason = a.failReason.ToString().Trim();
+            if (a.checkInCode != null) checkInCode = a.checkInCode.ToString().Trim();
+            if (a.checkOutCode != null) checkOutCode = a.checkOutCode.ToString().Trim();
         }
 
         public void Create()
@@ -202,6 +206,8 @@ namespace ActivityManager
             if (failReason != null) a.failReason = failReason;
             a.activityState = Convert.ToInt32(activityState);
             a.activityType = Convert.ToInt32(activityType);
+            if (checkInCode != null) a.checkInCode = checkInCode.ToString().Trim();
+            if (checkOutCode != null) a.checkOutCode = checkOutCode.ToString().Trim();
 
             db.SubmitChanges();
         }

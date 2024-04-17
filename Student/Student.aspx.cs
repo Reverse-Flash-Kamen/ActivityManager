@@ -512,14 +512,22 @@ namespace ActivityManager.Test
             {
                 // 第一次加载时
                 Tool.FormatActivityHeader(GvTemplate); // 更新表头
+
                 schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
                 ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
+
+                TeamLinqDataSource.Where = "(captain = 1)";
+                ActivityManagerDataContext.connectorTeam = TeamLinqDataSource.Where.ToString();
+
                 Tool.UpdataAllActivityState(); // 更新所有活动状态，数据量太大，所以之后只在数据绑定时更新Gv当前页
+
+                TipToStudent();
             }
             else
             {
                 schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
-                Tool.FormatGridView(GvTemplate, 8); // 不是这
+                TeamLinqDataSource.Where = ActivityManagerDataContext.connectorTeam;
+                Tool.FormatGridView(GvTemplate, 8);
             }
 
             // Tool.UpdateActivityState(GvTemplate);
@@ -902,6 +910,7 @@ namespace ActivityManager.Test
             DivMyInfo.Style["background-color"] = "#ccad9f";
             DivActPlaza.Style["background-color"] = "red";
 
+            // ActivityManagerDataContext.connectorWhere = TeamLinqDataSource.Where;
             GvTeam.DataBind();
             // Tool.FormatGridView(GvTeam, 7);
         }
@@ -915,6 +924,8 @@ namespace ActivityManager.Test
             DdlBulidTeamVolume.SelectedIndex = -1;
             TxtTeamName.Text = null;
             RblBuildTeam.SelectedIndex = -1;
+            RblTeamPriavte.SelectedIndex = -1;
+            TxtTeamPassword.Text = null;
 
             GvTeam.DataBind();
             // Tool.FormatGridView(GvTeam, 7);
@@ -949,6 +960,18 @@ namespace ActivityManager.Test
             if (RblBuildTeam.SelectedIndex == -1)
             {
                 mes += "-请选择是否启用审核功能\\r";
+            }
+
+            if (RblTeamPriavte.SelectedIndex == -1)
+            {
+                mes += "-请选择是否启用私有功能\\r";
+            }
+            else if (RblTeamPriavte.SelectedValue == "1")
+            {
+                if (TxtTeamPassword.Text == "" || TxtTeamPassword.Text == null)
+                {
+                    mes += "-请输入小队密码\\r";
+                }
             }
 
             if (mes != "")
@@ -1040,6 +1063,9 @@ namespace ActivityManager.Test
                 else
                     teamID = actID + "01"; // 如果是第一次创建,生成01
 
+                string password = null;
+                if (RblTeamPriavte.SelectedValue == "1") password = TxtTeamPassword.Text.Trim();
+
                 ActivitySignTeam team = new ActivitySignTeam()
                 {
                     teamID = teamID,
@@ -1050,7 +1076,10 @@ namespace ActivityManager.Test
                     audit = audit,
                     member = 1,
                     volume = volume,
+                    @private = int.Parse(RblTeamPriavte.SelectedValue)
                 };
+
+                if (password != null) team.password = password;
 
                 db.ActivitySignTeam.InsertOnSubmit(team);
                 db.SubmitChanges();
@@ -1109,7 +1138,7 @@ namespace ActivityManager.Test
 
         protected void GvTeam_DataBound(object sender, EventArgs e)
         {
-            // Response.Write("<script>alert('签到成功！');</script>");
+            // TeamLinqDataSource.Where = ActivityManagerDataContext.connectorWhere;
 
             ActivityManagerDataContext db = new ActivityManagerDataContext();
 
@@ -1120,23 +1149,31 @@ namespace ActivityManager.Test
                 row.Cells[3].Text = act.ActivityName;
                 string teamID = row.Cells[1].Text;
 
-                // 设置是否需要审核
-                int audit = int.Parse(row.Cells[7].Text);
+                // 设置是否为私人小队
+                int privateTeam = int.Parse(row.Cells[7].Text);
                 if (row.Cells[7].Text == "1")
                     row.Cells[7].Text = "是";
                 else
                     row.Cells[7].Text = "否";
 
+                // 设置是否需要审核
+                int audit = int.Parse(row.Cells[8].Text);
+                if (row.Cells[8].Text == "1")
+                    row.Cells[8].Text = "是";
+                else
+                    row.Cells[8].Text = "否";
+
                 int n = row.Cells.Count;
 
-                // 队长ID在此条里
-                string captainID = row.Cells[5].Text;
-                ((ImageButton)row.Cells[10].Controls[0]).ImageUrl = "~/image/users/" + captainID + ".jpg";
+                // 队长
+                var resCaptain = from info in db.ActivitySignTeam
+                                 where info.teamID == teamID && info.captain == 1
+                                 select info.StudentIdentified;
 
-                var resCap = from info in db.StudentIdentified
-                             where info.studentID == captainID
-                             select info.studentName;
-                row.Cells[10].ToolTip = captainID + " " + resCap.First() + " 队长";
+                string captainID = resCaptain.First().studentID;
+                ((ImageButton)row.Cells[11].Controls[0]).ImageUrl = "~/image/users/" + captainID + ".jpg";
+
+                row.Cells[11].ToolTip = captainID + " " + resCaptain.First().studentName + " 队长";
 
                 // 队长操作
                 if (captainID == Session["ID"].ToString())
@@ -1183,7 +1220,7 @@ namespace ActivityManager.Test
                 }
 
                 // 关闭超出容量的报名ImageButton
-                int extraVolume = 11 - int.Parse(row.Cells[9].Text);
+                int extraVolume = 11 - int.Parse(row.Cells[10].Text);
                 for (int i = 0; i < extraVolume; i++)
                 {
                     // row.Cells[n - i - 2].Visible = false;
@@ -1195,17 +1232,17 @@ namespace ActivityManager.Test
 
                 // 加载成员
                 var res = from info in db.ActivitySignTeam
-                          where info.teamID == teamID && info.captain != 1
+                          where info.teamID == teamID && info.captain != 1 && info.member >= 0
                           select info;
 
                 int begin = 1;
-                ((ImageButton)row.Cells[10].Controls[0]).CommandName = "checkMember_10";
-                ((ImageButton)row.Cells[10].Controls[0]).BorderColor = System.Drawing.Color.GreenYellow;
-                ((ImageButton)row.Cells[10].Controls[0]).BorderWidth = 1;
-                ((ImageButton)row.Cells[10].Controls[0]).BorderStyle = BorderStyle.Outset;
+                ((ImageButton)row.Cells[11].Controls[0]).CommandName = "checkMember_10";
+                ((ImageButton)row.Cells[11].Controls[0]).BorderColor = System.Drawing.Color.GreenYellow;
+                ((ImageButton)row.Cells[11].Controls[0]).BorderWidth = 1;
+                ((ImageButton)row.Cells[11].Controls[0]).BorderStyle = BorderStyle.Outset;
                 foreach (var member in res)
                 {
-                    ((ImageButton)row.Cells[10 + begin].Controls[0]).ImageUrl = "~/image/users/" + member.studentID + ".jpg";
+                    ((ImageButton)row.Cells[11 + begin].Controls[0]).ImageUrl = "~/image/users/" + member.studentID + ".jpg";
 
                     var resStuName = from info in db.StudentIdentified
                                      where info.studentID == member.studentID
@@ -1221,16 +1258,16 @@ namespace ActivityManager.Test
                     {
                         toolTip += " 待审核";
                         // ((ImageButton)row.Cells[10 + begin].Controls[0]).Style["opacity"] = "60%";
-                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderColor = System.Drawing.Color.OrangeRed;
-                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderWidth = 1;
-                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderStyle = BorderStyle.Outset;
+                        ((ImageButton)row.Cells[11 + begin].Controls[0]).BorderColor = System.Drawing.Color.OrangeRed;
+                        ((ImageButton)row.Cells[11 + begin].Controls[0]).BorderWidth = 1;
+                        ((ImageButton)row.Cells[11 + begin].Controls[0]).BorderStyle = BorderStyle.Outset;
                     }
                     else
                     {
                         toolTip += " 已入队";
-                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderColor = System.Drawing.Color.GreenYellow;
-                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderWidth = 1;
-                        ((ImageButton)row.Cells[10 + begin].Controls[0]).BorderStyle = BorderStyle.Outset;
+                        ((ImageButton)row.Cells[11 + begin].Controls[0]).BorderColor = System.Drawing.Color.GreenYellow;
+                        ((ImageButton)row.Cells[11 + begin].Controls[0]).BorderWidth = 1;
+                        ((ImageButton)row.Cells[11 + begin].Controls[0]).BorderStyle = BorderStyle.Outset;
                     }
 
                     row.Cells[10 + begin].ToolTip = toolTip;
@@ -1250,14 +1287,15 @@ namespace ActivityManager.Test
             string actID = GvTeam.Rows[rowIndex].Cells[2].Text;
             string teamName = GvTeam.Rows[rowIndex].Cells[4].Text;
             // int audit = int.Parse(GvTeam.Rows[rowIndex].Cells[6].Text);
-            int audit = GvTeam.Rows[rowIndex].Cells[7].Text == "是" ? 1 : 0;
-            int volume = int.Parse(GvTeam.Rows[rowIndex].Cells[9].Text);
+            int audit = GvTeam.Rows[rowIndex].Cells[8].Text == "是" ? 1 : 0;
+            int privateTeam = GvTeam.Rows[rowIndex].Cells[7].Text == "是" ? 1 : 0;
+            int volume = int.Parse(GvTeam.Rows[rowIndex].Cells[10].Text);
 
             if (e.CommandName == "Page") return;
 
             if (e.CommandName == "memberSign")
             {
-                MemberSign(teamID, teamName, actID, audit, volume);
+                MemberSignCheck(teamID, teamName, actID, audit, privateTeam, volume);
             }
             else if (e.CommandName.StartsWith("checkMember"))
             {
@@ -1454,11 +1492,26 @@ namespace ActivityManager.Test
                       select info;
             try
             {
-                foreach (var member in res)
+                /*foreach (var member in res)
                 {
                     db.ActivitySignTeam.DeleteOnSubmit(member);
                     db.SubmitChanges();
+                }*/
+
+                var resCaptain = from info in res
+                                 where info.captain == 1
+                                 select info;
+                db.ActivitySignTeam.DeleteOnSubmit(resCaptain.First());
+
+                var resMember = from info in res
+                                where info.captain != 1
+                                select info;
+                foreach (var member in resMember)
+                {
+                    member.member = -3;
                 }
+
+                db.SubmitChanges();
             }
             catch
             {
@@ -1560,7 +1613,7 @@ namespace ActivityManager.Test
             DivMask.Style["pointer-events"] = "none";
         }
 
-        private void MemberSign(string teamID, string teamName, string actID, int audit, int volume)
+        private void MemberSignCheck(string teamID, string teamName, string actID, int audit, int privateTeam, int volume)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
 
@@ -1583,6 +1636,26 @@ namespace ActivityManager.Test
                 Response.Write("<script>alert('您已单人报名该活动,请取消报名后再进行申请！');</script>");
                 return;
             }
+
+            if (privateTeam == 1)
+            {
+                DivInputTeamPassword.Style["display"] = "block";
+                DivMask.Style["pointer-events"] = "none";
+                LblMemberSignTeamName.Text = teamName;
+                LblMemberSignTeamID.Text = teamID;
+                LblMemberSignActID.Text = actID;
+                LblMemberSignAudit.Text = audit.ToString();
+                LblMemberSignVolume.Text = volume.ToString();
+            }
+            else
+            {
+                MemberSign(teamID, teamName, actID, audit, volume);
+            }
+        }
+
+        private void MemberSign(string teamID, string teamName, string actID, int audit, int volume)
+        {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
 
             int member = audit == 1 ? 0 : 1;
             ActivitySignTeam signTeam = new ActivitySignTeam()
@@ -1659,7 +1732,17 @@ namespace ActivityManager.Test
                           where info.studentID == LblMemberStudentID.Text && info.teamID == LblMemberTeamID.Text
                           select info;
 
-                db.ActivitySignTeam.DeleteOnSubmit(res.First());
+                // db.ActivitySignTeam.DeleteOnSubmit(res.First());
+
+                if (BtnAuditReject.Text == "拒绝")
+                {
+                    res.First().member = -1;
+                }
+                else if (BtnAuditReject.Text == "移出")
+                {
+                    res.First().member = -2;
+                }
+
                 db.SubmitChanges();
             }
             catch
@@ -1731,6 +1814,209 @@ namespace ActivityManager.Test
 
             GvTeam.DataSource = null;
             GvTeam.DataSourceID = TeamLinqDataSource.ID;
+            TeamLinqDataSource.Where = "captain = 1";
+            GvTeam.DataBind();
+        }
+
+        private void TipToStudent()
+        {
+            // Response.Write("<script>alert('123');</script>");
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            DateTime nowTime = DateTime.Now;
+
+            var resStu = from info in db.StudentIdentified
+                         where info.studentID == Session["ID"].ToString()
+                         select info;
+
+            string tip = $"{resStu.First().studentName}同学，欢迎登录本系统！\\r";
+            // Response.Write("<script>alert('" + tip + "');</script>");
+
+            var resSign = from info in db.SignedActivity
+                          where info.studentID == Session["ID"].ToString()
+                          select info.Activity;
+
+            if (resSign.Any())
+            {
+                bool flag = true;
+                foreach (var act in resSign)
+                {
+                    DateTime holdDate = act.holdDate;
+                    TimeSpan span = holdDate - nowTime;
+
+                    if (act.activityState == 7)
+                    {
+                        if (flag)
+                        {
+                            tip += "您报名的活动：\\r";
+                            flag = false;
+                        }
+
+                        if (span.Days > 0)
+                        {
+                            tip += $"-{act.activityName}将于{span.Days}天后举行\\r";
+                        }
+                        else if (span.Days == 0)
+                        {
+                            tip += $"-{act.activityName}将于{span.Hours}时后举行\\r";
+                        }
+                    }
+                    else if (act.activityState == 8)
+                    {
+                        if (flag)
+                        {
+                            tip += "您报名的活动：\\r";
+                            flag = false;
+                        }
+
+                        tip += $"-{act.activityName}正在举行中\\r";
+                    }
+                }
+            }
+
+            var resLike = from info in db.LikedActivity
+                          where info.studentID == Session["ID"].ToString()
+                          select info.Activity;
+
+            if (resLike.Any())
+            {
+                bool flag = true;
+
+                foreach (var act in resLike)
+                {
+                    if (act.activityState == 6)
+                    {
+                        if (flag)
+                        {
+                            tip += "您收藏的活动：\\r";
+                            flag = false;
+                        }
+                        tip += $"-{act.activityName}正在报名中\\r";
+                    }
+                }
+            }
+
+            var resTeam = from info in db.ActivitySignTeam
+                          where info.studentID == Session["ID"].ToString()
+                          select info;
+
+            if (resTeam.Any())
+            {
+                bool flag = true;
+                foreach (var team in resTeam)
+                {
+                    if (team.member == -1)
+                    {
+                        if (flag)
+                        {
+                            tip += "请注意！\\r";
+                            flag = false;
+                        }
+
+                        tip += $"您的入队申请已被{team.teamName}拒绝！\\r";
+                        db.ActivitySignTeam.DeleteOnSubmit(team);
+                    }
+                    else if (team.member == -2)
+                    {
+                        if (flag)
+                        {
+                            tip += "请注意！\\r";
+                            flag = false;
+                        }
+
+                        tip += $"您已被{team.teamName}移出小队！\\r";
+                        db.ActivitySignTeam.DeleteOnSubmit(team);
+                    }
+                    else if (team.member == -3)
+                    {
+                        if (flag)
+                        {
+                            tip += "请注意！\\r";
+                            flag = false;
+                        }
+
+                        tip += $"您的队伍{team.teamName}已被队长解散！";
+                        db.ActivitySignTeam.DeleteOnSubmit(team);
+                    }
+                }
+            }
+
+            Response.Write("<script>alert('" + tip + "');</script>");
+            db.SubmitChanges();
+        }
+
+        protected void BtnAllTeam_Click(object sender, EventArgs e)
+        {
+            GvTeam.DataSource = null;
+            GvTeam.DataSourceID = TeamLinqDataSource.ID;
+
+            TeamLinqDataSource.Where = "captain = 1";
+            ActivityManagerDataContext.connectorTeam = TeamLinqDataSource.Where;
+            GvTeam.DataBind();
+        }
+
+        protected void BtnMyTeam_Click(object sender, EventArgs e)
+        {
+            GvTeam.DataSource = null;
+            GvTeam.DataSourceID = TeamLinqDataSource.ID;
+
+            TeamLinqDataSource.Where = $"studentID = \"{Session["ID"]}\"";
+            ActivityManagerDataContext.connectorTeam = TeamLinqDataSource.Where;
+            GvTeam.DataBind();
+        }
+
+        protected void GvTeam_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GvTeam.PageIndex = e.NewPageIndex;
+            TeamLinqDataSource.Where = ActivityManagerDataContext.connectorTeam;
+        }
+
+        protected void RblTeamPriavte_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (RblTeamPriavte.SelectedValue == "1")
+            {
+                DivTeamPasswrod.Style["display"] = "block";
+            }
+            else if (RblTeamPriavte.SelectedValue == "0")
+            {
+                DivTeamPasswrod.Style["display"] = "none";
+            }
+
+            Tool.FormatGridView(GvTeam, 7);
+        }
+
+        protected void BtnSubmitTeamPasswrod_Click(object sender, EventArgs e)
+        {
+            string teamName = LblMemberSignTeamName.Text;
+            string teamID = LblMemberSignTeamID.Text;
+            string actID = LblMemberSignActID.Text;
+            int audit = int.Parse(LblMemberSignAudit.Text);
+            int volume = int.Parse(LblMemberSignVolume.Text);
+
+            string psw = TxtInputTeamPsw.Text.Trim();
+            if (psw == "" || psw == null)
+            {
+                Response.Write("<script>alert('请输入密码！');</script>");
+                return;
+            }
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.ActivitySignTeam
+                      where info.teamID == teamID && info.activityID == actID && info.password == psw
+                      select info;
+
+            if (res.Any()) MemberSign(teamID, teamName, actID, audit, volume);
+            else Response.Write("<script>alert('密码错误！');</script>");
+
+            BtnTeamPasswrodBack_Click(sender, e);
+        }
+
+        protected void BtnTeamPasswrodBack_Click(object sender, EventArgs e)
+        {
+            TxtInputTeamPsw.Text = null;
+            DivInputTeamPassword.Style["display"] = "none";
+            DivMask.Style["pointer-events"] = "auto";
+
             GvTeam.DataBind();
         }
     }

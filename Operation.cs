@@ -1,5 +1,6 @@
 ﻿using ActivityManager.App_Data;
 using MathNet.Numerics;
+using MathNet.Numerics.Distributions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -104,7 +105,7 @@ namespace ActivityManager
         private void ActCheckCode(string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
-            var res = from info in db.ActivityCheckCode
+            var res = from info in db.Activity
                       where info.activityID == actID
                       select info;
 
@@ -484,6 +485,8 @@ namespace ActivityManager
 
         private void ActExport(string actID, string orgID)
         {
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+
             // 创建一个工作薄
             IWorkbook workbook = new XSSFWorkbook();
 
@@ -493,6 +496,16 @@ namespace ActivityManager
             // 添加表头
             IRow headerRow = sheet.CreateRow(0);
 
+            var resEnableTeam = from info in db.ActivityEnableTeam
+                                where info.activityID == actID
+                                select info;
+
+            bool enableTeam = false;
+            if (resEnableTeam.Any())
+            {
+                enableTeam = true;
+            }
+
             // 给表头创建列
             headerRow.CreateCell(0).SetCellValue(""); // 序号
             headerRow.CreateCell(1).SetCellValue("学科部");
@@ -501,6 +514,7 @@ namespace ActivityManager
             headerRow.CreateCell(4).SetCellValue("性别");
             headerRow.CreateCell(5).SetCellValue("专业班级");
             headerRow.CreateCell(6).SetCellValue("联系电话");
+            if (enableTeam) headerRow.CreateCell(6).SetCellValue("队伍名称");
 
             // 设置列宽
             for (int n = 0; n <= 6; n++)
@@ -509,8 +523,6 @@ namespace ActivityManager
             }
 
             // 根据活动ID获取报名学生ID
-            ActivityManagerDataContext db = new ActivityManagerDataContext();
-
             var res = from info in db.SignedActivity
                       where info.activityID == actID
                       select info.studentID;
@@ -538,6 +550,16 @@ namespace ActivityManager
                 dataRow.CreateCell(4).SetCellValue(studentIdentified.gender);
                 dataRow.CreateCell(5).SetCellValue(studentIdentified.major + studentIdentified.@class);
                 dataRow.CreateCell(6).SetCellValue(studentIdentified.phone);
+                if (enableTeam)
+                {
+                    var resTeamName = from info in db.ActivitySignTeam
+                                      where info.studentID == studentID
+                                      select info.teamName;
+
+                    // 有队伍的报名同学导出队伍名称
+                    if (resTeamName.Any())
+                        dataRow.CreateCell(7).SetCellValue(resTeamName.First());
+                }
 
                 i++;
             }
@@ -592,7 +614,7 @@ namespace ActivityManager
                 return;
             }
 
-            HttpContext.Current.Response.Write("<script>alert('导出成功，请在C:/Code/Reverse-Flash-Kamen/ActivityManager/File/#orgName#/Signed中查看！')</script>");
+            HttpContext.Current.Response.Write("<script>alert('导出成功，请在\\rC:/Code/Reverse-Flash-Kamen/ActivityManager/File/#orgName#/Signed\\r中查看！')</script>");
         }
 
         private void ActExportAppraise(string actID, string orgID)

@@ -34,6 +34,7 @@ namespace ActivityManager.App_Data
         public static string connectorWhere = "";
         public static string connectorCredit = "";
         private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
+        internal static string connectorTeam;
 
         public ActivityManagerDataContext() :
         base(conStr, mappingSource)
@@ -64,21 +65,18 @@ namespace ActivityManager.App_Data
     partial void InsertSignedActivity(SignedActivity instance);
     partial void UpdateSignedActivity(SignedActivity instance);
     partial void DeleteSignedActivity(SignedActivity instance);
-    partial void InsertActivity(Activity instance);
-    partial void UpdateActivity(Activity instance);
-    partial void DeleteActivity(Activity instance);
     partial void InsertActivityEnableTeam(ActivityEnableTeam instance);
     partial void UpdateActivityEnableTeam(ActivityEnableTeam instance);
     partial void DeleteActivityEnableTeam(ActivityEnableTeam instance);
-    partial void InsertActivityCheckCode(ActivityCheckCode instance);
-    partial void UpdateActivityCheckCode(ActivityCheckCode instance);
-    partial void DeleteActivityCheckCode(ActivityCheckCode instance);
     partial void InsertActivityAppraise(ActivityAppraise instance);
     partial void UpdateActivityAppraise(ActivityAppraise instance);
     partial void DeleteActivityAppraise(ActivityAppraise instance);
     partial void InsertActivitySignTeam(ActivitySignTeam instance);
     partial void UpdateActivitySignTeam(ActivitySignTeam instance);
     partial void DeleteActivitySignTeam(ActivitySignTeam instance);
+    partial void InsertActivity(Activity instance);
+    partial void UpdateActivity(Activity instance);
+    partial void DeleteActivity(Activity instance);
     #endregion
 		
 		public ActivityManagerDataContext(string connection) : 
@@ -161,27 +159,11 @@ namespace ActivityManager.App_Data
 			}
 		}
 		
-		public System.Data.Linq.Table<Activity> Activity
-		{
-			get
-			{
-				return this.GetTable<Activity>();
-			}
-		}
-		
 		public System.Data.Linq.Table<ActivityEnableTeam> ActivityEnableTeam
 		{
 			get
 			{
 				return this.GetTable<ActivityEnableTeam>();
-			}
-		}
-		
-		public System.Data.Linq.Table<ActivityCheckCode> ActivityCheckCode
-		{
-			get
-			{
-				return this.GetTable<ActivityCheckCode>();
 			}
 		}
 		
@@ -198,6 +180,14 @@ namespace ActivityManager.App_Data
 			get
 			{
 				return this.GetTable<ActivitySignTeam>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Activity> Activity
+		{
+			get
+			{
+				return this.GetTable<Activity>();
 			}
 		}
 	}
@@ -1569,6 +1559,785 @@ namespace ActivityManager.App_Data
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivityEnableTeam")]
+	public partial class ActivityEnableTeam : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _activityID;
+		
+		private int _minVolume;
+		
+		private int _maxVolume;
+		
+		private EntitySet<ActivitySignTeam> _ActivitySignTeam;
+		
+		private EntityRef<Activity> _Activity;
+		
+    #region 可扩展性方法定义
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnactivityIDChanging(string value);
+    partial void OnactivityIDChanged();
+    partial void OnminVolumeChanging(int value);
+    partial void OnminVolumeChanged();
+    partial void OnmaxVolumeChanging(int value);
+    partial void OnmaxVolumeChanged();
+    #endregion
+		
+		public ActivityEnableTeam()
+		{
+			this._ActivitySignTeam = new EntitySet<ActivitySignTeam>(new Action<ActivitySignTeam>(this.attach_ActivitySignTeam), new Action<ActivitySignTeam>(this.detach_ActivitySignTeam));
+			this._Activity = default(EntityRef<Activity>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string activityID
+		{
+			get
+			{
+				return this._activityID;
+			}
+			set
+			{
+				if ((this._activityID != value))
+				{
+					if (this._Activity.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnactivityIDChanging(value);
+					this.SendPropertyChanging();
+					this._activityID = value;
+					this.SendPropertyChanged("activityID");
+					this.OnactivityIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_minVolume", DbType="Int NOT NULL")]
+		public int minVolume
+		{
+			get
+			{
+				return this._minVolume;
+			}
+			set
+			{
+				if ((this._minVolume != value))
+				{
+					this.OnminVolumeChanging(value);
+					this.SendPropertyChanging();
+					this._minVolume = value;
+					this.SendPropertyChanged("minVolume");
+					this.OnminVolumeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_maxVolume", DbType="Int NOT NULL")]
+		public int maxVolume
+		{
+			get
+			{
+				return this._maxVolume;
+			}
+			set
+			{
+				if ((this._maxVolume != value))
+				{
+					this.OnmaxVolumeChanging(value);
+					this.SendPropertyChanging();
+					this._maxVolume = value;
+					this.SendPropertyChanged("maxVolume");
+					this.OnmaxVolumeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActivityEnableTeam_ActivitySignTeam", Storage="_ActivitySignTeam", ThisKey="activityID", OtherKey="activityID")]
+		public EntitySet<ActivitySignTeam> ActivitySignTeam
+		{
+			get
+			{
+				return this._ActivitySignTeam;
+			}
+			set
+			{
+				this._ActivitySignTeam.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityEnableTeam", Storage="_Activity", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
+		public Activity Activity
+		{
+			get
+			{
+				return this._Activity.Entity;
+			}
+			set
+			{
+				Activity previousValue = this._Activity.Entity;
+				if (((previousValue != value) 
+							|| (this._Activity.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Activity.Entity = null;
+						previousValue.ActivityEnableTeam = null;
+					}
+					this._Activity.Entity = value;
+					if ((value != null))
+					{
+						value.ActivityEnableTeam = this;
+						this._activityID = value.activityID;
+					}
+					else
+					{
+						this._activityID = default(string);
+					}
+					this.SendPropertyChanged("Activity");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_ActivitySignTeam(ActivitySignTeam entity)
+		{
+			this.SendPropertyChanging();
+			entity.ActivityEnableTeam = this;
+		}
+		
+		private void detach_ActivitySignTeam(ActivitySignTeam entity)
+		{
+			this.SendPropertyChanging();
+			entity.ActivityEnableTeam = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivityAppraise")]
+	public partial class ActivityAppraise : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _studentID;
+		
+		private string _activityID;
+		
+		private System.Nullable<int> _credit;
+		
+		private string _appraise;
+		
+		private EntityRef<StudentIdentified> _StudentIdentified;
+		
+		private EntityRef<Activity> _Activity;
+		
+    #region 可扩展性方法定义
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnstudentIDChanging(string value);
+    partial void OnstudentIDChanged();
+    partial void OnactivityIDChanging(string value);
+    partial void OnactivityIDChanged();
+    partial void OncreditChanging(System.Nullable<int> value);
+    partial void OncreditChanged();
+    partial void OnappraiseChanging(string value);
+    partial void OnappraiseChanged();
+    #endregion
+		
+		public ActivityAppraise()
+		{
+			this._StudentIdentified = default(EntityRef<StudentIdentified>);
+			this._Activity = default(EntityRef<Activity>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_studentID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string studentID
+		{
+			get
+			{
+				return this._studentID;
+			}
+			set
+			{
+				if ((this._studentID != value))
+				{
+					if (this._StudentIdentified.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnstudentIDChanging(value);
+					this.SendPropertyChanging();
+					this._studentID = value;
+					this.SendPropertyChanged("studentID");
+					this.OnstudentIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string activityID
+		{
+			get
+			{
+				return this._activityID;
+			}
+			set
+			{
+				if ((this._activityID != value))
+				{
+					if (this._Activity.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnactivityIDChanging(value);
+					this.SendPropertyChanging();
+					this._activityID = value;
+					this.SendPropertyChanged("activityID");
+					this.OnactivityIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_credit", DbType="Int")]
+		public System.Nullable<int> credit
+		{
+			get
+			{
+				return this._credit;
+			}
+			set
+			{
+				if ((this._credit != value))
+				{
+					this.OncreditChanging(value);
+					this.SendPropertyChanging();
+					this._credit = value;
+					this.SendPropertyChanged("credit");
+					this.OncreditChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_appraise", DbType="VarChar(200)")]
+		public string appraise
+		{
+			get
+			{
+				return this._appraise;
+			}
+			set
+			{
+				if ((this._appraise != value))
+				{
+					this.OnappraiseChanging(value);
+					this.SendPropertyChanging();
+					this._appraise = value;
+					this.SendPropertyChanged("appraise");
+					this.OnappraiseChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StudentIdentified_ActivityAppraise", Storage="_StudentIdentified", ThisKey="studentID", OtherKey="studentID", IsForeignKey=true)]
+		public StudentIdentified StudentIdentified
+		{
+			get
+			{
+				return this._StudentIdentified.Entity;
+			}
+			set
+			{
+				StudentIdentified previousValue = this._StudentIdentified.Entity;
+				if (((previousValue != value) 
+							|| (this._StudentIdentified.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._StudentIdentified.Entity = null;
+						previousValue.ActivityAppraise.Remove(this);
+					}
+					this._StudentIdentified.Entity = value;
+					if ((value != null))
+					{
+						value.ActivityAppraise.Add(this);
+						this._studentID = value.studentID;
+					}
+					else
+					{
+						this._studentID = default(string);
+					}
+					this.SendPropertyChanged("StudentIdentified");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityAppraise", Storage="_Activity", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
+		public Activity Activity
+		{
+			get
+			{
+				return this._Activity.Entity;
+			}
+			set
+			{
+				Activity previousValue = this._Activity.Entity;
+				if (((previousValue != value) 
+							|| (this._Activity.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Activity.Entity = null;
+						previousValue.ActivityAppraise.Remove(this);
+					}
+					this._Activity.Entity = value;
+					if ((value != null))
+					{
+						value.ActivityAppraise.Add(this);
+						this._activityID = value.activityID;
+					}
+					else
+					{
+						this._activityID = default(string);
+					}
+					this.SendPropertyChanged("Activity");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivitySignTeam")]
+	public partial class ActivitySignTeam : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private string _teamID;
+		
+		private string _activityID;
+		
+		private string _teamName;
+		
+		private string _studentID;
+		
+		private int _captain;
+		
+		private int _audit;
+		
+		private int _member;
+		
+		private int _volume;
+		
+		private int _private;
+		
+		private string _password;
+		
+		private EntityRef<ActivityEnableTeam> _ActivityEnableTeam;
+		
+		private EntityRef<StudentIdentified> _StudentIdentified;
+		
+    #region 可扩展性方法定义
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnteamIDChanging(string value);
+    partial void OnteamIDChanged();
+    partial void OnactivityIDChanging(string value);
+    partial void OnactivityIDChanged();
+    partial void OnteamNameChanging(string value);
+    partial void OnteamNameChanged();
+    partial void OnstudentIDChanging(string value);
+    partial void OnstudentIDChanged();
+    partial void OncaptainChanging(int value);
+    partial void OncaptainChanged();
+    partial void OnauditChanging(int value);
+    partial void OnauditChanged();
+    partial void OnmemberChanging(int value);
+    partial void OnmemberChanged();
+    partial void OnvolumeChanging(int value);
+    partial void OnvolumeChanged();
+    partial void OnprivateChanging(int value);
+    partial void OnprivateChanged();
+    partial void OnpasswordChanging(string value);
+    partial void OnpasswordChanged();
+    #endregion
+		
+		public ActivitySignTeam()
+		{
+			this._ActivityEnableTeam = default(EntityRef<ActivityEnableTeam>);
+			this._StudentIdentified = default(EntityRef<StudentIdentified>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_teamID", DbType="Char(12) NOT NULL", CanBeNull=false)]
+		public string teamID
+		{
+			get
+			{
+				return this._teamID;
+			}
+			set
+			{
+				if ((this._teamID != value))
+				{
+					this.OnteamIDChanging(value);
+					this.SendPropertyChanging();
+					this._teamID = value;
+					this.SendPropertyChanged("teamID");
+					this.OnteamIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false)]
+		public string activityID
+		{
+			get
+			{
+				return this._activityID;
+			}
+			set
+			{
+				if ((this._activityID != value))
+				{
+					if (this._ActivityEnableTeam.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnactivityIDChanging(value);
+					this.SendPropertyChanging();
+					this._activityID = value;
+					this.SendPropertyChanged("activityID");
+					this.OnactivityIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_teamName", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
+		public string teamName
+		{
+			get
+			{
+				return this._teamName;
+			}
+			set
+			{
+				if ((this._teamName != value))
+				{
+					this.OnteamNameChanging(value);
+					this.SendPropertyChanging();
+					this._teamName = value;
+					this.SendPropertyChanged("teamName");
+					this.OnteamNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_studentID", DbType="Char(10) NOT NULL", CanBeNull=false)]
+		public string studentID
+		{
+			get
+			{
+				return this._studentID;
+			}
+			set
+			{
+				if ((this._studentID != value))
+				{
+					if (this._StudentIdentified.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnstudentIDChanging(value);
+					this.SendPropertyChanging();
+					this._studentID = value;
+					this.SendPropertyChanged("studentID");
+					this.OnstudentIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_captain", DbType="Int NOT NULL")]
+		public int captain
+		{
+			get
+			{
+				return this._captain;
+			}
+			set
+			{
+				if ((this._captain != value))
+				{
+					this.OncaptainChanging(value);
+					this.SendPropertyChanging();
+					this._captain = value;
+					this.SendPropertyChanged("captain");
+					this.OncaptainChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_audit", DbType="Int NOT NULL")]
+		public int audit
+		{
+			get
+			{
+				return this._audit;
+			}
+			set
+			{
+				if ((this._audit != value))
+				{
+					this.OnauditChanging(value);
+					this.SendPropertyChanging();
+					this._audit = value;
+					this.SendPropertyChanged("audit");
+					this.OnauditChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_member", DbType="Int NOT NULL")]
+		public int member
+		{
+			get
+			{
+				return this._member;
+			}
+			set
+			{
+				if ((this._member != value))
+				{
+					this.OnmemberChanging(value);
+					this.SendPropertyChanging();
+					this._member = value;
+					this.SendPropertyChanged("member");
+					this.OnmemberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="Int NOT NULL")]
+		public int volume
+		{
+			get
+			{
+				return this._volume;
+			}
+			set
+			{
+				if ((this._volume != value))
+				{
+					this.OnvolumeChanging(value);
+					this.SendPropertyChanging();
+					this._volume = value;
+					this.SendPropertyChanged("volume");
+					this.OnvolumeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="private", Storage="_private", DbType="Int NOT NULL")]
+		public int @private
+		{
+			get
+			{
+				return this._private;
+			}
+			set
+			{
+				if ((this._private != value))
+				{
+					this.OnprivateChanging(value);
+					this.SendPropertyChanging();
+					this._private = value;
+					this.SendPropertyChanged("@private");
+					this.OnprivateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_password", DbType="NChar(10)")]
+		public string password
+		{
+			get
+			{
+				return this._password;
+			}
+			set
+			{
+				if ((this._password != value))
+				{
+					this.OnpasswordChanging(value);
+					this.SendPropertyChanging();
+					this._password = value;
+					this.SendPropertyChanged("password");
+					this.OnpasswordChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActivityEnableTeam_ActivitySignTeam", Storage="_ActivityEnableTeam", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
+		public ActivityEnableTeam ActivityEnableTeam
+		{
+			get
+			{
+				return this._ActivityEnableTeam.Entity;
+			}
+			set
+			{
+				ActivityEnableTeam previousValue = this._ActivityEnableTeam.Entity;
+				if (((previousValue != value) 
+							|| (this._ActivityEnableTeam.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ActivityEnableTeam.Entity = null;
+						previousValue.ActivitySignTeam.Remove(this);
+					}
+					this._ActivityEnableTeam.Entity = value;
+					if ((value != null))
+					{
+						value.ActivitySignTeam.Add(this);
+						this._activityID = value.activityID;
+					}
+					else
+					{
+						this._activityID = default(string);
+					}
+					this.SendPropertyChanged("ActivityEnableTeam");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StudentIdentified_ActivitySignTeam", Storage="_StudentIdentified", ThisKey="studentID", OtherKey="studentID", IsForeignKey=true)]
+		public StudentIdentified StudentIdentified
+		{
+			get
+			{
+				return this._StudentIdentified.Entity;
+			}
+			set
+			{
+				StudentIdentified previousValue = this._StudentIdentified.Entity;
+				if (((previousValue != value) 
+							|| (this._StudentIdentified.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._StudentIdentified.Entity = null;
+						previousValue.ActivitySignTeam.Remove(this);
+					}
+					this._StudentIdentified.Entity = value;
+					if ((value != null))
+					{
+						value.ActivitySignTeam.Add(this);
+						this._studentID = value.studentID;
+					}
+					else
+					{
+						this._studentID = default(string);
+					}
+					this.SendPropertyChanged("StudentIdentified");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Activity")]
 	public partial class Activity : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1609,13 +2378,15 @@ namespace ActivityManager.App_Data
 		
 		private int _activityType;
 		
+		private string _checkInCode;
+		
+		private string _checkOutCode;
+		
 		private EntitySet<LikedActivity> _LikedActivity;
 		
 		private EntitySet<SignedActivity> _SignedActivity;
 		
 		private EntityRef<ActivityEnableTeam> _ActivityEnableTeam;
-		
-		private EntityRef<ActivityCheckCode> _ActivityCheckCode;
 		
 		private EntitySet<ActivityAppraise> _ActivityAppraise;
 		
@@ -1661,6 +2432,10 @@ namespace ActivityManager.App_Data
     partial void OnfailReasonChanged();
     partial void OnactivityTypeChanging(int value);
     partial void OnactivityTypeChanged();
+    partial void OncheckInCodeChanging(string value);
+    partial void OncheckInCodeChanged();
+    partial void OncheckOutCodeChanging(string value);
+    partial void OncheckOutCodeChanged();
     #endregion
 		
 		public Activity()
@@ -1668,7 +2443,6 @@ namespace ActivityManager.App_Data
 			this._LikedActivity = new EntitySet<LikedActivity>(new Action<LikedActivity>(this.attach_LikedActivity), new Action<LikedActivity>(this.detach_LikedActivity));
 			this._SignedActivity = new EntitySet<SignedActivity>(new Action<SignedActivity>(this.attach_SignedActivity), new Action<SignedActivity>(this.detach_SignedActivity));
 			this._ActivityEnableTeam = default(EntityRef<ActivityEnableTeam>);
-			this._ActivityCheckCode = default(EntityRef<ActivityCheckCode>);
 			this._ActivityAppraise = new EntitySet<ActivityAppraise>(new Action<ActivityAppraise>(this.attach_ActivityAppraise), new Action<ActivityAppraise>(this.detach_ActivityAppraise));
 			this._Organization = default(EntityRef<Organization>);
 			this._Place = default(EntityRef<Place>);
@@ -2023,6 +2797,46 @@ namespace ActivityManager.App_Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_checkInCode", DbType="NChar(10)")]
+		public string checkInCode
+		{
+			get
+			{
+				return this._checkInCode;
+			}
+			set
+			{
+				if ((this._checkInCode != value))
+				{
+					this.OncheckInCodeChanging(value);
+					this.SendPropertyChanging();
+					this._checkInCode = value;
+					this.SendPropertyChanged("checkInCode");
+					this.OncheckInCodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_checkOutCode", DbType="NChar(10)")]
+		public string checkOutCode
+		{
+			get
+			{
+				return this._checkOutCode;
+			}
+			set
+			{
+				if ((this._checkOutCode != value))
+				{
+					this.OncheckOutCodeChanging(value);
+					this.SendPropertyChanging();
+					this._checkOutCode = value;
+					this.SendPropertyChanged("checkOutCode");
+					this.OncheckOutCodeChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_LikedActivity", Storage="_LikedActivity", ThisKey="activityID", OtherKey="activityID")]
 		public EntitySet<LikedActivity> LikedActivity
 		{
@@ -2074,35 +2888,6 @@ namespace ActivityManager.App_Data
 						value.Activity = this;
 					}
 					this.SendPropertyChanged("ActivityEnableTeam");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityCheckCode", Storage="_ActivityCheckCode", ThisKey="activityID", OtherKey="activityID", IsUnique=true, IsForeignKey=false)]
-		public ActivityCheckCode ActivityCheckCode
-		{
-			get
-			{
-				return this._ActivityCheckCode.Entity;
-			}
-			set
-			{
-				ActivityCheckCode previousValue = this._ActivityCheckCode.Entity;
-				if (((previousValue != value) 
-							|| (this._ActivityCheckCode.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ActivityCheckCode.Entity = null;
-						previousValue.Activity = null;
-					}
-					this._ActivityCheckCode.Entity = value;
-					if ((value != null))
-					{
-						value.Activity = this;
-					}
-					this.SendPropertyChanged("ActivityCheckCode");
 				}
 			}
 		}
@@ -2242,888 +3027,6 @@ namespace ActivityManager.App_Data
 		{
 			this.SendPropertyChanging();
 			entity.Activity = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivityEnableTeam")]
-	public partial class ActivityEnableTeam : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _activityID;
-		
-		private int _minVolume;
-		
-		private int _maxVolume;
-		
-		private EntitySet<ActivitySignTeam> _ActivitySignTeam;
-		
-		private EntityRef<Activity> _Activity;
-		
-    #region 可扩展性方法定义
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnactivityIDChanging(string value);
-    partial void OnactivityIDChanged();
-    partial void OnminVolumeChanging(int value);
-    partial void OnminVolumeChanged();
-    partial void OnmaxVolumeChanging(int value);
-    partial void OnmaxVolumeChanged();
-    #endregion
-		
-		public ActivityEnableTeam()
-		{
-			this._ActivitySignTeam = new EntitySet<ActivitySignTeam>(new Action<ActivitySignTeam>(this.attach_ActivitySignTeam), new Action<ActivitySignTeam>(this.detach_ActivitySignTeam));
-			this._Activity = default(EntityRef<Activity>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string activityID
-		{
-			get
-			{
-				return this._activityID;
-			}
-			set
-			{
-				if ((this._activityID != value))
-				{
-					if (this._Activity.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnactivityIDChanging(value);
-					this.SendPropertyChanging();
-					this._activityID = value;
-					this.SendPropertyChanged("activityID");
-					this.OnactivityIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_minVolume", DbType="Int NOT NULL")]
-		public int minVolume
-		{
-			get
-			{
-				return this._minVolume;
-			}
-			set
-			{
-				if ((this._minVolume != value))
-				{
-					this.OnminVolumeChanging(value);
-					this.SendPropertyChanging();
-					this._minVolume = value;
-					this.SendPropertyChanged("minVolume");
-					this.OnminVolumeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_maxVolume", DbType="Int NOT NULL")]
-		public int maxVolume
-		{
-			get
-			{
-				return this._maxVolume;
-			}
-			set
-			{
-				if ((this._maxVolume != value))
-				{
-					this.OnmaxVolumeChanging(value);
-					this.SendPropertyChanging();
-					this._maxVolume = value;
-					this.SendPropertyChanged("maxVolume");
-					this.OnmaxVolumeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActivityEnableTeam_ActivitySignTeam", Storage="_ActivitySignTeam", ThisKey="activityID", OtherKey="activityID")]
-		public EntitySet<ActivitySignTeam> ActivitySignTeam
-		{
-			get
-			{
-				return this._ActivitySignTeam;
-			}
-			set
-			{
-				this._ActivitySignTeam.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityEnableTeam", Storage="_Activity", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
-		public Activity Activity
-		{
-			get
-			{
-				return this._Activity.Entity;
-			}
-			set
-			{
-				Activity previousValue = this._Activity.Entity;
-				if (((previousValue != value) 
-							|| (this._Activity.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Activity.Entity = null;
-						previousValue.ActivityEnableTeam = null;
-					}
-					this._Activity.Entity = value;
-					if ((value != null))
-					{
-						value.ActivityEnableTeam = this;
-						this._activityID = value.activityID;
-					}
-					else
-					{
-						this._activityID = default(string);
-					}
-					this.SendPropertyChanged("Activity");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_ActivitySignTeam(ActivitySignTeam entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActivityEnableTeam = this;
-		}
-		
-		private void detach_ActivitySignTeam(ActivitySignTeam entity)
-		{
-			this.SendPropertyChanging();
-			entity.ActivityEnableTeam = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivityCheckCode")]
-	public partial class ActivityCheckCode : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _activityID;
-		
-		private string _checkInCode;
-		
-		private string _checkOutCode;
-		
-		private EntityRef<Activity> _Activity;
-		
-    #region 可扩展性方法定义
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnactivityIDChanging(string value);
-    partial void OnactivityIDChanged();
-    partial void OncheckInCodeChanging(string value);
-    partial void OncheckInCodeChanged();
-    partial void OncheckOutCodeChanging(string value);
-    partial void OncheckOutCodeChanged();
-    #endregion
-		
-		public ActivityCheckCode()
-		{
-			this._Activity = default(EntityRef<Activity>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string activityID
-		{
-			get
-			{
-				return this._activityID;
-			}
-			set
-			{
-				if ((this._activityID != value))
-				{
-					if (this._Activity.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnactivityIDChanging(value);
-					this.SendPropertyChanging();
-					this._activityID = value;
-					this.SendPropertyChanged("activityID");
-					this.OnactivityIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_checkInCode", DbType="Char(6)")]
-		public string checkInCode
-		{
-			get
-			{
-				return this._checkInCode;
-			}
-			set
-			{
-				if ((this._checkInCode != value))
-				{
-					this.OncheckInCodeChanging(value);
-					this.SendPropertyChanging();
-					this._checkInCode = value;
-					this.SendPropertyChanged("checkInCode");
-					this.OncheckInCodeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_checkOutCode", DbType="Char(6)")]
-		public string checkOutCode
-		{
-			get
-			{
-				return this._checkOutCode;
-			}
-			set
-			{
-				if ((this._checkOutCode != value))
-				{
-					this.OncheckOutCodeChanging(value);
-					this.SendPropertyChanging();
-					this._checkOutCode = value;
-					this.SendPropertyChanged("checkOutCode");
-					this.OncheckOutCodeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityCheckCode", Storage="_Activity", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
-		public Activity Activity
-		{
-			get
-			{
-				return this._Activity.Entity;
-			}
-			set
-			{
-				Activity previousValue = this._Activity.Entity;
-				if (((previousValue != value) 
-							|| (this._Activity.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Activity.Entity = null;
-						previousValue.ActivityCheckCode = null;
-					}
-					this._Activity.Entity = value;
-					if ((value != null))
-					{
-						value.ActivityCheckCode = this;
-						this._activityID = value.activityID;
-					}
-					else
-					{
-						this._activityID = default(string);
-					}
-					this.SendPropertyChanged("Activity");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivityAppraise")]
-	public partial class ActivityAppraise : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _studentID;
-		
-		private string _activityID;
-		
-		private System.Nullable<int> _credit;
-		
-		private string _appraise;
-		
-		private EntityRef<Activity> _Activity;
-		
-		private EntityRef<StudentIdentified> _StudentIdentified;
-		
-    #region 可扩展性方法定义
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnstudentIDChanging(string value);
-    partial void OnstudentIDChanged();
-    partial void OnactivityIDChanging(string value);
-    partial void OnactivityIDChanged();
-    partial void OncreditChanging(System.Nullable<int> value);
-    partial void OncreditChanged();
-    partial void OnappraiseChanging(string value);
-    partial void OnappraiseChanged();
-    #endregion
-		
-		public ActivityAppraise()
-		{
-			this._Activity = default(EntityRef<Activity>);
-			this._StudentIdentified = default(EntityRef<StudentIdentified>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_studentID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string studentID
-		{
-			get
-			{
-				return this._studentID;
-			}
-			set
-			{
-				if ((this._studentID != value))
-				{
-					if (this._StudentIdentified.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnstudentIDChanging(value);
-					this.SendPropertyChanging();
-					this._studentID = value;
-					this.SendPropertyChanged("studentID");
-					this.OnstudentIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string activityID
-		{
-			get
-			{
-				return this._activityID;
-			}
-			set
-			{
-				if ((this._activityID != value))
-				{
-					if (this._Activity.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnactivityIDChanging(value);
-					this.SendPropertyChanging();
-					this._activityID = value;
-					this.SendPropertyChanged("activityID");
-					this.OnactivityIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_credit", DbType="Int")]
-		public System.Nullable<int> credit
-		{
-			get
-			{
-				return this._credit;
-			}
-			set
-			{
-				if ((this._credit != value))
-				{
-					this.OncreditChanging(value);
-					this.SendPropertyChanging();
-					this._credit = value;
-					this.SendPropertyChanged("credit");
-					this.OncreditChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_appraise", DbType="VarChar(200)")]
-		public string appraise
-		{
-			get
-			{
-				return this._appraise;
-			}
-			set
-			{
-				if ((this._appraise != value))
-				{
-					this.OnappraiseChanging(value);
-					this.SendPropertyChanging();
-					this._appraise = value;
-					this.SendPropertyChanged("appraise");
-					this.OnappraiseChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityAppraise", Storage="_Activity", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
-		public Activity Activity
-		{
-			get
-			{
-				return this._Activity.Entity;
-			}
-			set
-			{
-				Activity previousValue = this._Activity.Entity;
-				if (((previousValue != value) 
-							|| (this._Activity.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Activity.Entity = null;
-						previousValue.ActivityAppraise.Remove(this);
-					}
-					this._Activity.Entity = value;
-					if ((value != null))
-					{
-						value.ActivityAppraise.Add(this);
-						this._activityID = value.activityID;
-					}
-					else
-					{
-						this._activityID = default(string);
-					}
-					this.SendPropertyChanged("Activity");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StudentIdentified_ActivityAppraise", Storage="_StudentIdentified", ThisKey="studentID", OtherKey="studentID", IsForeignKey=true)]
-		public StudentIdentified StudentIdentified
-		{
-			get
-			{
-				return this._StudentIdentified.Entity;
-			}
-			set
-			{
-				StudentIdentified previousValue = this._StudentIdentified.Entity;
-				if (((previousValue != value) 
-							|| (this._StudentIdentified.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._StudentIdentified.Entity = null;
-						previousValue.ActivityAppraise.Remove(this);
-					}
-					this._StudentIdentified.Entity = value;
-					if ((value != null))
-					{
-						value.ActivityAppraise.Add(this);
-						this._studentID = value.studentID;
-					}
-					else
-					{
-						this._studentID = default(string);
-					}
-					this.SendPropertyChanged("StudentIdentified");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivitySignTeam")]
-	public partial class ActivitySignTeam : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _ID;
-		
-		private string _teamID;
-		
-		private string _activityID;
-		
-		private string _teamName;
-		
-		private string _studentID;
-		
-		private int _captain;
-		
-		private int _audit;
-		
-		private int _member;
-		
-		private int _volume;
-		
-		private EntityRef<ActivityEnableTeam> _ActivityEnableTeam;
-		
-		private EntityRef<StudentIdentified> _StudentIdentified;
-		
-    #region 可扩展性方法定义
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
-    partial void OnteamIDChanging(string value);
-    partial void OnteamIDChanged();
-    partial void OnactivityIDChanging(string value);
-    partial void OnactivityIDChanged();
-    partial void OnteamNameChanging(string value);
-    partial void OnteamNameChanged();
-    partial void OnstudentIDChanging(string value);
-    partial void OnstudentIDChanged();
-    partial void OncaptainChanging(int value);
-    partial void OncaptainChanged();
-    partial void OnauditChanging(int value);
-    partial void OnauditChanged();
-    partial void OnmemberChanging(int value);
-    partial void OnmemberChanged();
-    partial void OnvolumeChanging(int value);
-    partial void OnvolumeChanged();
-    #endregion
-		
-		public ActivitySignTeam()
-		{
-			this._ActivityEnableTeam = default(EntityRef<ActivityEnableTeam>);
-			this._StudentIdentified = default(EntityRef<StudentIdentified>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int ID
-		{
-			get
-			{
-				return this._ID;
-			}
-			set
-			{
-				if ((this._ID != value))
-				{
-					this.OnIDChanging(value);
-					this.SendPropertyChanging();
-					this._ID = value;
-					this.SendPropertyChanged("ID");
-					this.OnIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_teamID", DbType="Char(12) NOT NULL", CanBeNull=false)]
-		public string teamID
-		{
-			get
-			{
-				return this._teamID;
-			}
-			set
-			{
-				if ((this._teamID != value))
-				{
-					this.OnteamIDChanging(value);
-					this.SendPropertyChanging();
-					this._teamID = value;
-					this.SendPropertyChanged("teamID");
-					this.OnteamIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false)]
-		public string activityID
-		{
-			get
-			{
-				return this._activityID;
-			}
-			set
-			{
-				if ((this._activityID != value))
-				{
-					if (this._ActivityEnableTeam.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnactivityIDChanging(value);
-					this.SendPropertyChanging();
-					this._activityID = value;
-					this.SendPropertyChanged("activityID");
-					this.OnactivityIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_teamName", DbType="VarChar(20) NOT NULL", CanBeNull=false)]
-		public string teamName
-		{
-			get
-			{
-				return this._teamName;
-			}
-			set
-			{
-				if ((this._teamName != value))
-				{
-					this.OnteamNameChanging(value);
-					this.SendPropertyChanging();
-					this._teamName = value;
-					this.SendPropertyChanged("teamName");
-					this.OnteamNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_studentID", DbType="Char(10) NOT NULL", CanBeNull=false)]
-		public string studentID
-		{
-			get
-			{
-				return this._studentID;
-			}
-			set
-			{
-				if ((this._studentID != value))
-				{
-					if (this._StudentIdentified.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnstudentIDChanging(value);
-					this.SendPropertyChanging();
-					this._studentID = value;
-					this.SendPropertyChanged("studentID");
-					this.OnstudentIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_captain", DbType="Int NOT NULL")]
-		public int captain
-		{
-			get
-			{
-				return this._captain;
-			}
-			set
-			{
-				if ((this._captain != value))
-				{
-					this.OncaptainChanging(value);
-					this.SendPropertyChanging();
-					this._captain = value;
-					this.SendPropertyChanged("captain");
-					this.OncaptainChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_audit", DbType="Int NOT NULL")]
-		public int audit
-		{
-			get
-			{
-				return this._audit;
-			}
-			set
-			{
-				if ((this._audit != value))
-				{
-					this.OnauditChanging(value);
-					this.SendPropertyChanging();
-					this._audit = value;
-					this.SendPropertyChanged("audit");
-					this.OnauditChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_member", DbType="Int NOT NULL")]
-		public int member
-		{
-			get
-			{
-				return this._member;
-			}
-			set
-			{
-				if ((this._member != value))
-				{
-					this.OnmemberChanging(value);
-					this.SendPropertyChanging();
-					this._member = value;
-					this.SendPropertyChanged("member");
-					this.OnmemberChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="Int NOT NULL")]
-		public int volume
-		{
-			get
-			{
-				return this._volume;
-			}
-			set
-			{
-				if ((this._volume != value))
-				{
-					this.OnvolumeChanging(value);
-					this.SendPropertyChanging();
-					this._volume = value;
-					this.SendPropertyChanged("volume");
-					this.OnvolumeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ActivityEnableTeam_ActivitySignTeam", Storage="_ActivityEnableTeam", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
-		public ActivityEnableTeam ActivityEnableTeam
-		{
-			get
-			{
-				return this._ActivityEnableTeam.Entity;
-			}
-			set
-			{
-				ActivityEnableTeam previousValue = this._ActivityEnableTeam.Entity;
-				if (((previousValue != value) 
-							|| (this._ActivityEnableTeam.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ActivityEnableTeam.Entity = null;
-						previousValue.ActivitySignTeam.Remove(this);
-					}
-					this._ActivityEnableTeam.Entity = value;
-					if ((value != null))
-					{
-						value.ActivitySignTeam.Add(this);
-						this._activityID = value.activityID;
-					}
-					else
-					{
-						this._activityID = default(string);
-					}
-					this.SendPropertyChanged("ActivityEnableTeam");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StudentIdentified_ActivitySignTeam", Storage="_StudentIdentified", ThisKey="studentID", OtherKey="studentID", IsForeignKey=true)]
-		public StudentIdentified StudentIdentified
-		{
-			get
-			{
-				return this._StudentIdentified.Entity;
-			}
-			set
-			{
-				StudentIdentified previousValue = this._StudentIdentified.Entity;
-				if (((previousValue != value) 
-							|| (this._StudentIdentified.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._StudentIdentified.Entity = null;
-						previousValue.ActivitySignTeam.Remove(this);
-					}
-					this._StudentIdentified.Entity = value;
-					if ((value != null))
-					{
-						value.ActivitySignTeam.Add(this);
-						this._studentID = value.studentID;
-					}
-					else
-					{
-						this._studentID = default(string);
-					}
-					this.SendPropertyChanged("StudentIdentified");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
 		}
 	}
 }

@@ -214,7 +214,9 @@
                     </div>
 
                     <div id="DivBuildActTeam" runat="server" style="display: none; padding-top: 35px;">
-                        <asp:Button ID="BtnBuildTeam" runat="server" Text="+ 申请队伍" Font-Size="Large" Height="50px" Width="130px" CausesValidation="False" OnClick="BtnBuildTeam_Click" Style="margin-left: 16px;" />
+                        <asp:Button ID="BtnBuildTeam" runat="server" Text="申请队伍" Font-Size="Large" Height="40px" Width="100px" CausesValidation="False" OnClick="BtnBuildTeam_Click" Style="margin-left: 16px;" />
+                        <asp:Button ID="BtnAllTeam" runat="server" Text="全部队伍" Font-Size="Large" Height="40px" Width="100px" CausesValidation="False"  Style="margin-left: 16px;" OnClick="BtnAllTeam_Click" />
+                        <asp:Button ID="BtnMyTeam" runat="server" Text="我的队伍" Font-Size="Large" Height="40px" Width="100px" CausesValidation="False"  Style="margin-left: 16px;" OnClick="BtnMyTeam_Click" />
                     </div>
                 </div>
 
@@ -326,7 +328,7 @@
                 
                 <%--队伍列表--%>
                 <div id="DivTeam" runat="server" style="display: none;">
-                    <asp:GridView ID="GvTeam" runat="server" CellPadding="0" AutoGenerateColumns="False" DataKeyNames="ID" DataSourceID="TeamLinqDataSource" OnDataBound="GvTeam_DataBound" AllowPaging="True" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" GridLines="None" HorizontalAlign="Center" OnRowCommand="GvTeam_RowCommand">
+                    <asp:GridView ID="GvTeam" runat="server" CellPadding="0" AutoGenerateColumns="False" DataKeyNames="ID" DataSourceID="TeamLinqDataSource" OnDataBound="GvTeam_DataBound" AllowPaging="True" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" GridLines="None" HorizontalAlign="Center" OnRowCommand="GvTeam_RowCommand" OnPageIndexChanging="GvTeam_PageIndexChanging">
                         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                         <Columns>
                             <asp:BoundField DataField="ID" HeaderText="ID" InsertVisible="False" ReadOnly="True" SortExpression="ID">
@@ -365,6 +367,9 @@
                                 <FooterStyle CssClass="hidden" />
                                 <HeaderStyle CssClass="hidden" />
                                 <ItemStyle CssClass="hidden" />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="private" HeaderText="私人" SortExpression="private">
+                                <HeaderStyle Width="50px" />
                             </asp:BoundField>
                             <asp:BoundField DataField="audit" HeaderText="审核" SortExpression="audit">
                                 <HeaderStyle Width="50px" />
@@ -456,10 +461,7 @@
                         <SortedDescendingCellStyle BackColor="#FFFDF8" />
                         <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
                     </asp:GridView>
-                    <asp:LinqDataSource ID="TeamLinqDataSource" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="ActivitySignTeam" Where="captain == @captain">
-                        <WhereParameters>
-                            <asp:Parameter DefaultValue="1" Name="captain" Type="Int32" />
-                        </WhereParameters>
+                    <asp:LinqDataSource ID="TeamLinqDataSource" runat="server" ContextTypeName="ActivityManager.App_Data.ActivityManagerDataContext" EntityTypeName="" TableName="ActivitySignTeam">
                     </asp:LinqDataSource>
                 </div>
                 <!-队伍列表->
@@ -690,6 +692,17 @@
                     <asp:ListItem Text="否" Value="0"></asp:ListItem>
                 </asp:RadioButtonList>
             </div>
+            <div style="padding: 5px 0px 0px;">
+                <asp:Label ID="LblTeamPrivate" runat="server" Text="私人队伍："></asp:Label>
+                <asp:RadioButtonList ID="RblTeamPriavte" runat="server" Style="margin-left: 78px; margin-top: -23px;" RepeatDirection="Horizontal" AutoPostBack="True" OnSelectedIndexChanged="RblTeamPriavte_SelectedIndexChanged">
+                    <asp:ListItem Text="是" Value="1"></asp:ListItem>
+                    <asp:ListItem Text="否" Value="0"></asp:ListItem>
+                </asp:RadioButtonList>
+                <div style="display:none;" id="DivTeamPasswrod" runat="server">
+                    <asp:Label ID="LblTeamPasswrod" runat="server" Text="队伍密码："></asp:Label>
+                    <asp:TextBox ID="TxtTeamPassword" runat="server" Width="100px"></asp:TextBox>
+                </div>
+            </div>
             <div style="margin: 5px; float: right;">
                 <asp:Button ID="BtnBuildTeamSubmit" runat="server" Text="确认" Width="60px" CausesValidation="False" OnClick="BtnBuildTeamSubmit_Click" />
                 <asp:Button ID="BtnBuildTeamCancel" runat="server" Text="取消" Width="60px" OnClick="BtnBuildTeamCancel_Click" CausesValidation="False" Style="margin-left: 5px;" />
@@ -712,6 +725,26 @@
                 <asp:Button ID="BtnAuditAgree" runat="server" Text="通过" OnClick="BtnAuditAgree_Click" CausesValidation="False" />
                 <asp:Button ID="BtnAuditReject" runat="server" Text="拒绝" OnClick="BtnAuditReject_Click" CausesValidation="False"/>
                 <asp:Button ID="BtnMemberBack" runat="server" Text="返回" OnClick="BtnMemberBack_Click" CausesValidation="False"/>
+            </div>
+        </div>
+
+        <div id="DivInputTeamPassword" runat="server" style="position: absolute; display: none; top: 379px; left: 839px; border-style: solid; border-color: inherit; border-width: 1px; background-color: #F7F6F3; padding: 5px; width: 250px;">
+            <div style="text-align: center; padding: 5px;">
+                <asp:Label ID="LblPrivateTeamTitle" runat="server" Text="私人队伍" Font-Bold="True" Font-Size="Large" ></asp:Label>
+            </div>
+            <div>
+                入队密码：<asp:TextBox ID="TxtInputTeamPsw" runat="server" Width="156px"></asp:TextBox>
+            </div>
+            <div style="padding:5px; float:right;">
+                <asp:Button ID="BtnSubmitTeamPasswrod" runat="server" Text="确定" CausesValidation="False" OnClick="BtnSubmitTeamPasswrod_Click" />
+                <asp:Button ID="BtnTeamPasswrodBack" runat="server" Text="返回" CausesValidation="False" OnClick="BtnTeamPasswrodBack_Click" />
+            </div>
+            <div style="display:none;">
+                <asp:Label ID="LblMemberSignTeamName" runat="server" Text="Label"></asp:Label>
+                <asp:Label ID="LblMemberSignTeamID" runat="server" Text="Label"></asp:Label>
+                <asp:Label ID="LblMemberSignActID" runat="server" Text="Label"></asp:Label>
+                <asp:Label ID="LblMemberSignAudit" runat="server" Text="Label"></asp:Label>
+                <asp:Label ID="LblMemberSignVolume" runat="server" Text="Label"></asp:Label>
             </div>
         </div>
     </form>

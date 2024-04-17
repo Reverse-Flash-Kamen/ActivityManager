@@ -1,4 +1,5 @@
 ﻿using ActivityManager.App_Data;
+using NPOI.OpenXmlFormats.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -237,14 +238,13 @@ namespace ActivityManager
                 foreach (GridViewRow row in gv.Rows)
                 {
                     string activityID = row.Cells[0].Text;
-                    ActivityManagerDataContext db = new ActivityManagerDataContext();
-                    var res = from a in db.Activity
-                              where a.activityID == activityID
-                              select a;
+                    MyActivity act = new MyActivity(activityID);
 
-                    int state = 0;
-                    if (res.Any())
-                        state = Convert.ToInt32(res.First().activityState);
+                    //int state = 0;
+                    /*if (res.Any())
+                        state = Convert.ToInt32(res.First().activityState);*/
+
+                    int state = act.ActivityState;
 
                     int n = gv.Columns.Count;
 
@@ -332,8 +332,16 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "生成签到";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
+                        if (act.CheckInCode == null || act.CheckOutCode == null)
+                        {
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "生成签到";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
+                        }
+                        else
+                        {
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "查看签到";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
+                        }
                     }
                     else if (state == 8)
                     {
@@ -344,8 +352,16 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "生成签到";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
+                        if (act.CheckInCode == null || act.CheckOutCode == null)
+                        {
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "生成签到";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
+                        }
+                        else
+                        {
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "查看签到";
+                            ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "checkCode";
+                        }
                     }
                     else if (state == 9)
                     {
