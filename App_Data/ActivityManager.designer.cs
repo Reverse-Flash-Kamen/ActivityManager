@@ -28,7 +28,7 @@ namespace ActivityManager.App_Data
 
         // 连接本地数据库
         // 数据库的本地绝对路径
-        private static string conStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\App_Data\\ActivityManager.mdf;Integrated Security=True";
+        private static string conStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=F:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\App_Data\\ActivityManager.mdf;Integrated Security=True";
 
         // 存储不同需求的查询条件
         public static string connectorWhere = "";

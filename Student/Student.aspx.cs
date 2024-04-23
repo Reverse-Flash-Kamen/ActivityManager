@@ -1098,9 +1098,6 @@ namespace ActivityManager.Test
 
         protected void BtnBuildTeam_Click(object sender, EventArgs e)
         {
-            DivBuildTeam.Style["display"] = "block";
-            DivMask.Style["pointer-events"] = "none";
-
             // 绑定可团队报名且状态为等待报名或报名中的活动
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             var res = from infoTeam in db.ActivityEnableTeam
@@ -1115,24 +1112,38 @@ namespace ActivityManager.Test
             DdlBuildTeamAct.DataValueField = "activityID";
             DdlBuildTeamAct.DataBind();
 
-            SetDdlBulidTeamVolume(res.First().activityID);
+            if (res.Any())
+            {
+                DivBuildTeam.Style["display"] = "block";
+                DivMask.Style["pointer-events"] = "none";
+                SetDdlBulidTeamVolume(res.First().activityID);
+            }
+            else 
+                Response.Write("<script>alert('抱歉！暂时无可组队报名活动！');</script>");
             GvTeam.DataBind();
         }
 
         private void SetDdlBulidTeamVolume(string actID)
         {
-            ActivityManagerDataContext db = new ActivityManagerDataContext();
-            var res = from info in db.ActivityEnableTeam
-                      where info.activityID == actID
-                      select info;
-
-            int minVolume = res.First().minVolume;
-            int maxVolume = res.First().maxVolume;
-
-            DdlBulidTeamVolume.Items.Clear();
-            for (int i = minVolume; i <= maxVolume; i++)
+            try
             {
-                DdlBulidTeamVolume.Items.Add(i.ToString());
+                ActivityManagerDataContext db = new ActivityManagerDataContext();
+                var res = from info in db.ActivityEnableTeam
+                          where info.activityID == actID
+                          select info;
+
+                int minVolume = res.First().minVolume;
+                int maxVolume = res.First().maxVolume;
+
+                DdlBulidTeamVolume.Items.Clear();
+                for (int i = minVolume; i <= maxVolume; i++)
+                {
+                    DdlBulidTeamVolume.Items.Add(i.ToString());
+                }
+            }
+            catch
+            {
+                Response.Write("<script>alert('抱歉！暂时无可组队报名活动！');</script>");
             }
         }
 
@@ -1236,7 +1247,7 @@ namespace ActivityManager.Test
                           select info;
 
                 int begin = 1;
-                ((ImageButton)row.Cells[11].Controls[0]).CommandName = "checkMember_10";
+                ((ImageButton)row.Cells[11].Controls[0]).CommandName = "checkMember_11";
                 ((ImageButton)row.Cells[11].Controls[0]).BorderColor = System.Drawing.Color.GreenYellow;
                 ((ImageButton)row.Cells[11].Controls[0]).BorderWidth = 1;
                 ((ImageButton)row.Cells[11].Controls[0]).BorderStyle = BorderStyle.Outset;
@@ -1250,7 +1261,7 @@ namespace ActivityManager.Test
 
                     string toolTip = member.studentID + " " + resStuName.First();
 
-                    ((ImageButton)row.Cells[10 + begin].Controls[0]).CommandName = "checkMember_" + (10 + begin).ToString();
+                    ((ImageButton)row.Cells[11 + begin].Controls[0]).CommandName = "checkMember_" + (11 + begin).ToString();
                     // ((ImageButton)row.Cells[10 + begin].Controls[0]).CommandArgument = member.studentID;
 
                     // 设置待审核学生样式
@@ -1270,7 +1281,7 @@ namespace ActivityManager.Test
                         ((ImageButton)row.Cells[11 + begin].Controls[0]).BorderStyle = BorderStyle.Outset;
                     }
 
-                    row.Cells[10 + begin].ToolTip = toolTip;
+                    row.Cells[11 + begin].ToolTip = toolTip;
 
                     begin++;
                 }
