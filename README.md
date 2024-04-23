@@ -16,10 +16,11 @@ ndky000000
 private static string conStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\App_Data\\ActivityManager.mdf;Integrated Security=True";
 ## 未能找到路径“~ActivityManager\bin\roslyn\csc.exe”的一部分
 重新生成解决方案
+## 提示无法显示文件夹目录、未找到目录
+右键Login.aspx设置其为起始页
 ## 学生端无数据可能原因
 每首次运行时，程序会根据计算机系统时间更新活动状态。而学生只能查看特定状态的活动，于是导致无数据。
-## 提示无法显示文件夹目录、未找到目录原因
-右键Login.aspx设置其为起始页
+
 
 **解决方法：** 
 win11下->右键窗口右下角任务栏时间->调整日期和时间->自动设置时间->关->更改时间使活动状态刷新至需要。
