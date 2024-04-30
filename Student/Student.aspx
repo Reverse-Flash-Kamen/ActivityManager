@@ -99,7 +99,8 @@
 <body>
     <form id="form1" runat="server">
         <div runat="server" id="DivAppraise" style="position:absolute; width:300px; height:200px; top:40%; left:50%; background-color:#F7F6F3; border: solid 1px; display:none;">
-            <asp:Label ID="LblAppraise" runat="server" Text="Label" style="margin:10px;">测试活动</asp:Label>
+            <asp:Label ID="LblAppraise" runat="server" Text="" style="margin:10px;"></asp:Label>
+            <asp:Label ID="LblActID" runat="server" Text="" style="display:none"></asp:Label>
             <br />
             <asp:RadioButtonList ID="RblAppraise" runat="server" RepeatDirection="Horizontal">
                 <asp:ListItem Text="1"></asp:ListItem>
@@ -110,8 +111,8 @@
             </asp:RadioButtonList>
             <asp:TextBox ID="TxtAppraise" runat="server" Columns="30" Rows="5" TextMode="MultiLine" style="resize:none;"></asp:TextBox>
             <br />
-            <asp:Button ID="BtnAppraiseCommit" runat="server" Text="确定" OnClick="BtnAppraiseCommit_Click" />
-            <asp:Button ID="BtnAppraiseCancel" runat="server" Text="取消" OnClick="BtnAppraiseCancel_Click" />
+            <asp:Button ID="BtnAppraiseCommit" runat="server" Text="确定" OnClick="BtnAppraiseCommit_Click" CausesValidation="False" />
+            <asp:Button ID="BtnAppraiseCancel" runat="server" Text="取消" OnClick="BtnAppraiseCancel_Click" CausesValidation="False" />
         </div>
 
 

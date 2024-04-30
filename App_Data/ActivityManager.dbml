@@ -20,6 +20,7 @@
       <Column Name="activityType" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Activity_LikedActivity" Member="LikedActivity" ThisKey="activityID" OtherKey="activityID" Type="LikedActivity" />
       <Association Name="Activity_SignedActivity" Member="SignedActivity" ThisKey="activityID" OtherKey="activityID" Type="SignedActivity" />
+      <Association Name="Activity_ActivityAppraise" Member="ActivityAppraise" ThisKey="activityID" OtherKey="activityID" Type="ActivityAppraise" />
       <Association Name="Organization_Activity" Member="Organization" ThisKey="activityOrgID" OtherKey="organizationID" Type="Organization" IsForeignKey="true" />
       <Association Name="Place_Activity" Member="Place" ThisKey="activityPlaceID" OtherKey="placeID" Type="Place" IsForeignKey="true" />
     </Type>
@@ -70,6 +71,7 @@
       <Association Name="Student_LikedActivity" Member="LikedActivity" ThisKey="studentID" OtherKey="studentID" Type="LikedActivity" />
       <Association Name="Student_SignedActivity" Member="SignedActivity" ThisKey="studentID" OtherKey="studentID" Type="SignedActivity" />
       <Association Name="Student_StudentIdentified" Member="StudentIdentified" ThisKey="studentID" OtherKey="studentID" Type="StudentIdentified" Cardinality="One" />
+      <Association Name="Student_ActivityAppraise" Member="ActivityAppraise" ThisKey="studentID" OtherKey="studentID" Type="ActivityAppraise" />
     </Type>
   </Table>
   <Table Name="dbo.StudentIdentified" Member="StudentIdentified">
@@ -86,6 +88,16 @@
       <Column Name="credit_3" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="studentPassword" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Association Name="Student_StudentIdentified" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ActivityAppraise" Member="ActivityAppraise">
+    <Type Name="ActivityAppraise">
+      <Column Name="studentID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="activityID" Type="System.String" DbType="Char(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="credit" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="appraise" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Association Name="Activity_ActivityAppraise" Member="Activity" ThisKey="activityID" OtherKey="activityID" Type="Activity" IsForeignKey="true" />
+      <Association Name="Student_ActivityAppraise" Member="Student" ThisKey="studentID" OtherKey="studentID" Type="Student" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

@@ -194,22 +194,25 @@ namespace ActivityManager.Test
 
         protected void ActAppraise(string actID)
         {
+            Session["Appraised"] = false;
+
             ActivityManagerDataContext db = new ActivityManagerDataContext();
 
-            /*            var res = from info in db.ActivityAppraise
-                                  where info.activityID == actID and info.studentID == Session["ID"].ToString()
-                                  select info;
+            var res = from info in db.ActivityAppraise
+                      where info.activityID == actID && info.studentID == Session["ID"].ToString()
+                      select info;
 
-                        if (res.Any())
-                        {
-                            Response.Write("<script>alert('您已对该活动评分，再次提交将会修改')</script>")
-                        }
+            MyActivity act = new MyActivity(actID);
+            LblAppraise.Text = act.ActivityName;
+            LblActID.Text = act.ActivityID;
 
-                        var actName = from info in db.Activity
-                                      where info.activityID == actID
-                                      select info.activityName;*/
-
-            // 查表
+            if (res.Any())
+            {
+                Response.Write("<script>alert('您已对该活动评价，请慎重考虑修改评价！')</script>");
+                RblAppraise.SelectedIndex = (int)(res.First().credit) - 1;
+                TxtAppraise.Text = res.First().appraise;
+                Session["Appraised"] = true;
+            }
 
             DivAppraise.Style["display"] = "block";
         }
@@ -466,6 +469,7 @@ namespace ActivityManager.Test
                 // 第一次加载时
                 schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
                 ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
+                Tool.FormatActivityHeader(GvTemplate); // 更新表头
                 Tool.UpdataAllActivityState(); // 更新所有活动状态，数据量太大，所以之后只在数据绑定时更新Gv当前页
             }
             else
@@ -683,6 +687,44 @@ namespace ActivityManager.Test
 
         protected void BtnAppraiseCommit_Click(object sender, EventArgs e)
         {
+            if (RblAppraise.SelectedIndex == -1 || TxtAppraise.Text == "")
+            {
+                Response.Write("<script>alert('请评分且评价后提交！');</script>");
+                return;
+            }
+
+            // < script > alert('原密码输入错误！');</ script >
+
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+
+            ActivityAppraise activityAppraise = new ActivityAppraise()
+            {
+                activityID = LblActID.Text.ToString().Trim(),
+                studentID = Session["ID"].ToString(),
+                credit = RblAppraise.SelectedIndex + 1,
+                appraise = TxtAppraise.Text.ToString().Trim(),
+            };
+
+            if ((Boolean)Session["Appraised"] == true)
+            {
+                // 已评价，进行修改
+                var res = from info in db.ActivityAppraise
+                          where info.activityID == activityAppraise.activityID && info.studentID == activityAppraise.studentID
+                          select info;
+                res.First().credit = activityAppraise.credit;
+                res.First().appraise = activityAppraise.appraise;
+
+                db.SubmitChanges();
+            }
+            else
+            {
+                // 第一次评价
+                db.ActivityAppraise.InsertOnSubmit(activityAppraise);
+                db.SubmitChanges();
+            }
+
+            Response.Write("<script> alert('感谢您的评价！');</script>");
+            DivAppraise.Style["display"] = "none";
         }
 
         protected void BtnAppraiseCancel_Click(object sender, EventArgs e)

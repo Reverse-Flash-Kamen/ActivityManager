@@ -345,7 +345,8 @@
 
             <table class="auto-style12" style="vertical-align:middle">
                 <tr><td >
-                    <asp:Label ID="LblState" runat="server"></asp:Label></td></tr>
+                    <asp:Label ID="LblState" runat="server"></asp:Label></td>
+                </tr>
                 <tr><td >
                     <asp:Label ID="LblFail" runat="server"></asp:Label></td></tr>
                 <tr><td >

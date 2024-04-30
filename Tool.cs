@@ -1,4 +1,5 @@
 ﻿using ActivityManager.App_Data;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,17 +37,17 @@ namespace ActivityManager
              * gv.row 隐藏或添加部分数据项,三端列号不同
              * 通过原表名称获取真正列号
              */
-            if (flag)
-            {
-                for (int i = 0; i < gv.Columns.Count; i++)
-                {
-                    string s = gv.Columns[i].AccessibleHeaderText.ToString();
-                    if (!map.ContainsKey(s))
-                        map.Add(s, i);
-                }
+            /*            if (flag)
+                        {
+                            for (int i = 0; i < gv.Columns.Count; i++)
+                            {
+                                string s = gv.Columns[i].AccessibleHeaderText.ToString();
+                                if (!map.ContainsKey(s))
+                                    map.Add(s, i);
+                            }
 
-                flag = false;
-            }
+                            flag = false;
+                        }*/
 
             //UpdateActivityState(gv);
 
@@ -110,6 +111,7 @@ namespace ActivityManager
                 if (row.Cells[map["activityState"]].Text == "未提交")
                     row.Cells[index].Text = "/";
                 else
+                    // row.Cells[index].Text = Convert.ToDateTime(tmp).ToString("yyyy-MM-dd H:m:s", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                     row.Cells[index].Text = Convert.ToDateTime(tmp).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
                 // 报名人数
@@ -117,6 +119,16 @@ namespace ActivityManager
                 string signed = row.Cells[index].Text;
                 string maxSigned = row.Cells[map["maxSigned"]].Text;
                 row.Cells[index].Text = signed + "/" + maxSigned;
+            }
+        }
+
+        public static void FormatActivityHeader(GridView gv)
+        {
+            for (int i = 0; i < gv.Columns.Count; i++)
+            {
+                string s = gv.Columns[i].AccessibleHeaderText.ToString();
+                if (!map.ContainsKey(s))
+                    map.Add(s, i);
             }
         }
 

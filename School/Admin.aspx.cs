@@ -25,7 +25,10 @@ namespace ActivityManager.Test
             schoolConnector.Where = "activityState >= 2 ";
 
             if (!IsPostBack)
+            {
                 Tool.UpdataAllActivityState();
+                Tool.FormatActivityHeader(GvTemplate);
+            }
             else
                 Tool.FormatGridView(GvTemplate, 9);
         }

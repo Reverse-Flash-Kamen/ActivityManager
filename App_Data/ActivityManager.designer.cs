@@ -61,21 +61,23 @@ namespace ActivityManager.App_Data
     partial void InsertStudentIdentified(StudentIdentified instance);
     partial void UpdateStudentIdentified(StudentIdentified instance);
     partial void DeleteStudentIdentified(StudentIdentified instance);
-    #endregion
-		
-		public ActivityManagerDataContext(string connection) : 
-				base(connection, mappingSource)
-		{
-			OnCreated();
-		}
-
+    partial void InsertActivityAppraise(ActivityAppraise instance);
+    partial void UpdateActivityAppraise(ActivityAppraise instance);
+    partial void DeleteActivityAppraise(ActivityAppraise instance);
+        #endregion
         public ActivityManagerDataContext() :
 				base(conStr, mappingSource)
         {
             OnCreated();
         }
 
-        public ActivityManagerDataContext(System.Data.IDbConnection connection) : 
+        public ActivityManagerDataContext(string connection) : 
+				base(connection, mappingSource)
+		{
+			OnCreated();
+		}
+		
+		public ActivityManagerDataContext(System.Data.IDbConnection connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
@@ -156,6 +158,14 @@ namespace ActivityManager.App_Data
 				return this.GetTable<StudentIdentified>();
 			}
 		}
+		
+		public System.Data.Linq.Table<ActivityAppraise> ActivityAppraise
+		{
+			get
+			{
+				return this.GetTable<ActivityAppraise>();
+			}
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Activity")]
@@ -201,6 +211,8 @@ namespace ActivityManager.App_Data
 		private EntitySet<LikedActivity> _LikedActivity;
 		
 		private EntitySet<SignedActivity> _SignedActivity;
+		
+		private EntitySet<ActivityAppraise> _ActivityAppraise;
 		
 		private EntityRef<Organization> _Organization;
 		
@@ -250,6 +262,7 @@ namespace ActivityManager.App_Data
 		{
 			this._LikedActivity = new EntitySet<LikedActivity>(new Action<LikedActivity>(this.attach_LikedActivity), new Action<LikedActivity>(this.detach_LikedActivity));
 			this._SignedActivity = new EntitySet<SignedActivity>(new Action<SignedActivity>(this.attach_SignedActivity), new Action<SignedActivity>(this.detach_SignedActivity));
+			this._ActivityAppraise = new EntitySet<ActivityAppraise>(new Action<ActivityAppraise>(this.attach_ActivityAppraise), new Action<ActivityAppraise>(this.detach_ActivityAppraise));
 			this._Organization = default(EntityRef<Organization>);
 			this._Place = default(EntityRef<Place>);
 			OnCreated();
@@ -629,6 +642,19 @@ namespace ActivityManager.App_Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityAppraise", Storage="_ActivityAppraise", ThisKey="activityID", OtherKey="activityID")]
+		public EntitySet<ActivityAppraise> ActivityAppraise
+		{
+			get
+			{
+				return this._ActivityAppraise;
+			}
+			set
+			{
+				this._ActivityAppraise.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Organization_Activity", Storage="_Organization", ThisKey="activityOrgID", OtherKey="organizationID", IsForeignKey=true)]
 		public Organization Organization
 		{
@@ -736,6 +762,18 @@ namespace ActivityManager.App_Data
 		}
 		
 		private void detach_SignedActivity(SignedActivity entity)
+		{
+			this.SendPropertyChanging();
+			entity.Activity = null;
+		}
+		
+		private void attach_ActivityAppraise(ActivityAppraise entity)
+		{
+			this.SendPropertyChanging();
+			entity.Activity = this;
+		}
+		
+		private void detach_ActivityAppraise(ActivityAppraise entity)
 		{
 			this.SendPropertyChanging();
 			entity.Activity = null;
@@ -1458,6 +1496,8 @@ namespace ActivityManager.App_Data
 		
 		private EntityRef<StudentIdentified> _StudentIdentified;
 		
+		private EntitySet<ActivityAppraise> _ActivityAppraise;
+		
     #region 可扩展性方法定义
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1475,6 +1515,7 @@ namespace ActivityManager.App_Data
 			this._LikedActivity = new EntitySet<LikedActivity>(new Action<LikedActivity>(this.attach_LikedActivity), new Action<LikedActivity>(this.detach_LikedActivity));
 			this._SignedActivity = new EntitySet<SignedActivity>(new Action<SignedActivity>(this.attach_SignedActivity), new Action<SignedActivity>(this.detach_SignedActivity));
 			this._StudentIdentified = default(EntityRef<StudentIdentified>);
+			this._ActivityAppraise = new EntitySet<ActivityAppraise>(new Action<ActivityAppraise>(this.attach_ActivityAppraise), new Action<ActivityAppraise>(this.detach_ActivityAppraise));
 			OnCreated();
 		}
 		
@@ -1593,6 +1634,19 @@ namespace ActivityManager.App_Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_ActivityAppraise", Storage="_ActivityAppraise", ThisKey="studentID", OtherKey="studentID")]
+		public EntitySet<ActivityAppraise> ActivityAppraise
+		{
+			get
+			{
+				return this._ActivityAppraise;
+			}
+			set
+			{
+				this._ActivityAppraise.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1632,6 +1686,18 @@ namespace ActivityManager.App_Data
 		}
 		
 		private void detach_SignedActivity(SignedActivity entity)
+		{
+			this.SendPropertyChanging();
+			entity.Student = null;
+		}
+		
+		private void attach_ActivityAppraise(ActivityAppraise entity)
+		{
+			this.SendPropertyChanging();
+			entity.Student = this;
+		}
+		
+		private void detach_ActivityAppraise(ActivityAppraise entity)
 		{
 			this.SendPropertyChanging();
 			entity.Student = null;
@@ -1949,6 +2015,222 @@ namespace ActivityManager.App_Data
 					if ((value != null))
 					{
 						value.StudentIdentified = this;
+						this._studentID = value.studentID;
+					}
+					else
+					{
+						this._studentID = default(string);
+					}
+					this.SendPropertyChanged("Student");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ActivityAppraise")]
+	public partial class ActivityAppraise : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _studentID;
+		
+		private string _activityID;
+		
+		private System.Nullable<int> _credit;
+		
+		private string _appraise;
+		
+		private EntityRef<Activity> _Activity;
+		
+		private EntityRef<Student> _Student;
+		
+    #region 可扩展性方法定义
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnstudentIDChanging(string value);
+    partial void OnstudentIDChanged();
+    partial void OnactivityIDChanging(string value);
+    partial void OnactivityIDChanged();
+    partial void OncreditChanging(System.Nullable<int> value);
+    partial void OncreditChanged();
+    partial void OnappraiseChanging(string value);
+    partial void OnappraiseChanged();
+    #endregion
+		
+		public ActivityAppraise()
+		{
+			this._Activity = default(EntityRef<Activity>);
+			this._Student = default(EntityRef<Student>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_studentID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string studentID
+		{
+			get
+			{
+				return this._studentID;
+			}
+			set
+			{
+				if ((this._studentID != value))
+				{
+					if (this._Student.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnstudentIDChanging(value);
+					this.SendPropertyChanging();
+					this._studentID = value;
+					this.SendPropertyChanged("studentID");
+					this.OnstudentIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_activityID", DbType="Char(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string activityID
+		{
+			get
+			{
+				return this._activityID;
+			}
+			set
+			{
+				if ((this._activityID != value))
+				{
+					if (this._Activity.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnactivityIDChanging(value);
+					this.SendPropertyChanging();
+					this._activityID = value;
+					this.SendPropertyChanged("activityID");
+					this.OnactivityIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_credit", DbType="Int")]
+		public System.Nullable<int> credit
+		{
+			get
+			{
+				return this._credit;
+			}
+			set
+			{
+				if ((this._credit != value))
+				{
+					this.OncreditChanging(value);
+					this.SendPropertyChanging();
+					this._credit = value;
+					this.SendPropertyChanged("credit");
+					this.OncreditChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_appraise", DbType="VarChar(200)")]
+		public string appraise
+		{
+			get
+			{
+				return this._appraise;
+			}
+			set
+			{
+				if ((this._appraise != value))
+				{
+					this.OnappraiseChanging(value);
+					this.SendPropertyChanging();
+					this._appraise = value;
+					this.SendPropertyChanged("appraise");
+					this.OnappraiseChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Activity_ActivityAppraise", Storage="_Activity", ThisKey="activityID", OtherKey="activityID", IsForeignKey=true)]
+		public Activity Activity
+		{
+			get
+			{
+				return this._Activity.Entity;
+			}
+			set
+			{
+				Activity previousValue = this._Activity.Entity;
+				if (((previousValue != value) 
+							|| (this._Activity.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Activity.Entity = null;
+						previousValue.ActivityAppraise.Remove(this);
+					}
+					this._Activity.Entity = value;
+					if ((value != null))
+					{
+						value.ActivityAppraise.Add(this);
+						this._activityID = value.activityID;
+					}
+					else
+					{
+						this._activityID = default(string);
+					}
+					this.SendPropertyChanged("Activity");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_ActivityAppraise", Storage="_Student", ThisKey="studentID", OtherKey="studentID", IsForeignKey=true)]
+		public Student Student
+		{
+			get
+			{
+				return this._Student.Entity;
+			}
+			set
+			{
+				Student previousValue = this._Student.Entity;
+				if (((previousValue != value) 
+							|| (this._Student.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Student.Entity = null;
+						previousValue.ActivityAppraise.Remove(this);
+					}
+					this._Student.Entity = value;
+					if ((value != null))
+					{
+						value.ActivityAppraise.Add(this);
 						this._studentID = value.studentID;
 					}
 					else

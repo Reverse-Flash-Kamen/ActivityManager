@@ -20,7 +20,10 @@ namespace ActivityManager.Test
             Tool.curUser = 1;
 
             if (!IsPostBack)
+            {
                 Tool.UpdataAllActivityState();
+                Tool.FormatActivityHeader(GvTemplate);
+            }
             else
                 Tool.FormatGridView(GvTemplate, 9);
 
