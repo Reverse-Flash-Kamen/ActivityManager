@@ -6,6 +6,7 @@ using System.Windows;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.IO;
+using System;
 
 namespace ActivityManager
 {
@@ -13,18 +14,18 @@ namespace ActivityManager
     {
         // private static bool flag;
 
-        public static void SetOperation(string commandName, string actID, string studentID, GridView gv, LinqDataSource data)
+        public static void SetOperation(string commandName, string actID, string ID, GridView gv, LinqDataSource data)
         {
             Operation operation = new Operation();
 
             if (commandName == "check")
             {
-                // 查看操作
+                // 查看操作 前端实现
                 MessageBox.Show("Check");
             }
             else if (commandName == "editA")
             {
-                // 编辑操作
+                // 编辑操作 前端实现
                 MessageBox.Show("Edit");
             }
             else if (commandName == "deleteA")
@@ -44,7 +45,7 @@ namespace ActivityManager
             else if (commandName == "export")
             {
                 // 导出报名名单操作
-                operation.ActExport(actID);
+                operation.ActExport(actID, ID);
             }
             else if (commandName == "report")
             {
@@ -54,47 +55,51 @@ namespace ActivityManager
             else if (commandName == "complete")
             {
                 // 完成操作
-                operation.ActComplete(actID, studentID);
+                operation.ActComplete(actID, ID);
             }
             else if (commandName == "like")
             {
                 // 收藏操作
-                operation.ActLike(actID, studentID);
+                operation.ActLike(actID, ID);
             }
             else if (commandName == "likeCancel")
             {
                 // 取消收藏操作
-                operation.ActLikeCancel(actID, studentID);
+                operation.ActLikeCancel(actID, ID);
             }
             else if (commandName == "sign")
             {
                 // 报名操作
-                operation.ActSign(actID, studentID);
+                operation.ActSign(actID, ID);
             }
             else if (commandName == "signCancel")
             {
                 // 取消报名操作
-                operation.ActSignCancel(actID, studentID);
+                operation.ActSignCancel(actID, ID);
             }
             else if (commandName == "aduit")
             {
-                // 审核操作
+                // 审核操作 前端实现
                 MessageBox.Show("审核操作！");
             }
-            else if (commandName == "exprotFinal")
+            else if (commandName == "exportFinal")
             {
                 // 导出完成名单操作
                 MessageBox.Show("导出名单成功！");
             }
             else if (commandName == "appraise")
             {
-                // 评价功能
+                // 评价功能 前端实现
                 // MessageBox.Show("评价功能！");
+            }
+            else if (commandName == "exportAppraise")
+            {
+                operation.ActExportAppraise(actID, ID);
             }
 
             //  gv.DataBind(); // 重现绑定数据，刷新添加|删除|退回的数据行
 
-            Tool.SetButton(gv, studentID);
+            Tool.SetButton(gv, ID);
         }
 
         public void ActDelete(string actID)
@@ -339,7 +344,7 @@ namespace ActivityManager
             db.SubmitChanges();
         }
 
-        public void ActExport(string actID)
+        public void ActExport(string actID, string orgID)
         {
             // 创建一个工作薄
             IWorkbook workbook = new XSSFWorkbook();
@@ -367,6 +372,7 @@ namespace ActivityManager
 
             // 根据活动ID获取报名学生ID
             ActivityManagerDataContext db = new ActivityManagerDataContext();
+
             var res = from info in db.SignedActivity
                       where info.activityID == actID
                       select info.studentID;
@@ -398,10 +404,16 @@ namespace ActivityManager
                 i++;
             }
 
+            var resOrg = from info in db.Organization
+                         where info.organizationID == orgID
+                         select info.organizationName;
+
+            var orgName = resOrg.First();
+
             // 存储路径不能是桌面，虚拟机没权限访问
             // string path = Path.Combine(Directory.GetCurrentDirectory(), "File", "Excel");
             // string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
-            string path = "C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\File";
+            string path = $"C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\File\\Org\\{orgName}\\Signed";
             try
             {
                 // 查看是否存在,不存在创建
@@ -418,7 +430,7 @@ namespace ActivityManager
                 string signed = resAct.First().signed.ToString();
 
                 // 保存工作薄
-                var fileName = $"{actName}_{actID}_{signed}.xlsx";
+                var fileName = $"{actName}_{actID}_signed_{signed}.xlsx";
                 var filePath = Path.Combine(path, fileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
@@ -442,7 +454,101 @@ namespace ActivityManager
                 return;
             }
 
-            HttpContext.Current.Response.Write("<script>alert('导出成功，请在C:/Code/Reverse-Flash-Kamen/ActivityManager/File中查看！')</script>");
+            HttpContext.Current.Response.Write("<script>alert('导出成功，请在C:/Code/Reverse-Flash-Kamen/ActivityManager/File/#orgName#/Signed中查看！')</script>");
+        }
+
+        public void ActExportAppraise(string actID, string orgID)
+        {
+            // 创建一个工作薄
+            IWorkbook workbook = new XSSFWorkbook();
+
+            // 创建一个工作表
+            ISheet sheet = workbook.CreateSheet("Sheet1");
+
+            // 添加表头
+            IRow headerRow = sheet.CreateRow(0);
+
+            // 给表头创建列
+            headerRow.CreateCell(0).SetCellValue(""); // 序号
+            headerRow.CreateCell(1).SetCellValue("评分");
+            headerRow.CreateCell(2).SetCellValue("评价");
+
+            // 获取数据
+            ActivityManagerDataContext db = new ActivityManagerDataContext();
+            var res = from info in db.ActivityAppraise
+                      where info.activityID == actID
+                      select info;
+
+            int i = 1;
+            double sum = 0;
+            foreach (var item in res)
+            {
+                // 创建新行
+                IRow dataRow = sheet.CreateRow(i);
+
+                // 创建列写入数据
+                dataRow.CreateCell(0).SetCellValue(i);
+                dataRow.CreateCell(1).SetCellValue(item.credit.ToString());
+                dataRow.CreateCell(2).SetCellValue(item.appraise);
+
+                sum += (double)item.credit;
+                i++;
+            }
+
+            double avg = sum / res.Count();
+
+            IRow avgRow = sheet.CreateRow(i);
+            avgRow.CreateCell(0).SetCellValue("总计：");
+            avgRow.CreateCell(1).SetCellValue(Math.Round(avg, 2).ToString());
+
+            var resOrg = from info in db.Organization
+                         where info.organizationID == orgID
+                         select info.organizationName;
+
+            var orgName = resOrg.First();
+
+            string path = $"C:\\Code\\Reverse-Flash-Kamen\\ActivityManager\\File\\Org\\{orgName}\\Appraise";
+            try
+            {
+                // 查看是否存在,不存在创建
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                // 查活动名称
+                var resAct = from info in db.Activity
+                             where info.activityID == actID
+                             select info;
+                string actName = resAct.First().activityName;
+                string signed = resAct.First().signed.ToString();
+
+                // 保存工作薄
+                var fileName = $"{actName}_{actID}_appraised_{res.Count()}.xlsx";
+                var filePath = Path.Combine(path, fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    workbook.Write(fileStream, true);
+                    fileStream.Close();
+                }
+
+                // 关闭文件
+                sheet = null;
+                headerRow = null;
+                workbook = null;
+            }
+            catch (System.IO.IOException)
+            {
+                HttpContext.Current.Response.Write("<script>alert('操作无法完成，因为文件已在Excel中打开！')</script>");
+                return;
+            }
+            catch
+            {
+                HttpContext.Current.Response.Write("<script>alert('导出失败，请稍后重试！')</script>");
+                return;
+            }
+
+            HttpContext.Current.Response.Write("<script>alert('导出成功，请在C:/Code/Reverse-Flash-Kamen/ActivityManager/File/#orgName#/Appraised中查看！')</script>");
         }
     }
 }

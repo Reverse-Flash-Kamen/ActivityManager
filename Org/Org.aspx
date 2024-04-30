@@ -316,11 +316,14 @@
                         <asp:BoundField AccessibleHeaderText="signed" DataField="signed" HeaderText="报名人数" SortExpression="signed">
                         <HeaderStyle Width="100px" />
                         </asp:BoundField>
-                        <asp:ButtonField HeaderText="操作" Text="操作" >
-                        <HeaderStyle Width="45px" />
+                        <asp:ButtonField Text="操作" >
+                            <HeaderStyle Width="40px" />
                         </asp:ButtonField>
-                        <asp:ButtonField Text="按钮" >
-                        <HeaderStyle Width="45px" />
+                            <asp:ButtonField Text="按钮" HeaderText="操作" >
+                            <HeaderStyle Width="40px" />
+                        </asp:ButtonField>
+                            <asp:ButtonField Text="按钮" >
+                            <HeaderStyle Width="40px" />
                         </asp:ButtonField>
                     </Columns>
                     <EditRowStyle BackColor="#999999" />

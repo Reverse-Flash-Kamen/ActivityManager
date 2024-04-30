@@ -264,45 +264,60 @@ namespace ActivityManager
                     if (state == 1)
                     {
                         // 未提交
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "编辑";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "editA";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "编辑";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "editA";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "删除";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "deleteA";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "删除";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "deleteA";
                         // ((LinkButton)row.Cells[n - 1].Controls[0]).Attributes.Add("onclick", "return ActConfirm()");
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                     }
                     else if (state == 2)
                     {
                         // 待审核
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "撤回";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "withdraw";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "撤回";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "withdraw";
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                     }
                     else if (state == 3)
                     {
                         // 未通过
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "重新<br/>提交";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "resubmit";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "重新<br/>提交";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "resubmit";
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                     }
                     else if (state == 4)
                     {
                         // 审核过期
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "重新<br/>提交";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "resubmit";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "重新<br/>提交";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "resubmit";
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                     }
                     else if (state == 5)
                     {
                         // 待报名
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
+
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "null";
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
@@ -310,8 +325,11 @@ namespace ActivityManager
                     else if (state == 6)
                     {
                         // 报名中
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
+
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
@@ -319,26 +337,35 @@ namespace ActivityManager
                     else if (state == 7)
                     {
                         // 待开始
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "导出报名名单";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "export";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                     }
                     else if (state == 8)
                     {
                         // 活动中
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "导出报名名单";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "export";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "生成签到";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                     }
                     else if (state == 9)
                     {
                         // 已结束
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
+
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "上报";
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "report";
@@ -346,20 +373,26 @@ namespace ActivityManager
                     else if (state == 10)
                     {
                         // 已上报
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "导出评价";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "exportAppraise";
                     }
                     else if (state == 11)
                     {
                         // 已完成
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "查看";
-                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "check";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).Text = "查看";
+                        ((LinkButton)row.Cells[n - 3].Controls[0]).CommandName = "check";
 
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
-                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "导出名单";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "export";
+
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "导出评价";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "exportAppraise";
                     }
                 }
             }
@@ -432,8 +465,8 @@ namespace ActivityManager
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "null";
                     }
 
-                    // 对于报名且结束的活动可评价
-                    if (state >= 9)
+                    // 对于报名且上报的活动可评价
+                    if (state >= 10)
                     {
                         var resSign = from info in db.SignedActivity
                                       where info.studentID == ID && (info.activityID == actID)
