@@ -247,6 +247,9 @@
                         <HeaderStyle CssClass="hidden" />
                         <ItemStyle CssClass="hidden" />
                         </asp:BoundField>
+                        <asp:BoundField AccessibleHeaderText="activityType" DataField="activityType" HeaderText="类别" SortExpression="activityType" >
+                            <HeaderStyle Width="44px" />
+                        </asp:BoundField>
                         <asp:BoundField AccessibleHeaderText="activityName" DataField="activityName" HeaderText="活动名称" SortExpression="activityName" >
                         <HeaderStyle Width="150px" />
                         </asp:BoundField>

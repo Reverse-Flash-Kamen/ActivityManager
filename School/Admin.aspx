@@ -162,7 +162,7 @@
                <%--上导航栏--%>
                <div class="auto-style9">
                    &nbsp;&nbsp;
-                   <asp:LinkButton ID="LinkButton1" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton1_Click">全部活动</asp:LinkButton>
+                   <asp:LinkButton ID="LinkButton1" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="True" ForeColor="Brown" OnClick="LinkButton1_Click">全部活动</asp:LinkButton>
                    &nbsp;&nbsp;
                    <asp:LinkButton ID="LinkButton2" runat="server" Font-Bold="False" Font-Size="Large" Font-Underline="False" ForeColor="Black" OnClick="LinkButton2_Click">待审核</asp:LinkButton>
                    &nbsp;&nbsp;
@@ -172,7 +172,7 @@
 
             <%--列表--%>
            <div>
-                <asp:GridView ID="GvTemplate" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataKeyNames="activityID" DataSourceID="schoolConnector" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" OnDataBound="GridView1_DataBound" OnRowCommand="GvTemplate_RowCommand" HorizontalAlign="Center" GridLines="None">
+                <asp:GridView ID="GvTemplate" runat="server" AllowPaging="True" AutoGenerateColumns="False" CellPadding="0" DataKeyNames="activityID" DataSourceID="schoolConnector" ForeColor="#333333" Height="525px" Width="85%" PageSize="5" OnDataBound="GridView1_DataBound" OnRowCommand="GvTemplate_RowCommand" HorizontalAlign="Center" GridLines="None" OnPageIndexChanging="GvTemplate_PageIndexChanging">
                     <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                     <Columns>
                         <asp:BoundField AccessibleHeaderText="activityID" DataField="activityID" HeaderText="activityID" ReadOnly="True" SortExpression="activityID">
@@ -180,6 +180,9 @@
                         <FooterStyle CssClass="hidden" />
                         <HeaderStyle CssClass="hidden" />
                         <ItemStyle CssClass="hidden" />
+                        </asp:BoundField>
+                        <asp:BoundField AccessibleHeaderText="activityType" DataField="activityType" HeaderText="类别" SortExpression="activityType" >
+                            <HeaderStyle Width="44px" />
                         </asp:BoundField>
                         <asp:BoundField AccessibleHeaderText="activityName" DataField="activityName" HeaderText="活动名称" SortExpression="activityName" >
                         <HeaderStyle Width="150px" />

@@ -19,10 +19,11 @@ namespace ActivityManager.Test
             Session["ID"] = "org2022121201";
             Tool.curUser = 1;
 
+            Tool.FormatActivityHeader(GvTemplate);
             if (!IsPostBack)
             {
                 Tool.UpdataAllActivityState();
-                Tool.FormatActivityHeader(GvTemplate);
+                Tool.FormatActivityHeader(GvTemplate); // 更新表头
             }
             else
                 Tool.FormatGridView(GvTemplate, 9);
@@ -78,7 +79,7 @@ namespace ActivityManager.Test
             if (s4 != "")
             {
                 if (s4 != "0")
-                    schoolConnector.Where += " and activityState = " + s4;
+                    schoolConnector.Where += " and activityType = " + s4;
             }
         }
 

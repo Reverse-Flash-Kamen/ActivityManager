@@ -467,9 +467,9 @@ namespace ActivityManager.Test
             if (!IsPostBack)
             {
                 // 第一次加载时
+                Tool.FormatActivityHeader(GvTemplate); // 更新表头
                 schoolConnector.Where = "(activityState >= 5 and activityState <= 8)";
                 ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString();
-                Tool.FormatActivityHeader(GvTemplate); // 更新表头
                 Tool.UpdataAllActivityState(); // 更新所有活动状态，数据量太大，所以之后只在数据绑定时更新Gv当前页
             }
             else
@@ -637,7 +637,7 @@ namespace ActivityManager.Test
             int index1 = DropDownList1.SelectedIndex;
             int index2 = DropDownList2.SelectedIndex;
 
-            LinqDataSourceCredit.Where = Tool.LinqDataSourceCreditChange(index1, index2, ActivityManagerDataContext.connectorCredit);
+            LinqDataSourceCredit.Where = LinqDataSourceCreditChange(index1, index2, ActivityManagerDataContext.connectorCredit);
             ActivityManagerDataContext.connectorWhere = LinqDataSourceCredit.Where;
 
             // 要第一次加载出gv再才能统计,要databound
@@ -730,6 +730,47 @@ namespace ActivityManager.Test
         protected void BtnAppraiseCancel_Click(object sender, EventArgs e)
         {
             DivAppraise.Style["display"] = "none";
+        }
+
+        public static string LinqDataSourceCreditChange(int index1, int index2, string connectWhere)
+        {
+            switch (index1)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    connectWhere += "and (activityState = 11)";
+                    break;
+
+                case 2:
+                    connectWhere += "and (activityState != 11)";
+                    break;
+
+                default: break;
+            }
+
+            switch (index2)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    connectWhere += "and (activityType = 1)";
+                    break;
+
+                case 2:
+                    connectWhere += "and (activityType = 2)";
+                    break;
+
+                case 3:
+                    connectWhere += "and (activityType = 3)";
+                    break;
+
+                default: break;
+            }
+
+            return connectWhere;
         }
     }
 }

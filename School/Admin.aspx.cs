@@ -14,23 +14,29 @@ namespace ActivityManager.Test
             Session["ID"] = "ndky000001";
             Tool.curUser = 0;
 
-            LinkButton1.ForeColor = System.Drawing.Color.Brown;
+            /*LinkButton1.ForeColor = System.Drawing.Color.Brown;
             LinkButton1.Font.Underline = true;
 
             LinkButton2.Font.Underline = false;
             LinkButton3.Font.Underline = false;
             LinkButton2.ForeColor = System.Drawing.Color.Black;
-            LinkButton3.ForeColor = System.Drawing.Color.Black;
-            schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 2 ";
+            LinkButton3.ForeColor = System.Drawing.Color.Black;*/
 
+            /*schoolConnector.Where = null;
+            schoolConnector.Where = "activityState >= 2 ";*/
+
+            Tool.FormatActivityHeader(GvTemplate);
             if (!IsPostBack)
             {
                 Tool.UpdataAllActivityState();
-                Tool.FormatActivityHeader(GvTemplate);
+                Tool.FormatActivityHeader(GvTemplate); // 更新表头
+                schoolConnector.Where = "(activityState >= 2) ";
             }
             else
+            {
+                schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
                 Tool.FormatGridView(GvTemplate, 9);
+            }
         }
 
         protected void Esc_Click(object sender, System.Web.UI.ImageClickEventArgs e)
@@ -47,8 +53,17 @@ namespace ActivityManager.Test
 
         protected void commit_Click(object sender, EventArgs e)
         {
-            schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 2 ";
+            /*schoolConnector.Where = null;
+            schoolConnector.Where = "activityState >= 2 ";*/
+
+            if (LinkButton1.Font.Underline == true)
+                LinkButton1_Click(sender, e);
+            else if (LinkButton2.Font.Underline == true)
+                LinkButton2_Click(sender, e);
+            else if (LinkButton3.Font.Underline == true)
+                LinkButton3_Click(sender, e);
+
+            if (schoolConnector.Where == "") schoolConnector.Where = "(activityState >= 0) ";
 
             string s1 = name.Text.Trim();
             string s2 = org.Text.Trim();
@@ -57,7 +72,7 @@ namespace ActivityManager.Test
 
             if (s1 != "")
             {
-                schoolConnector.Where += " and activityName = \"" + s1 + "\"";
+                schoolConnector.Where += " and (activityName = \"" + s1 + "\") ";
             }
 
             if (s2 != "")
@@ -68,20 +83,22 @@ namespace ActivityManager.Test
                           select org;
 
                 if (res.Any())
-                    schoolConnector.Where += " and activityOrgID = \"" + res.First().organizationID.ToString() + "\"";
+                    schoolConnector.Where += " and (activityOrgID = \"" + res.First().organizationID.ToString() + "\") ";
             }
 
             if (s3 != "")
             {
                 if (s3 != "0")
-                    schoolConnector.Where += " and activityState = " + s3;
+                    schoolConnector.Where += " and (activityState = " + s3 + ") ";
             }
 
             if (s4 != "")
             {
                 if (s4 != "0")
-                    schoolConnector.Where += " and activityType = " + s4;
+                    schoolConnector.Where += " and (activityType = " + s4 + ") ";
             }
+
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where;
         }
 
         protected void flush_Click(object sender, EventArgs e)
@@ -91,7 +108,7 @@ namespace ActivityManager.Test
             state.SelectedIndex = 0;
             type.SelectedIndex = 0;
             schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 2 ";
+            schoolConnector.Where = "(activityState >= 2) ";
         }
 
         protected void LinkButton1_Click(object sender, EventArgs e)
@@ -104,8 +121,12 @@ namespace ActivityManager.Test
             LinkButton2.ForeColor = System.Drawing.Color.Black;
             LinkButton3.ForeColor = System.Drawing.Color.Black;
 
+            GvTemplate.PageIndex = 0;
+
             schoolConnector.Where = null;
-            schoolConnector.Where = "activityState >= 2 ";
+            schoolConnector.Where = "(activityState >= 2) ";
+
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 
         protected void LinkButton2_Click(object sender, EventArgs e)
@@ -119,7 +140,11 @@ namespace ActivityManager.Test
             LinkButton3.ForeColor = System.Drawing.Color.Black;
 
             schoolConnector.Where = null;
-            schoolConnector.Where = "activityState = 2";
+            schoolConnector.Where = "(activityState = 2) ";
+
+            GvTemplate.PageIndex = 0;
+
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 
         protected void LinkButton3_Click(object sender, EventArgs e)
@@ -133,12 +158,16 @@ namespace ActivityManager.Test
             LinkButton1.ForeColor = System.Drawing.Color.Black;
 
             schoolConnector.Where = null;
-            schoolConnector.Where = "activityState = 10";
+            schoolConnector.Where = "(activityState = 10) ";
+
+            GvTemplate.PageIndex = 0;
+
+            ActivityManagerDataContext.connectorWhere = schoolConnector.Where.ToString(); // 存储当前查询条件
         }
 
         protected void GvTemplate_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (GvTemplate.PageSize > ((GridView)sender).Rows.Count) return;
+            if (e.CommandName == "Page") return;
 
             int index = int.Parse(e.CommandArgument.ToString());
             string actID = ((GridView)sender).Rows[index].Cells[0].Text;
@@ -271,6 +300,12 @@ namespace ActivityManager.Test
             btnCancel_Click(sender, e);
 
             GvTemplate.DataBind();
+        }
+
+        protected void GvTemplate_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GvTemplate.PageIndex = e.NewPageIndex;
+            schoolConnector.Where = ActivityManagerDataContext.connectorWhere;
         }
     }
 }

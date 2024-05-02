@@ -7,6 +7,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.IO;
 using System;
+using MathNet.Numerics.Distributions;
 
 namespace ActivityManager
 {
@@ -55,7 +56,7 @@ namespace ActivityManager
             else if (commandName == "complete")
             {
                 // 完成操作
-                operation.ActComplete(actID, ID);
+                operation.ActComplete(actID);
             }
             else if (commandName == "like")
             {
@@ -173,7 +174,7 @@ namespace ActivityManager
             db.SubmitChanges();
         }
 
-        public void ActComplete(string actID, string studentID)
+        public void ActComplete(string actID)
         {
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             MyActivity a = new MyActivity(actID);
@@ -186,31 +187,43 @@ namespace ActivityManager
 
             // 完成后给学生加学分
             int credit = int.Parse(a.AvailableCredit); // 获取活动学分
+
+            // 根据活动ID获取报名学生ID
+
+            var resStudents = from info in db.SignedActivity
+                              where info.activityID == actID
+                              select info.studentID;
+
             int type = int.Parse(a.ActivityType);
-            var resCredit = from info in db.StudentIdentified
-                            where info.studentID == studentID
-                            select info;
 
-            // 根据不同类别活动加不同学分
-            switch (type)
+            foreach (var studentID in resStudents)
             {
-                case 1:
-                    resCredit.First().credit_1 += credit;
-                    break;
+                // 给报名学生加学分
+                // 之后还要判断是否签到
+                var resCredit = from info in db.StudentIdentified
+                                where info.studentID == studentID
+                                select info;
+                // 根据不同类别活动加不同学分
+                switch (type)
+                {
+                    case 1:
+                        resCredit.First().credit_1 += credit;
+                        break;
 
-                case 2:
-                    resCredit.First().credit_2 += credit;
-                    break;
+                    case 2:
+                        resCredit.First().credit_2 += credit;
+                        break;
 
-                case 3:
-                    resCredit.First().credit_3 += credit;
-                    break;
+                    case 3:
+                        resCredit.First().credit_3 += credit;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+
+                db.SubmitChanges();
             }
-
-            db.SubmitChanges();
         }
 
         public void ActLike(string actID, string studentID)

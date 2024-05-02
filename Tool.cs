@@ -1,8 +1,11 @@
 ﻿using ActivityManager.App_Data;
 using NPOI.OpenXmlFormats.Spreadsheet;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.EnterpriseServices;
 using System.Linq;
 using System.Web;
 using System.Web.Services.Description;
@@ -37,6 +40,7 @@ namespace ActivityManager
              * gv.row 隐藏或添加部分数据项,三端列号不同
              * 通过原表名称获取真正列号
              */
+
             /*            if (flag)
                         {
                             for (int i = 0; i < gv.Columns.Count; i++)
@@ -58,6 +62,7 @@ namespace ActivityManager
              * 优化用户体验需将ID格式化为名称
              * 对于时间也需格式化为日常使用习惯
              */
+
             ActivityManagerDataContext db = new ActivityManagerDataContext();
             foreach (GridViewRow row in gv.Rows)
             {
@@ -77,8 +82,8 @@ namespace ActivityManager
                 var res2 = from place in db.Place
                            where place.placeID.Equals(tmp)
                            select place;
-
-                row.Cells[index].Text = res2.First().placeName.ToString();
+                if (res2.Any())
+                    row.Cells[index].Text = res2.First().placeName.ToString();
 
                 // 报名时间
                 index = map["signStartDate"];
@@ -129,6 +134,7 @@ namespace ActivityManager
                 string s = gv.Columns[i].AccessibleHeaderText.ToString();
                 if (!map.ContainsKey(s))
                     map.Add(s, i);
+                else map[s] = i;
             }
         }
 
@@ -221,6 +227,7 @@ namespace ActivityManager
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "完成";
                         ((LinkButton)row.Cells[n - 1].Controls[0]).CommandName = "complete";
+                        ((LinkButton)row.Cells[n - 1].Controls[0]).ToolTip = "注意！！！将会发放学分";
                     }
                     else if (state == 11)
                     {
@@ -269,6 +276,8 @@ namespace ActivityManager
 
                         ((LinkButton)row.Cells[n - 2].Controls[0]).Text = "删除";
                         ((LinkButton)row.Cells[n - 2].Controls[0]).CommandName = "deleteA";
+                        ((LinkButton)row.Cells[n - 2].Controls[0]).ToolTip = "将会无法恢复";
+
                         // ((LinkButton)row.Cells[n - 1].Controls[0]).Attributes.Add("onclick", "return ActConfirm()");
 
                         ((LinkButton)row.Cells[n - 1].Controls[0]).Text = "";
@@ -486,47 +495,6 @@ namespace ActivityManager
             }
 
             // gv.DataBind();
-        }
-
-        public static string LinqDataSourceCreditChange(int index1, int index2, string connectWhere)
-        {
-            switch (index1)
-            {
-                case 0:
-                    break;
-
-                case 1:
-                    connectWhere += "and (activityState = 11)";
-                    break;
-
-                case 2:
-                    connectWhere += "and (activityState != 11)";
-                    break;
-
-                default: break;
-            }
-
-            switch (index2)
-            {
-                case 0:
-                    break;
-
-                case 1:
-                    connectWhere += "and (activityType = 1)";
-                    break;
-
-                case 2:
-                    connectWhere += "and (activityType = 2)";
-                    break;
-
-                case 3:
-                    connectWhere += "and (activityType = 3)";
-                    break;
-
-                default: break;
-            }
-
-            return connectWhere;
         }
     }
 }
